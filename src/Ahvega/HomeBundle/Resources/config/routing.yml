@@ -1,0 +1,23 @@
+ahvegahome_homepage:
+    pattern:  /ahvega
+    defaults: { _controller: AhvegaHomeBundle:Default:index }
+
+ahvegahome_newUser:
+    pattern:  /ahvega/home/formUser
+    defaults: { _controller: AhvegaHomeBundle:Default:newUser }
+    
+ahvegahome_addUser:
+    pattern:  /ahvega/home/addUser
+    defaults: { _controller: AhvegaHomeBundle:Default:addUser }
+    
+ahvegahome_deleteUser:
+    pattern:  /ahvega/home/AddUser
+    defaults: { _controller: AhvegaHomeBundle:Default:deleteUser }
+    
+ahvegahome_updateUser:
+    pattern:  /ahvega/home/updateUser
+    defaults: { _controller: AhvegaHomeBundle:Default:updateUser }
+    
+ahvegahome_editUser:
+    pattern:  /ahvega/home/editUser
+    defaults: { _controller: AhvegaHomeBundle:Default:editUser }

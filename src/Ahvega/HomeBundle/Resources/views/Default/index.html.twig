@@ -1,0 +1,36 @@
+{% extends "AhvegaHomeBundle::layout.html.twig" %}
+
+{% block content %}
+      <div class="page-header">
+        <h1>Web de ahvega</h1>
+      </div>
+      
+      <div class="page-users">
+          <h1>Usuarios</h1>
+          <table>
+              <tr>
+                  <th> {% trans %}Nombre de usuario {% endtrans %}</th>
+                  <th> {% trans %}Contraseña {% endtrans %}</th>
+                  <th> {% trans %}Email {% endtrans %}</th>
+                  <th> {% trans %}Nombre {% endtrans %}</th>
+                  <th> {% trans %}Apellidos {% endtrans %}</th>
+                  <th> {% trans %}Opciones {% endtrans %}</th>
+              </tr>
+              {% for user in users %}
+                  <tr>
+                      <td>{{ user.username }}</td>
+                      <td>{{ user.password }}</td>
+                      <td>{{ user.email }}</td>
+                      <td>{{ user.firstname }}</td>
+                      <td>{{ user.lastname }}</td>
+                      <td> <a href="{{ path('ahvegahome_deleteUser', { 'id': user.id }) }}"> {% trans %}Borrar{% endtrans %}</a> 
+                          | <a href="{{ path('ahvegahome_updateUser', { 'id': user.id }) }}">{% trans %}Editar{% endtrans %}</a>
+                      </td>
+                  </tr>
+              {% endfor %}    
+          </table>
+          <a href="{{ path('ahvegahome_newUser') }}">{% trans %}Añadir{% endtrans %}</a>
+      </div>
+      
+     
+{% endblock %}

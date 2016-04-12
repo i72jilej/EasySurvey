@@ -1,0 +1,10 @@
+iw_easy_survey:
+    resource: "@IWEasySurveyBundle/Resources/config/routing.yml"
+    prefix:   /
+
+ahvegahome:
+    resource: "@AhvegaHomeBundle/Resources/config/routing.yml"
+    prefix:   /
+
+
+

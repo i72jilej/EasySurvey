@@ -1,0 +1,3 @@
+iw_easy_survey_homepage:
+    pattern:  /EasySurvey
+    defaults: { _controller: IWEasySurveyBundle:Default:index }

@@ -1,0 +1,29 @@
+<html lang="es">
+    <head>
+        <title>{% trans %}EasySurvey{% endtrans %}</title>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="">
+        <meta name="author" content="">
+        {% stylesheets '@IWEasySurveyBundle/Resources/public/css/bootstrap/bootstrap.min.css'
+                       '@IWEasySurveyBundle/Resources/public/css/core.css'
+                       '@IWEasySurveyBundle/Resources/public/css/video-js.css'
+                       '@IWEasySurveyBundle/Resources/public/css/bootstrap/sticky-footer-navbar.css' filter='cssrewrite' %}
+            <link rel="stylesheet" href="{{ asset_url }}" />
+        {% endstylesheets %}
+        
+    </head>
+    <body>
+        {% include 'IWEasySurveyBundle::menu.html.twig' %}
+        <div class="container">
+            {% block content %}{% endblock %}    
+        </div>
+        {% include 'IWEasySurveyBundle::footer.html.twig' %}
+        {% javascripts '@IWEasySurveyBundle/Resources/public/js/jquery.min.js'
+                       '@IWEasySurveyBundle/Resources/public/js/video.js'
+                       '@IWEasySurveyBundle/Resources/public/js/bootstrap/bootstrap.min.js' %}
+            <script type="text/javascript" src="{{ asset_url }}"></script>
+        {% endjavascripts %} 
+    </body>
+</html>

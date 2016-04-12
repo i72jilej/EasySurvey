@@ -1,0 +1,7 @@
+parameters:
+#    iw_easy_survey.example.class: IW\EasySurveyBundle\Example
+
+services:
+#    iw_easy_survey.example:
+#        class: %iw_easy_survey.example.class%
+#        arguments: [@service_id, "plain_value", %parameter%]
