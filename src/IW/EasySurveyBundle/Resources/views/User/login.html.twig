@@ -1,0 +1,12 @@
+{% extends "IWEasySurveyBundle::layout.html.twig" %}
+
+{% block content %}
+      <div class="page-header">
+        <h1>{% trans %}Acceso{% endtrans %}</h1>
+      </div>    
+      <div class="page-content">  
+      {{ form(form) }}
+      <div class="sucess">{{success}}</div>
+      <div class="error">{{error}}</div>
+      </div>
+{% endblock %}

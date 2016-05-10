@@ -1,0 +1,9 @@
+{% block content %}
+      <div class="page-header">
+        <h1>{% trans %}Confirmación de registro de Usuario{% endtrans %}</h1>
+      </div>
+      
+      <div class="page-content">  
+          Pulse <a href="www.ahvega.com{{ path('iw_easy_survey_confirm_email', {'seeskey': seeskey,'username': username})}}"> aquí </a> para confirmar la creación de la cuenta
+      </div>  
+{% endblock %}

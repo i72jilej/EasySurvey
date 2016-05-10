@@ -1,3 +1,35 @@
 iw_easy_survey_homepage:
-    pattern:  /EasySurvey
+    pattern:  /EasySurvey/
     defaults: { _controller: IWEasySurveyBundle:Default:index }
+
+iw_easy_survey_contact:
+    pattern:  /EasySurvey/contact
+    defaults: { _controller: IWEasySurveyBundle:Default:contact }
+
+iw_easy_survey_create_user:
+    pattern: /EasySurvey/createUser
+    defaults: { _controller: IWEasySurveyBundle:User:createUser }
+
+iw_easy_survey_confirm_user:
+    pattern: /EasySurvey/confirmUser
+    defaults: { _controller: IWEasySurveyBundle:User:confirmUser }
+    
+iw_easy_survey_confirm_email:
+    pattern: /EasySurvey/confirmEmailUser/{seeskey}/{username}
+    defaults: { _controller: IWEasySurveyBundle:User:confirmEmailUser }
+
+iw_easy_survey_modify_user:
+    pattern: /EasySurvey/modifyUser
+    defaults: { _controller: IWEasySurveyBundle:User:modifyUser }
+
+iw_easy_survey_delete_user:
+    pattern: /EasySurvey/deleteUser
+    defaults: { _controller: IWEasySurveyBundle:User:deleteUser }
+
+iw_easy_survey_login:
+    pattern: /EasySurvey/login
+    defaults: { _controller: IWEasySurveyBundle:User:login }
+
+iw_easy_survey_logout:
+    pattern: /EasySurvey/logout
+    defaults: { _controller: IWEasySurveyBundle:User:logout }
