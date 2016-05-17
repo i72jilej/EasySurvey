@@ -1,0 +1,23 @@
+{% extends "IWEasySurveyBundle::layout.html.twig" %}
+{% block content %}
+      <div class="page-header">          
+        <h1>{% trans %}Gestionar proyectos{% endtrans %}</h1>
+      </div>  
+      <div class="page-content">  
+          <table>
+              <tr>
+                <th>Nombre</th>
+                <th>Acciones</th>
+              </tr>
+              {% for project in projects %}
+              <tr>
+                  <td> {{project.name}} </td>
+                  <td> 
+                      <a href="{{ path('iw_easy_survey_edit_project', {'id': project.id})}}"> Editar </a> |
+                      <a href="{{ path('iw_easy_survey_delete_project', {'id': project.id})}}" onclick="return confirm('¿Esta seguro?')"> Borrar </a> 
+                  </td>
+              </tr>
+              {% endfor %}
+          </table>
+      </div>
+{% endblock %}

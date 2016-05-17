@@ -33,3 +33,35 @@ iw_easy_survey_login:
 iw_easy_survey_logout:
     pattern: /EasySurvey/logout
     defaults: { _controller: IWEasySurveyBundle:User:logout }
+    
+iw_easy_survey_create_project:
+    pattern: /EasySurvey/createProject
+    defaults: { _controller: IWEasySurveyBundle:Project:create }
+    
+iw_easy_survey_manage_project:
+    pattern: /EasySurvey/manageProject
+    defaults: { _controller: IWEasySurveyBundle:Project:manage }
+    
+iw_easy_survey_edit_project:
+    pattern: /EasySurvey/editProject/{id}
+    defaults: { _controller: IWEasySurveyBundle:Project:edit }
+    
+iw_easy_survey_delete_project:
+    pattern: /EasySurvey/deleteProject/{id}
+    defaults: { _controller: IWEasySurveyBundle:Project:delete }
+    
+iw_easy_survey_create_quiz:
+    pattern: /EasySurvey/createQuiz
+    defaults: { _controller: IWEasySurveyBundle:Quiz:create }
+
+iw_easy_survey_manage_quiz:
+    pattern: /EasySurvey/manageQuiz
+    defaults: { _controller: IWEasySurveyBundle:Quiz:manage }
+
+iw_easy_survey_edit_quiz:
+    pattern: /EasySurvey/editQuiz/{id}
+    defaults: { _controller: IWEasySurveyBundle:Quiz:edit }
+    
+iw_easy_survey_delete_quiz:
+    pattern: /EasySurvey/deleteQuiz/{id}
+    defaults: { _controller: IWEasySurveyBundle:Quiz:delete }

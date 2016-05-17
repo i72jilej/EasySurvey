@@ -2,11 +2,9 @@
 
 {% block content %}
       <div class="page-header">
-        <h1>{% trans %}Registro{% endtrans %}</h1>
+        <h1>{% trans %}Encuestas{% endtrans %}</h1>
       </div>  
       <div class="page-content">  
-          {{message}}
-          <br><br><br>
-          Pulse <a href="{{ path('iw_easy_survey_login')}}"> aquí </a> para acceder
+      {{ form(form) }}
       </div>
 {% endblock %}

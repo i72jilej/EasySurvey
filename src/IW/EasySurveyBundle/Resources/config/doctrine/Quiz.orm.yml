@@ -1,0 +1,23 @@
+IW\EasySurveyBundle\Entity\Quiz:
+    type: entity
+    table: null
+    repositoryClass: IW\EasySurveyBundle\Entity\QuizRepository
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        name:
+            type: string
+            length: 255
+        description:
+            type: text
+        projectId:
+            type: integer
+            column: project_id
+        userId:
+            type: integer
+            column: user_id
+    lifecycleCallbacks: {  }

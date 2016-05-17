@@ -15,17 +15,35 @@
             <li class="active"><a href="{{ path('iw_easy_survey_homepage')}}">{% trans %}Inicio{% endtrans %}</a></li>
             <li><a href="{{ path('iw_easy_survey_contact')}}">{% trans %}Contacto{% endtrans %}</a></li>
             <li class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown">{% trans %}Usuarios{% endtrans %}<b class="caret"></b></a>
+              
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                  {% if app.session.get('username') is empty %}
+                    {% trans %}Acceder{% endtrans %}<b class="caret"></b>
+                  {% else %}
+                    {% trans %}Panel de control{% endtrans %}<b class="caret"></b>
+                  {% endif %}
+              </a>
               <ul class="dropdown-menu">
-                <li><a href="{{ path('iw_easy_survey_login')}}">{% trans %}Acceder{% endtrans %}</a></li>
-                <li><a href="{{ path('iw_easy_survey_create_user')}}">{% trans %}Alta{% endtrans %}</a></li>
-                <!--li class="divider"></li>
-                <li class="dropdown-header">Nav header</li>
-                <li><a href="#">Separated link</a></li>
-                <li><a href="#">One more separated link</a></li-->
+                {% if app.session.get('username') is empty %}
+                    <li><a href="{{ path('iw_easy_survey_login')}}">{% trans %}Acceder{% endtrans %}</a></li>
+                    <li><a href="{{ path('iw_easy_survey_create_user')}}">{% trans %}Alta{% endtrans %}</a></li>
+                {% else %}
+                    <li class="dropdown-header">Cuestionarios</li>
+                    <li><a href="{{ path('iw_easy_survey_create_quiz')}}">Nuevo cuestionario</a></li>
+                    <li><a href="{{ path('iw_easy_survey_manage_quiz')}}">Gestionar Cuestionarios</a></li>
+                    <li class="divider"></li>
+                    <li class="dropdown-header">Proyectos</li>
+                    <li><a href="{{ path('iw_easy_survey_create_project')}}">Nuevo proyecto</a></li>
+                    <li><a href="{{ path('iw_easy_survey_manage_project')}}">Gestionar proyectos</a></li>
+                    <li class="divider"></li>                    
+                    <li class="dropdown-header">Usuario</li>
+                    <li><a href="{{ path('iw_easy_survey_modify_user')}}">Modificar datos</a></li>
+                    <li><a href="{{ path('iw_easy_survey_delete_user')}}" onclick="return confirm('¿Esta seguro?')">Darse de baja</a></li>
+                    <li><a href="{{ path('iw_easy_survey_logout')}}">{% trans %} Desconectar{% endtrans %} ({{ app.session.get('username') }})</a></li>
+                {% endif %}                
               </ul>
             </li>
-          </ul-->
-        </div><!--/.nav-collapse -->
+          </ul>
+        </div>
       </div>
     </div>

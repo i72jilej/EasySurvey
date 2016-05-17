@@ -1,0 +1,18 @@
+IW\EasySurveyBundle\Entity\ProjectUser:
+    type: entity
+    table: null
+    repositoryClass: IW\EasySurveyBundle\Entity\ProjectUserRepository
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        projectId:
+            type: integer
+            column: project_id
+        userId:
+            type: integer
+            column: user_id
+    lifecycleCallbacks: {  }
