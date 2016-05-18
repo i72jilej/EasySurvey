@@ -1,0 +1,17 @@
+IW\EasySurveyBundle\Entity\Answers:
+    type: entity
+    table: null
+    repositoryClass: IW\EasySurveyBundle\Entity\AnswersRepository
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        name:
+            type: string
+            length: 255
+        correct:
+            type: boolean
+    lifecycleCallbacks: {  }

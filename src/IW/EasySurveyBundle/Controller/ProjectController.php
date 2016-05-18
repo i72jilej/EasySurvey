@@ -45,7 +45,7 @@ class ProjectController extends Controller
     
     private function getAllUser () {
         $em = $this->getDoctrine()->getManager();
-        
+        $arrayUser = array ();
         $alluser = $em->getRepository('IWEasySurveyBundle:User')->findAll();
         foreach ($alluser as $data) {
             if ($data->getId() != $this->get('session')->get('id')) {

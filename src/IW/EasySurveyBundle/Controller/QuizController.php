@@ -33,6 +33,12 @@ class QuizController extends Controller
     {
         
         $arrayProjects = $this->getProjects();
+        $error = '';
+
+        if (empty($arrayProjects)) {
+            $error = 'No existen proyectos, antes de crear un cuestionario debe usted crear un proyecto';
+        }
+                
         
         $form = $this->createFormBuilder()
             ->add('Nombre', 'text', array('required'=>true))
@@ -56,7 +62,7 @@ class QuizController extends Controller
             return $this->redirect($this->generateUrl('iw_easy_survey_manage_quiz'));
         }
         
-        return $this->render('IWEasySurveyBundle:Quiz:form.html.twig', array('form' => $form->createView(),));
+        return $this->render('IWEasySurveyBundle:Quiz:form.html.twig', array('form' => $form->createView(),'error'=>$error));
     }
     
     public function manageAction() {
@@ -69,7 +75,7 @@ class QuizController extends Controller
         
         $em = $this->getDoctrine()->getManager();
         $quiz = $em->getRepository('IWEasySurveyBundle:Quiz')->find($id);
-        
+        $error = '';
         $arrayProjects = $this->getProjects();
         
         $form = $this->createFormBuilder()
@@ -93,7 +99,7 @@ class QuizController extends Controller
             return $this->redirect($this->generateUrl('iw_easy_survey_manage_quiz'));
         }
         
-        return $this->render('IWEasySurveyBundle:Quiz:form.html.twig', array('form' => $form->createView(),));
+        return $this->render('IWEasySurveyBundle:Quiz:form.html.twig', array('form' => $form->createView(),'error'=>$error));
         
     }
     
@@ -103,5 +109,47 @@ class QuizController extends Controller
         $em->remove($quiz);
         $em->flush();
         return $this->redirect($this->generateUrl('iw_easy_survey_manage_quiz'));
+    }
+    
+    public function manageQuestionsAction($id) {
+        return $this->render('IWEasySurveyBundle:Quiz:manageQuestions.html.twig', array('id'=>$id));
+    }
+    
+    private function getTypeQuestions (){
+        $em = $this->getDoctrine()->getManager();
+        $questions = array();
+        $datas = $em->getRepository('IWEasySurveyBundle:Type')->findAll();
+        foreach ($datas as $data) {
+            $questions[$data->getId()] = $data->getName();
+        }
+        return $questions;
+    }
+    
+    public function addQuestionAction($id, Request $request) {
+        
+        $questions = $this->getTypeQuestions();
+        
+        $form = $this->createFormBuilder()
+            ->add('Nombre', 'text', array())
+            ->add('Tipo','choice',array('choices'=>$questions))
+            ->add('Crear', 'submit')
+            ->getForm();
+        
+        /*
+        $form->handleRequest($request);
+        
+        //se envia el formulario
+        if ($form->isValid()) {
+            $dataForm = $form->getData();
+            $quiz->setName($dataForm['Nombre']);
+            $quiz->setDescription($dataForm['Descripcion']);
+            $quiz->setProjectId($dataForm['Proyecto']);
+            $quiz->setUserId($this->get('session')->get('id'));
+            $em->persist($quiz);
+            $em->flush();
+            return $this->redirect($this->generateUrl('iw_easy_survey_manage_quiz'));
+        }
+        */
+        return $this->render('IWEasySurveyBundle:Quiz:addQuestion.html.twig', array('id'=>$id,'form'=>$form->createView()));
     }
 }

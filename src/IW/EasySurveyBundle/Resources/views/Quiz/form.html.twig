@@ -4,7 +4,15 @@
       <div class="page-header">
         <h1>{% trans %}Encuestas{% endtrans %}</h1>
       </div>  
+      {% if error is empty %}
       <div class="page-content">  
       {{ form(form) }}
       </div>
+      {% else %}
+           {{error}}
+      {% endif %}
+      
+      
+      
+      
 {% endblock %}

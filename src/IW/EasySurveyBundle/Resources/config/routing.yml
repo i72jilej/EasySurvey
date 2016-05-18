@@ -65,3 +65,11 @@ iw_easy_survey_edit_quiz:
 iw_easy_survey_delete_quiz:
     pattern: /EasySurvey/deleteQuiz/{id}
     defaults: { _controller: IWEasySurveyBundle:Quiz:delete }
+    
+iw_easy_survey_manage_questions:
+    pattern: /EasySurvey/manageQuestions/{id}
+    defaults: { _controller: IWEasySurveyBundle:Quiz:manageQuestions }
+    
+iw_easy_survey_add_question:
+    pattern: /EasySurvey/addQuestion/{id}
+    defaults: { _controller: IWEasySurveyBundle:Quiz:addQuestion }
