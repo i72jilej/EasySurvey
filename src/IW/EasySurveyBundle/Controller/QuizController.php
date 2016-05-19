@@ -116,12 +116,9 @@ class QuizController extends Controller
     }
     
     private function getTypeQuestions (){
-        $em = $this->getDoctrine()->getManager();
+        
         $questions = array();
-        $datas = $em->getRepository('IWEasySurveyBundle:Type')->findAll();
-        foreach ($datas as $data) {
-            $questions[$data->getId()] = $data->getName();
-        }
+        $questions[0] = 'Grado';
         return $questions;
     }
     
