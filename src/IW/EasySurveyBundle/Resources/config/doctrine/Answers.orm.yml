@@ -9,9 +9,12 @@ IW\EasySurveyBundle\Entity\Answers:
             generator:
                 strategy: AUTO
     fields:
-        name:
+        idQuestion:
+            type: integer
+            column: id_question
+        body:
             type: string
-            length: 255
-        correct:
-            type: boolean
+            length: '255'
+        timestamp:
+            type: datetime
     lifecycleCallbacks: {  }

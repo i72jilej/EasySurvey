@@ -15,14 +15,19 @@ class Answers
     private $id;
 
     /**
-     * @var string
+     * @var integer
      */
-    private $name;
+    private $idQuestion;
 
     /**
-     * @var boolean
+     * @var string
      */
-    private $correct;
+    private $body;
+
+    /**
+     * @var \DateTime
+     */
+    private $timestamp;
 
 
     /**
@@ -36,48 +41,71 @@ class Answers
     }
 
     /**
-     * Set name
+     * Set idQuestion
      *
-     * @param string $name
+     * @param integer $idQuestion
      * @return Answers
      */
-    public function setName($name)
+    public function setIdQuestion($idQuestion)
     {
-        $this->name = $name;
+        $this->idQuestion = $idQuestion;
     
         return $this;
     }
 
     /**
-     * Get name
+     * Get idQuestion
+     *
+     * @return integer 
+     */
+    public function getIdQuestion()
+    {
+        return $this->idQuestion;
+    }
+
+    /**
+     * Set body
+     *
+     * @param string $body
+     * @return Answers
+     */
+    public function setBody($body)
+    {
+        $this->body = $body;
+    
+        return $this;
+    }
+
+    /**
+     * Get body
      *
      * @return string 
      */
-    public function getName()
+    public function getBody()
     {
-        return $this->name;
+        return $this->body;
     }
 
     /**
-     * Set correct
+     * Set timestamp
      *
-     * @param boolean $correct
+     * @param \DateTime $timestamp
      * @return Answers
      */
-    public function setCorrect($correct)
+    public function setTimestamp($timestamp)
     {
-        $this->correct = $correct;
+        $this->timestamp = $timestamp;
     
         return $this;
     }
 
     /**
-     * Get correct
+     * Get timestamp
      *
-     * @return boolean 
+     * @return \DateTime 
      */
-    public function getCorrect()
+    public function getTimestamp()
     {
-        return $this->correct;
+        return $this->timestamp;
     }
 }
