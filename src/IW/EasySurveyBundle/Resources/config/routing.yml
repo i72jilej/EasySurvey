@@ -1,6 +1,10 @@
 iw_easy_survey_homepage:
     pattern:  /EasySurvey/
     defaults: { _controller: IWEasySurveyBundle:Default:index }
+    
+iw_easy_survey_homepage2:
+    pattern:  /
+    defaults: { _controller: IWEasySurveyBundle:Default:index }
 
 iw_easy_survey_contact:
     pattern:  /EasySurvey/contact
@@ -73,3 +77,11 @@ iw_easy_survey_manage_questions:
 iw_easy_survey_add_question:
     pattern: /EasySurvey/addQuestion/{id}
     defaults: { _controller: IWEasySurveyBundle:Quiz:addQuestion }
+    
+iw_easy_survey_edit_question:
+    pattern: /EasySurvey/editQuestion/{id}
+    defaults: { _controller: IWEasySurveyBundle:Quiz:editQuestion }
+    
+iw_easy_survey_delete_question:
+    pattern: /EasySurvey/deleteQuestion/{id}
+    defaults: { _controller: IWEasySurveyBundle:Quiz:deleteQuestion }    

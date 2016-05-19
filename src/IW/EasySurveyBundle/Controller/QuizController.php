@@ -112,7 +112,9 @@ class QuizController extends Controller
     }
     
     public function manageQuestionsAction($id) {
-        return $this->render('IWEasySurveyBundle:Quiz:manageQuestions.html.twig', array('id'=>$id));
+        $em = $this->getDoctrine()->getManager();
+        $questions = $em->getRepository('IWEasySurveyBundle:Question')->findBy(array('quizId'=>$id));
+        return $this->render('IWEasySurveyBundle:Quiz:manageQuestions.html.twig', array('id'=>$id,'questions'=>$questions));
     }
     
     private function getTypeQuestions (){
@@ -125,28 +127,61 @@ class QuizController extends Controller
     public function addQuestionAction($id, Request $request) {
         
         $questions = $this->getTypeQuestions();
-        
         $form = $this->createFormBuilder()
             ->add('Nombre', 'text', array())
             ->add('Tipo','choice',array('choices'=>$questions))
             ->add('Crear', 'submit')
             ->getForm();
+        $form->handleRequest($request);
+        //se envia el formulario
+        if ($form->isValid()) {
+            $dataForm = $form->getData();
+            $question = new \IW\EasySurveyBundle\Entity\Question;
+            $question->setName($dataForm['Nombre']);
+            $question->setTypeId($dataForm['Tipo']);
+            $question->setQuizId($id);
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($question);
+            $em->flush();
+            return $this->redirect($this->generateUrl('iw_easy_survey_manage_questions', array('id' => $id)));
+        }
         
-        /*
+        return $this->render('IWEasySurveyBundle:Quiz:addQuestion.html.twig', array('id'=>$id,'form'=>$form->createView()));
+    }
+    
+    public function editQuestionAction($id, Request $request) {
+        
+        $questions = $this->getTypeQuestions();
+        $em = $this->getDoctrine()->getManager(); 
+        $question = $em->getRepository('IWEasySurveyBundle:Question')->find($id);
+        $form = $this->createFormBuilder()
+            ->add('Nombre', 'text', array('data'=>$question->getName()))
+            ->add('Tipo','choice',array('choices'=>$questions,'data'=>$question->getTypeId()))
+            ->add('Modificar', 'submit')
+            ->getForm();
+        
         $form->handleRequest($request);
         
         //se envia el formulario
         if ($form->isValid()) {
             $dataForm = $form->getData();
-            $quiz->setName($dataForm['Nombre']);
-            $quiz->setDescription($dataForm['Descripcion']);
-            $quiz->setProjectId($dataForm['Proyecto']);
-            $quiz->setUserId($this->get('session')->get('id'));
-            $em->persist($quiz);
+            $question->setName($dataForm['Nombre']);
+            $question->setTypeId($dataForm['Tipo']);
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($question);
             $em->flush();
-            return $this->redirect($this->generateUrl('iw_easy_survey_manage_quiz'));
+            return $this->redirect($this->generateUrl('iw_easy_survey_manage_questions', array('id' => $question->getQuizId())));
         }
-        */
+        
         return $this->render('IWEasySurveyBundle:Quiz:addQuestion.html.twig', array('id'=>$id,'form'=>$form->createView()));
+    }
+    
+    public function deleteQuestionAction($id) {
+        
+        $em = $this->getDoctrine()->getManager();
+        $question = $em->getRepository('IWEasySurveyBundle:Question')->find($id);
+        $em->remove($question);
+        $em->flush();
+        return $this->redirect($this->generateUrl('iw_easy_survey_manage_questions',array('id'=>$question->getQuizId())));
     }
 }

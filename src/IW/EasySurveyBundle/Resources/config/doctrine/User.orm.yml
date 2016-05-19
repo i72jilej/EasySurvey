@@ -29,5 +29,6 @@ IW\EasySurveyBundle\Entity\User:
         sesskeyConfirm:
             type: string
             length: 255
+        
             
     lifecycleCallbacks: {  }

@@ -1,7 +1,7 @@
-IW\EasySurveyBundle\Entity\Project:
+IW\EasySurveyBundle\Entity\Usuario:
     type: entity
     table: null
-    repositoryClass: IW\EasySurveyBundle\Entity\ProjectRepository
+    repositoryClass: IW\EasySurveyBundle\Entity\UsuarioRepository
     id:
         id:
             type: integer
@@ -9,11 +9,10 @@ IW\EasySurveyBundle\Entity\Project:
             generator:
                 strategy: AUTO
     fields:
-        user_id:
-            type: integer
-        name:
+        username:
             type: string
             length: '255'
-        description:
-            type: text
+        password:
+            type: string
+            length: '255'
     lifecycleCallbacks: {  }
