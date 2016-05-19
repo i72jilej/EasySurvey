@@ -20,11 +20,13 @@ class QuizController extends Controller
         }
         
         //se obtienen los proyectos de los que el usuario es colaborador
+        /*
         $projects_collaborate = $em->getRepository('IWEasySurveyBundle:ProjectUser')->findBy(array('userId'=>$this->get('session')->get('id')));
         foreach ($projects_collaborate as $data) {
             $project_aux = $em->getRepository('IWEasySurveyBundle:Project')->find($data->getProjectId());
             $projects_array[$project_aux->getId()]=$project_aux->getName();
         }
+        */
         
         return $projects_array;
     }
