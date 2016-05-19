@@ -9,9 +9,9 @@ class ProjectController extends Controller
     public function createAction(Request $request)
     {
         $form = $this->createFormBuilder()
-            ->add('Nombre', 'text', array('required'=>true))
-            ->add('Descripcion', 'textarea', array('required'=>true))
-            ->add('Crear', 'submit')
+            ->add('name', 'text', array('label'=>'Nombre del nuevo Proyecto','required'=>true))
+            ->add('description', 'textarea', array('label'=>'Descripción del Proyecto'))
+            ->add('create', 'submit', array('label'=>'Crear'))
             ->getForm();
         
         $form->handleRequest($request);
@@ -20,8 +20,8 @@ class ProjectController extends Controller
             $user_id = $this->get('session')->get('id');
             $projectData = $form->getData();
             $project = new \IW\EasySurveyBundle\Entity\Project;
-            $project->setName($projectData['Nombre']);
-            $project->setDescription($projectData['Descripcion']);
+            $project->setName($projectData['name']);
+            $project->setDescription($projectData['description']);
             $project->setUserId($user_id);
             $em = $this->getDoctrine()->getManager();
             $em->persist($project);
@@ -74,10 +74,10 @@ class ProjectController extends Controller
         $user_selecteds = $this->getUserProjectSelected($id);
         
         $form = $this->createFormBuilder()
-            ->add('Nombre', 'text', array('required'=>true, 'data'=>$project->getName()))
-            ->add('Descripcion', 'textarea', array('required'=>true, 'data'=>$project->getDescription()))
-            ->add('Colaboradores','choice',array('label'=>'Colaboradores','choices'=>$arrayUser,'data'=>$user_selecteds,'multiple'=>true))
-            ->add('Modificar', 'submit')
+            ->add('name', 'text', array('label'=>'Nombre del Proyecto','required'=>true, 'data'=>$project->getName(), 'required'=>true))
+            ->add('description', 'textarea', array('label'=>'Descripción del Proyecto', 'data'=>$project->getDescription()))
+            ->add('subscriber','choice',array('label'=>'Subscriptores','choices'=>$arrayUser,'data'=>$user_selecteds,'multiple'=>true))
+            ->add('modify', 'submit',array('label'=>'Modificar',))
             ->getForm();
         
         $form->handleRequest($request);
@@ -94,7 +94,7 @@ class ProjectController extends Controller
             }
             
             //se crean los nuevo colaboradores
-            foreach ($projectData['Colaboradores'] as $data) {
+            foreach ($projectData['subscriber'] as $data) {
                 $projectUser = new \IW\EasySurveyBundle\Entity\ProjectUser;
                 $projectUser->setProjectId($id);
                 $projectUser->setUserId($data);
@@ -102,8 +102,8 @@ class ProjectController extends Controller
                 $em->flush();   
             }
             
-            $project->setName($projectData['Nombre']);
-            $project->setDescription($projectData['Descripcion']);
+            $project->setName($projectData['name']);
+            $project->setDescription($projectData['description']);
             $em->flush();    
             return $this->redirect($this->generateUrl('iw_easy_survey_manage_project'));
         }

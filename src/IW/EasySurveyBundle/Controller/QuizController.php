@@ -43,10 +43,10 @@ class QuizController extends Controller
                 
         
         $form = $this->createFormBuilder()
-            ->add('Nombre', 'text', array('required'=>true))
-            ->add('Descripcion', 'textarea', array('required'=>true))
-            ->add('Proyecto','choice',array('choices'=>$arrayProjects))
-            ->add('Crear', 'submit')
+            ->add('name', 'text', array('label'=>'Nombre del nuevo Cuestionario','required'=>true))
+            ->add('description', 'textarea', array('label'=>'Descripción del Cuestionario'))
+            ->add('project','choice',array('label'=>'Proyecto','choices'=>$arrayProjects))
+            ->add('create', 'submit',array('label'=>'Crear'))
             ->getForm();
         
         $form->handleRequest($request);
@@ -54,9 +54,9 @@ class QuizController extends Controller
         if ($form->isValid()) {
             $projectData = $form->getData();
             $project = new \IW\EasySurveyBundle\Entity\Quiz;
-            $project->setName($projectData['Nombre']);
-            $project->setDescription($projectData['Descripcion']);
-            $project->setProjectId($projectData['Proyecto']);
+            $project->setName($projectData['name']);
+            $project->setDescription($projectData['description']);
+            $project->setProjectId($projectData['project']);
             $project->setUserId($this->get('session')->get('id'));
             $em = $this->getDoctrine()->getManager();
             $em->persist($project);
@@ -81,10 +81,10 @@ class QuizController extends Controller
         $arrayProjects = $this->getProjects();
         
         $form = $this->createFormBuilder()
-            ->add('Nombre', 'text', array('required'=>true,'data'=>$quiz->getName()))
-            ->add('Descripcion', 'textarea', array('required'=>true, 'data'=>$quiz->getDescription()))
-            ->add('Proyecto','choice',array('choices'=>$arrayProjects,'data'=>$quiz->getProjectId()))
-            ->add('Crear', 'submit')
+            ->add('name', 'text', array('label'=>'Nombre','required'=>true,'data'=>$quiz->getName(), 'required'=>true))
+            ->add('description', 'textarea', array('label'=>'Descripción', 'data'=>$quiz->getDescription()))
+            ->add('project','choice',array('label'=>'Proyecto','choices'=>$arrayProjects,'data'=>$quiz->getProjectId()))
+            ->add('create', 'submit',array('label'=>'Crear'))
             ->getForm();
         
         $form->handleRequest($request);
@@ -92,9 +92,9 @@ class QuizController extends Controller
         //se envia el formulario
         if ($form->isValid()) {
             $dataForm = $form->getData();
-            $quiz->setName($dataForm['Nombre']);
-            $quiz->setDescription($dataForm['Descripcion']);
-            $quiz->setProjectId($dataForm['Proyecto']);
+            $quiz->setName($dataForm['name']);
+            $quiz->setDescription($dataForm['description']);
+            $quiz->setProjectId($dataForm['project']);
             $quiz->setUserId($this->get('session')->get('id'));
             $em->persist($quiz);
             $em->flush();
@@ -130,17 +130,17 @@ class QuizController extends Controller
         
         $questions = $this->getTypeQuestions();
         $form = $this->createFormBuilder()
-            ->add('Nombre', 'text', array())
-            ->add('Tipo','choice',array('choices'=>$questions))
-            ->add('Crear', 'submit')
+            ->add('name', 'text', array('label'=>'Enunciado de la Pregunta'))
+            ->add('type','choice',array('label'=>'Tipo de Pregunta', 'choices'=>$questions))
+            ->add('create', 'submit', array('label'=>'Añadir Pregunta'))
             ->getForm();
         $form->handleRequest($request);
         //se envia el formulario
         if ($form->isValid()) {
             $dataForm = $form->getData();
             $question = new \IW\EasySurveyBundle\Entity\Question;
-            $question->setName($dataForm['Nombre']);
-            $question->setTypeId($dataForm['Tipo']);
+            $question->setName($dataForm['name']);
+            $question->setTypeId($dataForm['type']);
             $question->setQuizId($id);
             $em = $this->getDoctrine()->getManager();
             $em->persist($question);
@@ -157,9 +157,9 @@ class QuizController extends Controller
         $em = $this->getDoctrine()->getManager(); 
         $question = $em->getRepository('IWEasySurveyBundle:Question')->find($id);
         $form = $this->createFormBuilder()
-            ->add('Nombre', 'text', array('data'=>$question->getName()))
-            ->add('Tipo','choice',array('choices'=>$questions,'data'=>$question->getTypeId()))
-            ->add('Modificar', 'submit')
+            ->add('name', 'text', array('label'=>'Enunciado de la Pregunta','data'=>$question->getName()))
+            ->add('type','choice',array('label'=>'Tipo de Pregunta','choices'=>$questions,'data'=>$question->getTypeId()))
+            ->add('modify', 'submit', array('label'=>'Modificar Pregunta'))
             ->getForm();
         
         $form->handleRequest($request);
@@ -167,8 +167,8 @@ class QuizController extends Controller
         //se envia el formulario
         if ($form->isValid()) {
             $dataForm = $form->getData();
-            $question->setName($dataForm['Nombre']);
-            $question->setTypeId($dataForm['Tipo']);
+            $question->setName($dataForm['name']);
+            $question->setTypeId($dataForm['type']);
             $em = $this->getDoctrine()->getManager();
             $em->persist($question);
             $em->flush();

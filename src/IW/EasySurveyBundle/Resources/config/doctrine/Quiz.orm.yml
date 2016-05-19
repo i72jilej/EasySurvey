@@ -14,6 +14,7 @@ IW\EasySurveyBundle\Entity\Quiz:
             length: 255
         description:
             type: text
+            nullable: TRUE
         projectId:
             type: integer
             column: project_id

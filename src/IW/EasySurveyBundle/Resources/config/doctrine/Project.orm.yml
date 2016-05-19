@@ -16,4 +16,5 @@ IW\EasySurveyBundle\Entity\Project:
             length: '255'
         description:
             type: text
+            nullable: TRUE
     lifecycleCallbacks: {  }

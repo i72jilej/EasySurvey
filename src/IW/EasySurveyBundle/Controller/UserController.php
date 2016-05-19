@@ -23,13 +23,14 @@ class UserController extends Controller
     {
         $error = '';
         $form = $this->createFormBuilder()
-            ->add('Usuario', 'text', array('required'=>true))
-            ->add('Password', 'password', array('required'=>true))
-            ->add('Password2', 'password', array('required'=>true))
-            ->add('Nombre', 'text', array('required'=>true))    
-            ->add('Apellidos', 'text', array('required'=>true))        
-            ->add('Email', 'email', array('required'=>true))    
-            ->add('Guardar', 'submit')
+            ->add('user', 'text', array('label'=>'Usuario','required'=>true))
+            ->add('password', 'password', array('label'=>'Contraseña','required'=>true))
+            ->add('password2', 'password', array('label'=>'Confirmar Contraseña','required'=>true))
+            ->add('name', 'text', array('label'=>'Nombre','required'=>true))    
+            ->add('lastName', 'text', array('label'=>'Apellidos','required'=>true))        
+            ->add('email', 'email', array('label'=>'Email','required'=>true))    
+            ->add('email2', 'email', array('label'=>'Confirmar Email','required'=>true))    
+            ->add('create', 'submit', array('label'=>'Crear Usuario'))
             ->getForm();
         
         $form->handleRequest($request);
@@ -38,18 +39,20 @@ class UserController extends Controller
             
             $userData = $form->getData();
             
-            if ($userData['Password'] != $userData['Password2']) {
+            if ($userData['password'] != $userData['password2']) {
                 $error = 'Las contraseñas no coinciden';
-            }elseif ($this->existUser($userData['Usuario'], $userData['Email'])) {
+            }elseif ($userData['email'] != $userData['email2']) {
+                $error = 'Los Emails no coinciden';
+            }elseif ($this->existUser($userData['user'], $userData['email'])) {
                 $error = 'Nombre de usuario o email ya existe en el sistema';
             } else {
                 // guardar la tarea en la base de datos
                 $user = new \IW\EasySurveyBundle\Entity\User;
-                $user->setUsername($userData['Usuario']);
-                $user->setPassword(md5($userData['Password']));
-                $user->setFirstname($userData['Nombre']);
-                $user->setLastname($userData['Apellidos']);
-                $user->setEmail($userData['Email']);
+                $user->setUsername($userData['user']);
+                $user->setPassword(md5($userData['password']));
+                $user->setFirstname($userData['name']);
+                $user->setLastname($userData['lastName']);
+                $user->setEmail($userData['email']);
                 $user->setConfirm(0);
                 $seeskeyConfirm = substr(md5(rand()),0,5);
                 $user->setSesskeyConfirm($seeskeyConfirm);
@@ -96,13 +99,15 @@ class UserController extends Controller
         $user = $em->getRepository('IWEasySurveyBundle:User')->find(array('id'=>$this->get('session')->get('id')));
         $error='';
         $form = $this->createFormBuilder()
-            ->add('Usuario', 'text', array('required'=>true,'data'=>$user->getUsername(),'attr' => array('readonly' => true)))
-            ->add('Email', 'email', array('required'=>true,'data'=>$user->getEmail(),'attr' => array('readonly' => true)))    
-            ->add('Password', 'password', array('required'=>true,'data'=>''))
-            ->add('Password2', 'password', array('required'=>true,'data'=>''))
-            ->add('Nombre', 'text', array('required'=>true,'data'=>$user->getFirstname()))    
-            ->add('Apellidos', 'text', array('required'=>true,'data'=>$user->getLastname()))        
-            ->add('Modificar', 'submit')
+            ->add('user', 'text', array('label'=>'Usuario', 'required'=>true,'data'=>$user->getUsername(),'attr' => array('readonly' => true)))
+            ->add('email', 'email', array('label'=>'Email', 'required'=>true,'data'=>$user->getEmail(),'attr' => array('readonly' => true)))    
+            ->add('newEmail', 'email', array('label'=>'Nuevo Email', 'required'=>false))    
+            ->add('newEmail2', 'email', array('label'=>'Confirmar Nuevo Email', 'required'=>false))
+            ->add('password', 'password', array('label'=>'Contraseña','required'=>true,'data'=>''))
+            ->add('password2', 'password', array('label'=>'Confirmar Contraseña', 'required'=>true,'data'=>''))
+            ->add('name', 'text', array('label'=>'Nombre', 'required'=>true,'data'=>$user->getFirstname()))    
+            ->add('lastName', 'text', array('label'=>'Apellidos', 'required'=>true,'data'=>$user->getLastname()))        
+            ->add('save', 'submit', array('label'=>'Guardar Cambios'))
             ->getForm();
         
         $form->handleRequest($request);
@@ -111,13 +116,18 @@ class UserController extends Controller
             
             $userData = $form->getData();
             
-            if ($userData['Password'] != $userData['Password2']) {
+            if ($userData['password'] != $userData['password2']) {
                 $error = 'Las contraseñas no coinciden';
-            } else {
+            }elseif ($userData ['newEmail'] != $userData ['newEmail2']){
+                $error = 'El nuevo Email no coincide';
+            }else {
                 // modificar el usuario
-                $user->setPassword(md5($userData['Password']));
-                $user->setFirstname($userData['Nombre']);
-                $user->setLastname($userData['Apellidos']);
+                $user->setPassword(md5($userData['password']));
+                if ($userData['newEmail'] != NULL) {
+                    $user->setEmail($userData['newEmail']);
+                }
+                $user->setFirstname($userData['name']);
+                $user->setLastname($userData['lastName']);
                 $em = $this->getDoctrine()->getManager();
                 $em->persist($user);
                 $em->flush();
@@ -144,9 +154,9 @@ class UserController extends Controller
         $success = $error = '';
         
         $form = $this->createFormBuilder()
-            ->add('Usuario', 'text', array('required'=>true))
-            ->add('Password', 'password', array('required'=>true))
-            ->add('Acceder', 'submit')
+            ->add('user', 'text', array('label'=>'Usuario', 'required'=>true))
+            ->add('password', 'password', array('label'=>'Contraseña', 'required'=>true))
+            ->add('submit', 'submit', array('label'=>'Entrar'))
             ->getForm();
         
         $form->handleRequest($request);
@@ -155,7 +165,7 @@ class UserController extends Controller
             //se ha enviado el formulario
             $loginData = $form->getData();
             $em = $this->getDoctrine()->getManager();
-            $user = $em->getRepository('IWEasySurveyBundle:User')->findby(array('username'=>$loginData['Usuario'],'password'=>md5($loginData['Password']),'confirm'=>1));
+            $user = $em->getRepository('IWEasySurveyBundle:User')->findby(array('username'=>$loginData['user'],'password'=>md5($loginData['password']),'confirm'=>1));
             if (empty($user)) {
                 $error = 'Error en el nombre de usuario y/o contraseña';
                 $success = '';
