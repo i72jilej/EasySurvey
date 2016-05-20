@@ -99,7 +99,7 @@ class UserController extends Controller
         $user = $em->getRepository('IWEasySurveyBundle:User')->find(array('id'=>$this->get('session')->get('id')));
         $error='';
         $form = $this->createFormBuilder()
-            ->add('user', 'text', array('label'=>'Usuario', 'required'=>true,'data'=>$user->getUsername(),'attr' => array('readonly' => true)))
+            ->add('user', 'text', array('label'=>'Usuario', 'required'=>true,'data'=>$user->getUsername()))
             ->add('email', 'email', array('label'=>'Email', 'required'=>true,'data'=>$user->getEmail(),'attr' => array('readonly' => true)))    
             ->add('newEmail', 'email', array('label'=>'Nuevo Email', 'required'=>false))    
             ->add('newEmail2', 'email', array('label'=>'Confirmar Nuevo Email', 'required'=>false))
@@ -122,6 +122,7 @@ class UserController extends Controller
                 $error = 'El nuevo Email no coincide';
             }else {
                 // modificar el usuario
+                $user->setUsername($userData['user']);
                 $user->setPassword(md5($userData['password']));
                 if ($userData['newEmail'] != NULL) {
                     $user->setEmail($userData['newEmail']);

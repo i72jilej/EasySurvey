@@ -10,7 +10,7 @@ class ProjectController extends Controller
     {
         $form = $this->createFormBuilder()
             ->add('name', 'text', array('label'=>'Nombre del nuevo Proyecto','required'=>true))
-            ->add('description', 'textarea', array('label'=>'Descripción del Proyecto'))
+            ->add('description', 'textarea', array('label'=>'Descripción del Proyecto','required'=>false))
             ->add('create', 'submit', array('label'=>'Crear'))
             ->getForm();
         
@@ -75,7 +75,7 @@ class ProjectController extends Controller
         
         $form = $this->createFormBuilder()
             ->add('name', 'text', array('label'=>'Nombre del Proyecto','required'=>true, 'data'=>$project->getName(), 'required'=>true))
-            ->add('description', 'textarea', array('label'=>'Descripción del Proyecto', 'data'=>$project->getDescription()))
+            ->add('description', 'textarea', array('label'=>'Descripción del Proyecto', 'data'=>$project->getDescription(),'required'=>false))
             ->add('subscriber','choice',array('label'=>'Subscriptores','choices'=>$arrayUser,'data'=>$user_selecteds,'multiple'=>true))
             ->add('modify', 'submit',array('label'=>'Modificar',))
             ->getForm();

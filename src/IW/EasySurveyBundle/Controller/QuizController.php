@@ -38,13 +38,13 @@ class QuizController extends Controller
         $error = '';
 
         if (empty($arrayProjects)) {
-            $error = 'No existen proyectos, antes de crear un cuestionario debe usted crear un proyecto';
+            $error = 'No existen proyectos, antes de crear una encuesta debe usted crear un proyecto';
         }
                 
         
         $form = $this->createFormBuilder()
-            ->add('name', 'text', array('label'=>'Nombre del nuevo Cuestionario','required'=>true))
-            ->add('description', 'textarea', array('label'=>'Descripción del Cuestionario'))
+            ->add('name', 'text', array('label'=>'Nombre de la nueva Encuesta','required'=>true))
+            ->add('description', 'textarea', array('label'=>'Descripción de la Encuesta', 'required'=>false))
             ->add('project','choice',array('label'=>'Proyecto','choices'=>$arrayProjects))
             ->add('create', 'submit',array('label'=>'Crear'))
             ->getForm();
@@ -81,8 +81,8 @@ class QuizController extends Controller
         $arrayProjects = $this->getProjects();
         
         $form = $this->createFormBuilder()
-            ->add('name', 'text', array('label'=>'Nombre','required'=>true,'data'=>$quiz->getName(), 'required'=>true))
-            ->add('description', 'textarea', array('label'=>'Descripción', 'data'=>$quiz->getDescription()))
+            ->add('name', 'text', array('label'=>'Nombre de la Encuesta','data'=>$quiz->getName(), 'required'=>true))
+            ->add('description', 'textarea', array('label'=>'Descripción de la Encuesta', 'data'=>$quiz->getDescription(),'required'=>false))
             ->add('project','choice',array('label'=>'Proyecto','choices'=>$arrayProjects,'data'=>$quiz->getProjectId()))
             ->add('create', 'submit',array('label'=>'Crear'))
             ->getForm();
