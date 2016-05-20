@@ -1,0 +1,21 @@
+IW\EasySurveyBundle\Entity\TextQuestionOption:
+    type: entity
+    table: null
+    repositoryClass: IW\EasySurveyBundle\Entity\TextQuestionOptionRepository
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        questionId:
+            type: integer
+            column: question_id
+        optionId:
+            type: integer
+            column: option_id
+        text:
+            type: string
+            length: '255'
+    lifecycleCallbacks: {  }
