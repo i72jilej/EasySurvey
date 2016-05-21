@@ -240,14 +240,22 @@ class QuizController extends Controller {
     
     public function editQuestionOptionAction($id, Request $request){
         $em = $this->getDoctrine()->getManager();
-        $options= $em->getRepository('IWEasySurveyBundle:TextQuestionOption')->findBy(array('question_id' => $id ));
+        $options= $em->getRepository('IWEasySurveyBundle:TextQuestionOption')->findBy(array('questionId' => $id ));
         
         $form = $this->createFormBuilder();
+        /*
         $i = 1;
         foreach($options as $option){
             $form->add('option'.$i, 'text', array('label' => 'Opción '.$i.':', 'data'=>$option->getText()));
             $i++;
         }
+        */
+         
+        
+        for($i = 1; $i <= count($options); $i++){
+            $form->add('option'.$i, 'text', array('label' => 'Opción '.$i.':', 'data' => $options[$i-1]->getText()));
+        }
+         
         $form->getForm();
         
         /*
