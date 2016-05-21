@@ -16,6 +16,9 @@
                   <td>
                     <a href="{{ path('iw_easy_survey_edit_question', {'id': data.id})}}"> {% trans %}Editar{% endtrans %} </a> |
                     <a href="{{ path('iw_easy_survey_delete_question', {'id': data.id})}}" onclick="return confirm('¿Esta seguro?')"> {% trans %}Borrar{% endtrans %} </a> |
+                    {% if data.typeId > 1 %}
+                        <a href="{{ path('iw_easy_survey_edit_question_option', {'id': data.id})}}"> {% trans %}Editar opciones{% endtrans %} </a>
+                    {% endif %}
                   </td>
               </tr>
               {% endfor %}
