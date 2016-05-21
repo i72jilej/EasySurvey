@@ -158,9 +158,15 @@ class QuizController extends Controller {
             $em->persist($question);
             $em->flush();
             
-            //if()
-            return $this->redirect($this->generateUrl('iw_easy_survey_manage_questions', array('id' => $id)));
-        }
+            if($dataForm['type'] < 2) {
+                return $this->redirect($this->generateUrl('iw_easy_survey_manage_questions', array('id' => $id)));
+            }
+            else
+            {
+                return $this->redirect($this->generateUrl('iw_easy_survey_manage_question_option', array('id' => $question->getId())));
+            }
+                
+            }
 
         return $this->render('IWEasySurveyBundle:Quiz:addQuestion.html.twig', array('id' => $id, 'form' => $form->createView()));
     }
@@ -202,8 +208,35 @@ class QuizController extends Controller {
     }
     
     public function manageQuestionOptionAction($id, Request $request) {
+        $em = $this->getDoctrine()->getManager();
+        $question = $em->getRepository('IWEasySurveyBundle:Question')->find($id);
+        $form = $this->createFormBuilder()
+                ->add('option1', 'text', array('label' => 'Opción 1: '))
+                ->add('option2', 'text', array('label' => 'Opción 2: '))
+                ->add('option3', 'text', array('label' => 'Opción 3: '))
+                ->add('modify', 'submit', array('label' > 'Guardar opciones'))
+                ->getForm();
         
-        return $this->render('IWEasySurveyBundle:Quiz:manageQuestionOption.html.twig', array('id' => $id));
+        $form->handleRequest($request);
+        
+        if ($form->isValid()) {
+            $dataForm = $form->getData();
+            $em = $this->getDoctrine()->getManager();
+            
+            for($i = 0; $i < 3; $i++){
+                if($dataForm['option'.$i] != ""){
+                    $option = new \IW\EasySurveyBundle\Entity\TextQuestionOption;
+                    $option->setQuestionId($id);
+                    $option->setText($dataForm['option'.$i]);
+                    $em->persist($option);
+                }
+            }
+            $em->flush();
+            return $this->redirect($this->generateUrl('iw_easy_survey_manage_questions', array('id' => $id)));
+        }
+        
+        
+        return $this->render('IWEasySurveyBundle:Quiz:manageQuestionOption.html.twig', array('id' => $id, 'question' => $question, 'form' => $form->createView()));
     }
     
     

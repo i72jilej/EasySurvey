@@ -4,4 +4,9 @@
         <h1>{% trans %}Gestionar opciones{% endtrans %}</h1>
       </div>  
       
+      <div class="page-content">
+          <h2>{{ question.name }}</h2>
+          {{form(form)}}
+      </div>
+      
 {% endblock %}
