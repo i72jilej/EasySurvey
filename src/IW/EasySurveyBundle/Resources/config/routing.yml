@@ -84,4 +84,8 @@ iw_easy_survey_edit_question:
     
 iw_easy_survey_delete_question:
     pattern: /EasySurvey/deleteQuestion/{id}
-    defaults: { _controller: IWEasySurveyBundle:Quiz:deleteQuestion }    
+    defaults: { _controller: IWEasySurveyBundle:Quiz:deleteQuestion } 
+    
+iw_easy_survey_manage_question_option:
+    pattern: /EasySurvey/manageQuestionOption/{id}
+    defaults: {_controller: IWEasySurveyBundle:Quiz:manageQuestionOption }

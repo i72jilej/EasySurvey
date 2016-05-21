@@ -20,11 +20,6 @@ class TextQuestionOption
     private $questionId;
 
     /**
-     * @var integer
-     */
-    private $optionId;
-
-    /**
      * @var string
      */
     private $text;
@@ -61,29 +56,6 @@ class TextQuestionOption
     public function getQuestionId()
     {
         return $this->questionId;
-    }
-
-    /**
-     * Set optionId
-     *
-     * @param integer $optionId
-     * @return TextQuestionOption
-     */
-    public function setOptionId($optionId)
-    {
-        $this->optionId = $optionId;
-    
-        return $this;
-    }
-
-    /**
-     * Get optionId
-     *
-     * @return integer 
-     */
-    public function getOptionId()
-    {
-        return $this->optionId;
     }
 
     /**

@@ -12,9 +12,6 @@ IW\EasySurveyBundle\Entity\TextQuestionOption:
         questionId:
             type: integer
             column: question_id
-        optionId:
-            type: integer
-            column: option_id
         text:
             type: string
             length: '255'

@@ -42,7 +42,7 @@ class QuizController extends Controller {
 
         $form = $this->createFormBuilder()
                 ->add('name', 'text', array('label' => 'Nombre de la nueva Encuesta', 'required' => true))
-                ->add('description', 'textarea', array('label' => 'DescripciÃ³n de la Encuesta', 'required' => false))
+                ->add('description', 'textarea', array('label' => 'Descripción de la Encuesta', 'required' => false))
                 ->add('project', 'choice', array('label' => 'Proyecto', 'choices' => $arrayProjects))
                 ->add('create', 'submit', array('label' => 'Crear'))
                 ->getForm();
@@ -80,7 +80,7 @@ class QuizController extends Controller {
 
         $form = $this->createFormBuilder()
                 ->add('name', 'text', array('label' => 'Nombre de la Encuesta', 'data' => $quiz->getName(), 'required' => true))
-                ->add('description', 'textarea', array('label' => 'DescripciÃ³n de la Encuesta', 'data' => $quiz->getDescription(), 'required' => false))
+                ->add('description', 'textarea', array('label' => 'Descripción de la Encuesta', 'data' => $quiz->getDescription(), 'required' => false))
                 ->add('project', 'choice', array('label' => 'Proyecto', 'choices' => $arrayProjects, 'data' => $quiz->getProjectId()))
                 ->add('create', 'submit', array('label' => 'Crear'))
                 ->getForm();
@@ -119,20 +119,20 @@ class QuizController extends Controller {
     private function getTypeQuestions() {
 
         $questions = array();
-        $questions[0] = 'NumÃ©rica';
+        $questions[0] = 'Numérica';
         $questions[1] = 'Texto';
-        $questions[2] = 'ElecciÃ³n Ãºnica';
-        $questions[3] = 'ElecciÃ³n mÃºltiple';
+        $questions[2] = 'Elección única';
+        $questions[3] = 'Elección múltiple';
         return $questions;
     }
     
     private function getTypeQuestionsDefinitions() {
         $definitions = array();
         
-        $definitions[0] = 'El encuestado introducirÃ¡ un valor numÃ©rico por teclado';
-        $definitions[1] = 'El encuestado introducirÃ¡ una respuesta escrita por teclado';
-        $definitions[2] = 'El encuestado elegirÃ¡ una Ãºnica respuesta entre las presentadas';
-        $definitions[3] = 'El encuestado podrÃ¡ elegir varias respuestas entre las presentdas';
+        $definitions[0] = 'El encuestado introducirá un valor numérico por teclado';
+        $definitions[1] = 'El encuestado introducirá una respuesta escrita por teclado';
+        $definitions[2] = 'El encuestado elegirá una única respuesta entre las presentadas';
+        $definitions[3] = 'El encuestado podrá elegir varias respuestas entre las presentdas';
         
         return $definitions;
     }
@@ -144,7 +144,7 @@ class QuizController extends Controller {
         $form = $this->createFormBuilder()
                 ->add('name', 'text', array('label' => 'Enunciado de la Pregunta'))
                 ->add('type', 'choice', array('label' => 'Tipo de Pregunta', 'choices' => $questions))
-                ->add('create', 'submit', array('label' => 'AÃ±adir Pregunta'))
+                ->add('create', 'submit', array('label' => 'Añadir Pregunta'))
                 ->getForm();
         $form->handleRequest($request);
         //se envia el formulario
@@ -198,5 +198,12 @@ class QuizController extends Controller {
         $em->flush();
         return $this->redirect($this->generateUrl('iw_easy_survey_manage_questions', array('id' => $question->getQuizId())));
     }
+    
+    public function manageQuestionOption($id, Request $request) {
+        
+        return $this->render('IWEasySurveyBundle:Quiz:manageQuestionOption.html.twig', array('id' => $id));
+    }
+    
+    
 
 }
