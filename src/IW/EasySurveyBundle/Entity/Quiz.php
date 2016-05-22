@@ -35,12 +35,6 @@ class Quiz
     private $userId;
     
     /**
-     * @var string
-     */
-    private $sesskey;
-
-
-    /**
      * Get id
      *
      * @return integer 
@@ -141,27 +135,5 @@ class Quiz
     {
         return $this->userId;
     }
-    
-    /**
-     * Set sesskey
-     *
-     * @param integer $sesskey
-     * @return string
-     */
-    public function setSesskey($sesskey)
-    {
-        $this->sesskey = $sesskey;
-    
-        return $this;
-    }
-
-    /**
-     * Get sesskey
-     *
-     * @return text
-     */
-    public function getSesskey()
-    {
-        return $this->sesskey;
-    }
+   
 }

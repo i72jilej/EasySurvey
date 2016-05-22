@@ -21,8 +21,5 @@ IW\EasySurveyBundle\Entity\Quiz:
         userId:
             type: integer
             column: user_id
-        sesskey:
-            type: string
-            length: 255    
             
     lifecycleCallbacks: {  }

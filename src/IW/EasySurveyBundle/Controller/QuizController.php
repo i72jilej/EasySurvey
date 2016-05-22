@@ -46,12 +46,6 @@ class QuizController extends Controller {
             $project->setProjectId($projectData['project']);
             $project->setUserId($this->get('session')->get('id'));
             $em = $this->getDoctrine()->getManager();
-            //hay que comprobar que el seeskey generado no exista ya en el sistema (improbable pero posible)
-            do {
-                $seeskey = substr(md5(rand()),0,10);    
-                $quiz = $em->getRepository('IWEasySurveyBundle:Quiz')->findby(array('sesskey' => $seeskey));
-            } while (!empty($quiz));
-            $project->setSesskey($seeskey);
             $em->persist($project);
             $em->flush();
             return $this->redirect($this->generateUrl('iw_easy_survey_manage_quiz'));
