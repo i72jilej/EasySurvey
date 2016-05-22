@@ -105,3 +105,23 @@ iw_easy_survey_delete_option:
 iw_easy_survey_add_option:
     pattern: /EasySurvey/addOption/{id}
     defaults: {_controller: IWEasySurveyBundle:Quiz:addOption }
+    
+iw_easy_survey_instance_quiz:
+    pattern: /EasySurvey/instanceQuiz/
+    defaults: {_controller: IWEasySurveyBundle:Quiz:instance }
+    
+iw_easy_survey_generate_instance:
+    pattern: /EasySurvey/generateInstanceQuiz/{id}
+    defaults: {_controller: IWEasySurveyBundle:Quiz:generateInstance }
+    
+iw_easy_survey_instances:
+    pattern: /EasySurvey/instances/
+    defaults: {_controller: IWEasySurveyBundle:Quiz:instances }
+    
+iw_easy_survey_reply_quiz:
+    pattern: /EasySurvey/replyQuiz/{seeskey}
+    defaults: {_controller: IWEasySurveyBundle:Quiz:replyQuiz }   
+    
+iw_easy_survey_delete_instance:
+    pattern: /EasySurvey/deleteInstance/{id}
+    defaults: {_controller: IWEasySurveyBundle:Quiz:deleteInstance }   

@@ -28,6 +28,16 @@ class Answers
      * @var \DateTime
      */
     private $timestamp;
+    
+    /**
+     * @var integer
+     */
+    private $idType;
+    
+    /**
+     * @var integer
+     */
+    private $idInstance;
 
 
     /**
@@ -108,4 +118,51 @@ class Answers
     {
         return $this->timestamp;
     }
+    
+    /**
+     * Set idType
+     *
+     * @param integer
+     * @return idType
+     */
+    public function setIdType($idType)
+    {
+        $this->idType = $idType;
+    
+        return $this;
+    }
+
+    /**
+     * Get timestamp
+     *
+     * @return \DateTime 
+     */
+    public function getIdType()
+    {
+        return $this->idType;
+    }
+    
+    /**
+     * Set idInstance
+     *
+     * @param integer $idInstance
+     * @return Instance
+     */
+    public function setIdInstance($idInstance)
+    {
+        $this->idInstance = $idInstance;
+    
+        return $this;
+    }
+
+    /**
+     * Get idInstance
+     *
+     * @return integer
+     */
+    public function getIdInstance()
+    {
+        return $this->idInstance;
+    }
+    
 }

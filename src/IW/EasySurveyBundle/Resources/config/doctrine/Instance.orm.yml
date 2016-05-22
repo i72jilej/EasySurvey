@@ -1,0 +1,25 @@
+IW\EasySurveyBundle\Entity\Instance:
+    type: entity
+    table: null
+    repositoryClass: IW\EasySurveyBundle\Entity\InstanceRepository
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        quizId:
+            type: integer
+            column: quiz_id
+        userId:
+            type: integer
+            column: user_id
+        timecreated:
+            type: datetime
+        timefinish:
+            type: datetime
+        seeskey:
+            type: string
+            length: 255
+    lifecycleCallbacks: {  }

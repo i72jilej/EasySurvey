@@ -91,26 +91,7 @@ class QuizController extends Controller {
         return $this->render('IWEasySurveyBundle:Quiz:form.html.twig', array('form' => $form->createView(), 'error' => $error));
     }
 
-    public function deleteAction($id) {
-        $em = $this->getDoctrine()->getManager();
-        $quiz = $em->getRepository('IWEasySurveyBundle:Quiz')->find($id);
-        //al eliminar el cuestionario hay que eliminar las preguntas de dicho cuestionario y todas las opciones si estas existen
-        //obtenemos las preguntas de dicho cuestionario
-        $questions = $em->getRepository('IWEasySurveyBundle:Question')->findBy(array('quizId' => $id));
-        foreach ($questions as $question) {
-            //se comprueba si es de opcion simple o multiple para eliminar las opciones
-            if ($question->getTypeId()>=2) {
-                $options = $em->getRepository('IWEasySurveyBundle:TextQuestionOption')->findBy(array('questionId' => $question->getId() ));
-                foreach ($options as $option) {
-                    $em->remove($option);
-                }
-            }
-            $em->remove($question);
-        }
-        $em->remove($quiz);
-        $em->flush();
-        return $this->redirect($this->generateUrl('iw_easy_survey_manage_quiz'));
-    }
+    
 
     public function manageQuestionsAction($id) {
         $em = $this->getDoctrine()->getManager();
@@ -164,6 +145,27 @@ class QuizController extends Controller {
         }
 
         return $this->render('IWEasySurveyBundle:Quiz:addQuestion.html.twig', array('id' => $id, 'form' => $form->createView()));
+    }
+    
+    public function deleteAction($id) {
+        $em = $this->getDoctrine()->getManager();
+        $quiz = $em->getRepository('IWEasySurveyBundle:Quiz')->find($id);
+        //al eliminar el cuestionario hay que eliminar las preguntas de dicho cuestionario y todas las opciones si estas existen
+        //obtenemos las preguntas de dicho cuestionario
+        $questions = $em->getRepository('IWEasySurveyBundle:Question')->findBy(array('quizId' => $id));
+        foreach ($questions as $question) {
+            //se comprueba si es de opcion simple o multiple para eliminar las opciones
+            if ($question->getTypeId()>=2) {
+                $options = $em->getRepository('IWEasySurveyBundle:TextQuestionOption')->findBy(array('questionId' => $question->getId() ));
+                foreach ($options as $option) {
+                    $em->remove($option);
+                }
+            }
+            $em->remove($question);
+        }
+        $em->remove($quiz);
+        $em->flush();
+        return $this->redirect($this->generateUrl('iw_easy_survey_manage_quiz'));
     }
     
     public function editQuestionAction($id, Request $request) {
@@ -285,6 +287,178 @@ class QuizController extends Controller {
         return $this->redirect($this->generateUrl('iw_easy_survey_manage_question_option', array('id' => $option->getQuestionId())));        
     }
     
+    private function getProjectsUsers() {
+        
+        $em = $this->getDoctrine()->getManager();
+        //se obtienen los proyectos de los que el usuario es propietario
+        $projects_property = $em->getRepository('IWEasySurveyBundle:Project')->findBy(array('user_id' => $this->get('session')->get('id')));
+        $projects_array = array();
+        foreach ($projects_property as $data) {
+            $projects_array[] = array ('id'=>$data->getId(),'name'=>$data->getName());
+        }
+        //se obtienen los proyectos de los que el usuario es colaborador
+        $projects_collaborate = $em->getRepository('IWEasySurveyBundle:ProjectUser')->findBy(array('userId'=>$this->get('session')->get('id')));
+        foreach ($projects_collaborate as $data) {
+            $project_aux = $em->getRepository('IWEasySurveyBundle:Project')->find($data->getProjectId());
+            $projects_array[] = array ('id'=>$project_aux->getId(),'name'=>$project_aux->getName());
+        }
+        return $projects_array;
+    }
     
+    public function instanceAction () 
+    {
+        $em = $this->getDoctrine()->getManager();
+        //obtenemos los proyectos en los que el usuario es o propietario o colaborador
+        $projects = $this->getProjectsUsers();
+        $quiz_array = array ();
+        foreach ($projects as $project) {
+            $quizs = $em->getRepository('IWEasySurveyBundle:Quiz')->findBy(array('projectId'=>$project['id']));
+            foreach ($quizs as $data) {
+                $quiz_array[]=array ('id'=>$data->getId(),'name'=>$data->getName(),'project'=>$project['name']);
+            }   
+        }
+        return $this->render('IWEasySurveyBundle:Quiz:instance.html.twig', array('quizs'=>$quiz_array));
+    }
+    
+    public function generateInstanceAction($id, Request $request) 
+    {
+        $em = $this->getDoctrine()->getManager();
+        
+        $form = $this->createFormBuilder()
+                ->add('finishdate', 'date', array('label' => 'Fecha de finalización de la encuesta: ', 'required' => true))
+                ->add('add', 'submit', array('label' => 'Enviar'))
+                ->getForm();
+        
+        $form->handleRequest($request);
+        
+        if ($form->isValid()) {
+            $dataForm = $form->getData();    
+            $instance = new \IW\EasySurveyBundle\Entity\Instance;
+            $instance->setQuizId($id);
+            $instance->setTimecreated(new \DateTime("now"));
+            $instance->setTimefinish($dataForm['finishdate']);
+            $instance->setUserId($this->get('session')->get('id'));
+            
+            //se comprueba que el seeskey no existe ya en el sistema (improbable pero posible)
+            do {
+                $seeskey = substr(md5(rand()),0,10);
+                $instances = $em->getRepository('IWEasySurveyBundle:Instance')->findBy(array('seeskey'=>$seeskey));
+            } while( !empty($instances) );
+            
+            $instance->setSeeskey($seeskey);
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($instance);
+            $em->flush();
+            return $this->redirect($this->generateUrl('iw_easy_survey_instances', array()));
+        }
+        
+        return $this->render('IWEasySurveyBundle:Quiz:generateinstace.html.twig', array('id' => $id, 'form' => $form->createView()));
+    }
+    
+    public function instancesAction() 
+    {
+        $datas = array ();
+        $em = $this->getDoctrine()->getManager();
+        $instances = $em->getRepository('IWEasySurveyBundle:Instance')->findBy(array('userId'=>$this->get('session')->get('id')));
+        foreach ($instances as $data) {
+            $question = $em->getRepository('IWEasySurveyBundle:Quiz')->find($data->getQuizId());
+            $project = $em->getRepository('IWEasySurveyBundle:Project')->find($question->getProjectId());
+            $datas[]=array(
+                        'instance_id'=>$data->getId(),
+                        'question'=>$question->getName(),
+                        'project' =>$project->getName(),
+                        'timecreated'=>$data->getTimecreated(),
+                        'timefinish'=>$data->getTimefinish(),
+                        'seeskey'=>$data->getSeeskey()
+                    );   
+        }
+        return $this->render('IWEasySurveyBundle:Quiz:instances.html.twig', array('instances'=>$datas));
+    }
+    
+    public function deleteInstanceAction($id) 
+    {
+        $em = $this->getDoctrine()->getManager();
+        $instance = $em->getRepository('IWEasySurveyBundle:Instance')->find($id);
+        $em->remove($instance);
+        $em->flush();
+        return $this->redirect($this->generateUrl('iw_easy_survey_instances', array()));
+    }
+    
+    private function getOptions($id) 
+    {
+        $em = $this->getDoctrine()->getManager();
+        $options = $em->getRepository('IWEasySurveyBundle:TextQuestionOption')->findBy(array('questionId'=>$id));
+        $options_array = array ();
+        foreach ($options as $value) {
+            $options_array[$value->getId()] = $value->getText();
+        }
+        return $options_array;
+    }
 
+    public function replyQuizAction($seeskey, Request $request)
+    {
+        
+        $formBuilderQuestionnaire  = $this->createFormBuilder();
+        
+        $em = $this->getDoctrine()->getManager();
+        $instance = $em->getRepository('IWEasySurveyBundle:Instance')->findBy(array('seeskey'=>$seeskey));
+        $quiz = $em->getRepository('IWEasySurveyBundle:Quiz')->find($instance[0]->getQuizId());
+        $questions = $em->getRepository('IWEasySurveyBundle:Question')->findBy(array('quizId'=>$quiz->getId()));
+        foreach ($questions as $data) {
+            switch ( $data->getTypeId() ) {
+                //numerica
+                case 0:     $formBuilderQuestionnaire->add($data->getTypeId().'_'.$data->getId(), 
+                                    'choice', array('required' => true,'label' => $data->getName(),'expanded' => true,
+                                    'choices' => array(1 => 1, 2 => 2,3 => 3,4 => 4,5 => 5)));
+                            break;
+                //texto
+                case 1:     $formBuilderQuestionnaire->add($data->getTypeId().'_'.$data->getId(), 'text',  array('required' => true,'label' => $data->getName()));
+                            break;
+                //selección simple
+                case 2:     $options_array = $this-> getOptions($data->getId());
+                            $formBuilderQuestionnaire->add($data->getTypeId().'_'.$data->getId(), 'choice',  
+                                    array('required' => true,'label' => $data->getName(),'choices' => $options_array,'expanded' => true));
+                            break;
+                //selección multiple
+                case 3:     $options_array = $this-> getOptions($data->getId());
+                            $formBuilderQuestionnaire->add($data->getTypeId().'_'.$data->getId(), 'choice',  array('required' => true, 'label' => $data->getName(),'multiple'=>true,'choices' => $options_array,));
+                            break;
+            }
+        }
+        $formBuilderQuestionnaire->add('add', 'submit', array('label' => 'Enviar'));
+        $form = $formBuilderQuestionnaire->getForm();
+        
+        $form->handleRequest($request);
+        if ($form->isValid()) {
+            $dataForm = $form->getData();            
+            foreach ($dataForm as $key => $value) {
+                $aux = explode('_',$key);
+                $type = $aux[0];
+                $quizId = $aux[1];
+                $answer = new \IW\EasySurveyBundle\Entity\Answers;
+                $answer->setIdQuestion($quizId);
+                if ($type == 3) {
+                    $result = '';
+                    foreach ($value as $a) {
+                        $result .= $a.',' ;
+                    }
+                    if ($result!='') {
+                        $result = substr($result, 0, strlen($result)-1);
+                    }
+                } else {
+                    $result = $value;
+                }
+                $answer->setBody($result);
+                $answer->setTimestamp(new \DateTime("now"));
+                $answer->setIdType($type);
+                $answer->setIdInstance($instance[0]->getId());
+                $em = $this->getDoctrine()->getManager();
+                $em->persist($answer);
+                $em->flush();
+            }
+            return $this->render('IWEasySurveyBundle:Quiz:replySend.html.twig', array());
+        }
+        return $this->render('IWEasySurveyBundle:Quiz:reply.html.twig', array('name'=>$quiz->getName(), 'form' => $form->createView()));
+    }    
 }
+

@@ -12,7 +12,7 @@
         </div>
         <div class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
-            <li class="active"><a href="{{ path('iw_easy_survey_homepage')}}">{% trans %}Inicio{% endtrans %}</a></li>
+            <li><a href="{{ path('iw_easy_survey_homepage')}}">{% trans %}Inicio{% endtrans %}</a></li>
             <li><a href="{{ path('iw_easy_survey_contact')}}">{% trans %}Contacto{% endtrans %}</a></li>
             <li class="dropdown">
               
@@ -31,7 +31,10 @@
                     <li class="dropdown-header">Cuestionarios</li>
                     <li><a href="{{ path('iw_easy_survey_create_quiz')}}">Nuevo cuestionario</a></li>
                     <li><a href="{{ path('iw_easy_survey_manage_quiz')}}">Gestionar Cuestionarios</a></li>
+                    <li><a href="{{ path('iw_easy_survey_instance_quiz')}}">Instanciar Cuestionario</a></li>
+                    <li><a href="{{ path('iw_easy_survey_instances')}}">Gestionar instancias</a></li>
                     <li class="divider"></li>
+                    
                     <li class="dropdown-header">Proyectos</li>
                     <li><a href="{{ path('iw_easy_survey_create_project')}}">Nuevo proyecto</a></li>
                     <li><a href="{{ path('iw_easy_survey_manage_project')}}">Gestionar proyectos</a></li>
