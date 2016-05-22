@@ -29,7 +29,6 @@ class QuizController extends Controller {
             $error = 'No existen proyectos, antes de crear una encuesta debe usted crear un proyecto';
         }
 
-
         $form = $this->createFormBuilder()
                 ->add('name', 'text', array('label' => 'Nombre de la nueva Encuesta', 'required' => true))
                 ->add('description', 'textarea', array('label' => 'Descripción de la Encuesta', 'required' => false))
@@ -47,6 +46,12 @@ class QuizController extends Controller {
             $project->setProjectId($projectData['project']);
             $project->setUserId($this->get('session')->get('id'));
             $em = $this->getDoctrine()->getManager();
+            //hay que comprobar que el seeskey generado no exista ya en el sistema (improbable pero posible)
+            do {
+                $seeskey = substr(md5(rand()),0,10);    
+                $quiz = $em->getRepository('IWEasySurveyBundle:Quiz')->findby(array('sesskey' => $seeskey));
+            } while (!empty($quiz));
+            $project->setSesskey($seeskey);
             $em->persist($project);
             $em->flush();
             return $this->redirect($this->generateUrl('iw_easy_survey_manage_quiz'));
@@ -95,6 +100,19 @@ class QuizController extends Controller {
     public function deleteAction($id) {
         $em = $this->getDoctrine()->getManager();
         $quiz = $em->getRepository('IWEasySurveyBundle:Quiz')->find($id);
+        //al eliminar el cuestionario hay que eliminar las preguntas de dicho cuestionario y todas las opciones si estas existen
+        //obtenemos las preguntas de dicho cuestionario
+        $questions = $em->getRepository('IWEasySurveyBundle:Question')->findBy(array('quizId' => $id));
+        foreach ($questions as $question) {
+            //se comprueba si es de opcion simple o multiple para eliminar las opciones
+            if ($question->getTypeId()>=2) {
+                $options = $em->getRepository('IWEasySurveyBundle:TextQuestionOption')->findBy(array('questionId' => $question->getId() ));
+                foreach ($options as $option) {
+                    $em->remove($option);
+                }
+            }
+            $em->remove($question);
+        }
         $em->remove($quiz);
         $em->flush();
         return $this->redirect($this->generateUrl('iw_easy_survey_manage_quiz'));
@@ -173,7 +191,7 @@ class QuizController extends Controller {
             $change = 0;
             //se comprueba si se ha cambiado la pregunta por tipo opción a texto 
             //o numérica para borrar las opciones en dicho caso
-            if ($question->getTypeId()>2 && $dataForm['type']<2) {
+            if ($question->getTypeId()>1 && $dataForm['type']<2) {
                 $change = 1;
                 $options = $em->getRepository('IWEasySurveyBundle:TextQuestionOption')->findBy(array('questionId' => $id ));
                 foreach ($options as $data) {
@@ -201,7 +219,7 @@ class QuizController extends Controller {
         $em = $this->getDoctrine()->getManager();
         $question = $em->getRepository('IWEasySurveyBundle:Question')->find($id);
         //si el tipo es de opcion simple o multiple hay que eliminar también las posibles opciones (tanto simples como multiples)
-        if ($question->getTypeId()>2) {
+        if ($question->getTypeId()>1) {
             $options = $em->getRepository('IWEasySurveyBundle:TextQuestionOption')->findBy(array('questionId' => $id ));
             foreach ($options as $data) {
                 $em->remove($data);

@@ -33,6 +33,11 @@ class Quiz
      * @var integer
      */
     private $userId;
+    
+    /**
+     * @var string
+     */
+    private $sesskey;
 
 
     /**
@@ -135,5 +140,28 @@ class Quiz
     public function getUserId()
     {
         return $this->userId;
+    }
+    
+    /**
+     * Set sesskey
+     *
+     * @param integer $sesskey
+     * @return string
+     */
+    public function setSesskey($sesskey)
+    {
+        $this->sesskey = $sesskey;
+    
+        return $this;
+    }
+
+    /**
+     * Get sesskey
+     *
+     * @return text
+     */
+    public function getSesskey()
+    {
+        return $this->sesskey;
     }
 }
