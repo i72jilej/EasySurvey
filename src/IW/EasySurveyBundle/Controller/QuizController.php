@@ -17,16 +17,6 @@ class QuizController extends Controller {
         foreach ($projects_property as $data) {
             $projects_array[$data->getId()] = $data->getName();
         }
-
-        //se obtienen los proyectos de los que el usuario es colaborador
-        /*
-          $projects_collaborate = $em->getRepository('IWEasySurveyBundle:ProjectUser')->findBy(array('userId'=>$this->get('session')->get('id')));
-          foreach ($projects_collaborate as $data) {
-          $project_aux = $em->getRepository('IWEasySurveyBundle:Project')->find($data->getProjectId());
-          $projects_array[$project_aux->getId()]=$project_aux->getName();
-          }
-         */
-
         return $projects_array;
     }
 
@@ -42,7 +32,7 @@ class QuizController extends Controller {
 
         $form = $this->createFormBuilder()
                 ->add('name', 'text', array('label' => 'Nombre de la nueva Encuesta', 'required' => true))
-                ->add('description', 'textarea', array('label' => 'Descripci�n de la Encuesta', 'required' => false))
+                ->add('description', 'textarea', array('label' => 'Descripción de la Encuesta', 'required' => false))
                 ->add('project', 'choice', array('label' => 'Proyecto', 'choices' => $arrayProjects))
                 ->add('create', 'submit', array('label' => 'Crear'))
                 ->getForm();
@@ -80,9 +70,9 @@ class QuizController extends Controller {
 
         $form = $this->createFormBuilder()
                 ->add('name', 'text', array('label' => 'Nombre de la Encuesta', 'data' => $quiz->getName(), 'required' => true))
-                ->add('description', 'textarea', array('label' => 'Descripci�n de la Encuesta', 'data' => $quiz->getDescription(), 'required' => false))
+                ->add('description', 'textarea', array('label' => 'Descripción de la Encuesta', 'data' => $quiz->getDescription(), 'required' => false))
                 ->add('project', 'choice', array('label' => 'Proyecto', 'choices' => $arrayProjects, 'data' => $quiz->getProjectId()))
-                ->add('create', 'submit', array('label' => 'Crear'))
+                ->add('create', 'submit', array('label' => 'Guardar'))
                 ->getForm();
 
         $form->handleRequest($request);
@@ -113,11 +103,11 @@ class QuizController extends Controller {
     public function manageQuestionsAction($id) {
         $em = $this->getDoctrine()->getManager();
         $questions = $em->getRepository('IWEasySurveyBundle:Question')->findBy(array('quizId' => $id));
-        return $this->render('IWEasySurveyBundle:Quiz:manageQuestions.html.twig', array('id' => $id, 'questions' => $questions));
+        $options = $this->getTypeQuestions();
+        return $this->render('IWEasySurveyBundle:Quiz:manageQuestions.html.twig', array('id' => $id, 'questions' => $questions, 'options'=>$options));
     }
 
     private function getTypeQuestions() {
-
         $questions = array();
         $questions[0] = 'Numérica';
         $questions[1] = 'Texto';
@@ -128,19 +118,16 @@ class QuizController extends Controller {
     
     private function getTypeQuestionsDefinitions() {
         $definitions = array();
-        
-        $definitions[0] = 'El encuestado introducirá un valor num�rico por teclado';
+        $definitions[0] = 'El encuestado introducirá un valor numérico por teclado';
         $definitions[1] = 'El encuestado introducirá una respuesta escrita por teclado';
-        $definitions[2] = 'El encuestado elegirá una �nica respuesta entre las presentadas';
-        $definitions[3] = 'El encuestado podrá elegir varias respuestas entre las presentdas';
-        
+        $definitions[2] = 'El encuestado elegirá una única respuesta entre las presentadas';
+        $definitions[3] = 'El encuestado podrá elegir varias respuestas entre las presentadas';
         return $definitions;
     }
-
+    
     public function addQuestionAction($id, Request $request) {
 
         $questions = $this->getTypeQuestions();
-        $definitions = $this->getTypeQuestionsDefinitions();
         $form = $this->createFormBuilder()
                 ->add('name', 'text', array('label' => 'Enunciado de la Pregunta'))
                 ->add('type', 'choice', array('label' => 'Tipo de Pregunta', 'choices' => $questions))
@@ -156,21 +143,17 @@ class QuizController extends Controller {
             $question->setQuizId($id);
             $em = $this->getDoctrine()->getManager();
             $em->persist($question);
-            $em->flush();
-            
+            $em->flush();    
             if($dataForm['type'] < 2) {
                 return $this->redirect($this->generateUrl('iw_easy_survey_manage_questions', array('id' => $id)));
-            }
-            else
-            {
+            } else{
                 return $this->redirect($this->generateUrl('iw_easy_survey_manage_question_option', array('id' => $question->getId())));
-            }
-                
-            }
+            }  
+        }
 
         return $this->render('IWEasySurveyBundle:Quiz:addQuestion.html.twig', array('id' => $id, 'form' => $form->createView()));
     }
-
+    
     public function editQuestionAction($id, Request $request) {
 
         $questions = $this->getTypeQuestions();
@@ -187,34 +170,61 @@ class QuizController extends Controller {
         //se envia el formulario
         if ($form->isValid()) {
             $dataForm = $form->getData();
+            $change = 0;
+            //se comprueba si se ha cambiado la pregunta por tipo opción a texto 
+            //o numérica para borrar las opciones en dicho caso
+            if ($question->getTypeId()>2 && $dataForm['type']<2) {
+                $change = 1;
+                $options = $em->getRepository('IWEasySurveyBundle:TextQuestionOption')->findBy(array('questionId' => $id ));
+                foreach ($options as $data) {
+                    $em->remove($data);
+                }
+                $em->flush();
+            }
+            
             $question->setName($dataForm['name']);
             $question->setTypeId($dataForm['type']);
             $em = $this->getDoctrine()->getManager();
             $em->persist($question);
             $em->flush();
-            return $this->redirect($this->generateUrl('iw_easy_survey_manage_questions', array('id' => $question->getQuizId())));
+            if ( $change ) {
+                return $this->redirect($this->generateUrl('iw_easy_survey_manage_questions', array('id' => $question->getQuizId())));
+            } else {
+                return $this->redirect($this->generateUrl('iw_easy_survey_manage_question_option', array('id' => $question->getId())));
+            }
         }
 
         return $this->render('IWEasySurveyBundle:Quiz:addQuestion.html.twig', array('id' => $id, 'form' => $form->createView()));
     }
 
     public function deleteQuestionAction($id) {
-
         $em = $this->getDoctrine()->getManager();
         $question = $em->getRepository('IWEasySurveyBundle:Question')->find($id);
+        //si el tipo es de opcion simple o multiple hay que eliminar también las posibles opciones (tanto simples como multiples)
+        if ($question->getTypeId()>2) {
+            $options = $em->getRepository('IWEasySurveyBundle:TextQuestionOption')->findBy(array('questionId' => $id ));
+            foreach ($options as $data) {
+                $em->remove($data);
+            }
+        }
         $em->remove($question);
         $em->flush();
         return $this->redirect($this->generateUrl('iw_easy_survey_manage_questions', array('id' => $question->getQuizId())));
     }
     
-    public function manageQuestionOptionAction($id, Request $request) {
+    public function manageQuestionOptionAction($id, Request $request){
+        $em = $this->getDoctrine()->getManager();
+        $question = $em->getRepository('IWEasySurveyBundle:Question')->find($id);
+        $options = $em->getRepository('IWEasySurveyBundle:TextQuestionOption')->findBy(array('questionId' => $id ));
+        return $this->render('IWEasySurveyBundle:Quiz:editQuestionOption.html.twig', array('id' => $id, 'options' => $options,'question'=>$question));
+    }
+    
+    public function addOptionAction($id, Request $request) {
         $em = $this->getDoctrine()->getManager();
         $question = $em->getRepository('IWEasySurveyBundle:Question')->find($id);
         $form = $this->createFormBuilder()
-                ->add('option1', 'text', array('label' => 'Opción 1: ', 'required' => true))
-                ->add('option2', 'text', array('label' => 'Opción 2: ', 'required' => true))
-                ->add('option3', 'text', array('label' => 'Opción 3: ', 'required' => false))
-                ->add('modify', 'submit', array('label' => 'Guardar opciones'))
+                ->add('option', 'text', array('label' => 'Opción: ', 'required' => true))
+                ->add('add', 'submit', array('label' => 'Añadir'))
                 ->getForm();
         
         $form->handleRequest($request);
@@ -222,66 +232,45 @@ class QuizController extends Controller {
         if ($form->isValid()) {
             $dataForm = $form->getData();
             $em = $this->getDoctrine()->getManager();
-            
-            for($i = 1; $i <= 3; $i++){
-                if($dataForm['option'.$i] != ""){
-                    $option = new \IW\EasySurveyBundle\Entity\TextQuestionOption;
-                    $option->setQuestionId($id);
-                    $option->setText($dataForm['option'.$i]);
-                    $em->persist($option);
-                }
-            }
+            $option = new \IW\EasySurveyBundle\Entity\TextQuestionOption;
+            $option->setQuestionId($id);
+            $option->setText($dataForm['option']);
+            $em->persist($option);
             $em->flush();
-            return $this->redirect($this->generateUrl('iw_easy_survey_manage_questions', array('id' => $question->getQuizId())));
+            return $this->redirect($this->generateUrl('iw_easy_survey_manage_question_option', array('id' => $option->getQuestionId())));
         }
         
         return $this->render('IWEasySurveyBundle:Quiz:manageQuestionOption.html.twig', array('id' => $id, 'question' => $question, 'form' => $form->createView()));
     }
     
-    public function editQuestionOptionAction($id, Request $request){
+    public function editOptionAction ($id, Request $request) {
+        
         $em = $this->getDoctrine()->getManager();
-        $options= $em->getRepository('IWEasySurveyBundle:TextQuestionOption')->findBy(array('questionId' => $id ));
-        //echo'<pre>';print_r($options[0]->getText()); die();echo'</pre>';
-        
-        
-        $oldData = array();
-        for($i = 0; $i < 3; $i++){
-            if (isset($options[$i])){
-                $oldData[$i] = $options[$i]->getText();
-            }else{
-                $oldData[$i] = "";
-            }
-        }
-        
+        $option = $em->getRepository('IWEasySurveyBundle:TextQuestionOption')->find($id);
+        $question = $em->getRepository('IWEasySurveyBundle:Question')->find($option->getQuestionId());
         $form = $this->createFormBuilder()
-                ->add('option1', 'text', array('label' => 'Opción 1: ', 'data' => $oldData[0]))
-                ->add('option2', 'text', array('label' => 'Opción 2: ', 'data' => $oldData[1]))
-                ->add('option3', 'text', array('label' => 'Opción 3: ', 'data' => $oldData[2]))
-                ->add('modify', 'submit', array('label' => 'Guardar opciones'))
+                ->add('option', 'text', array('label' => 'Opción: ', 'required' => true,'data'=>$option->getText()))
+                ->add('add', 'submit', array('label' => 'Modificar'))
                 ->getForm();
         $form->handleRequest($request);
-        
-         if ($form->isValid()) {
+        if ($form->isValid()) {
             $dataForm = $form->getData();
             $em = $this->getDoctrine()->getManager();
-            
-            
-            
-            for($i = 1; $i <= 3; $i++){
-                if($dataForm['option'.$i] != ""){
-                    $option = new \IW\EasySurveyBundle\Entity\TextQuestionOption;
-                    $option->setQuestionId($id);
-                    $option->setText($dataForm['option'.$i]);
-                    $em->persist($option);
-                }
-            }
+            $option->setText($dataForm['option']);
+            $em->persist($option);
             $em->flush();
-            return $this->redirect($this->generateUrl('iw_easy_survey_manage_questions', array('id' => $question->getQuizId())));
+            return $this->redirect($this->generateUrl('iw_easy_survey_manage_question_option', array('id' => $option->getQuestionId())));
         }
         
-        
-        
-        return $this->render('IWEasySurveyBundle:Quiz:editQuestionOption.html.twig', array('id' => $id, 'form' => $form->createView()));
+        return $this->render('IWEasySurveyBundle:Quiz:manageQuestionOption.html.twig', array('id' => $id,'question'=>$question, 'form' => $form->createView()));
+    }
+    
+    public function deleteOptionAction ($id) {
+        $em = $this->getDoctrine()->getManager();
+        $option = $em->getRepository('IWEasySurveyBundle:TextQuestionOption')->find($id);
+        $em->remove($option);
+        $em->flush();
+        return $this->redirect($this->generateUrl('iw_easy_survey_manage_question_option', array('id' => $option->getQuestionId())));        
     }
     
     

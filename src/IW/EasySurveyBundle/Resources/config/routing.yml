@@ -92,4 +92,16 @@ iw_easy_survey_manage_question_option:
     
 iw_easy_survey_edit_question_option:
     pattern: /EasySurvey/editQuestionOption/{id}
-    defaults: {_controller: IWEasySurveyBundle:Quiz:editQuestionOption }
+    defaults: {_controller: IWEasySurveyBundle:Quiz:manageQuestionOption }
+    
+iw_easy_survey_edit_option:
+    pattern: /EasySurvey/editOption/{id}
+    defaults: {_controller: IWEasySurveyBundle:Quiz:editOption }
+    
+iw_easy_survey_delete_option:
+    pattern: /EasySurvey/deleteOption/{id}
+    defaults: {_controller: IWEasySurveyBundle:Quiz:deleteOption }
+    
+iw_easy_survey_add_option:
+    pattern: /EasySurvey/addOption/{id}
+    defaults: {_controller: IWEasySurveyBundle:Quiz:addOption }

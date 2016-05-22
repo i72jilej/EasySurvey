@@ -5,7 +5,24 @@
       </div>  
       
       <div class="page-content">
-          {{ form(form) }}
+          <h2>{{ question.name }}</h2>
+          <table>
+              <tr>
+                  <th>Opcion</th>
+                  <th>Acciones</th>
+              </tr>
+              {% for data in options %}
+              <tr>
+                  <td>{{data.text}}</td>
+                  <td>
+                    <a href="{{ path('iw_easy_survey_edit_option', {'id': data.id})}}"> {% trans %}Editar{% endtrans %} </a> |
+                    <a href="{{ path('iw_easy_survey_delete_option', {'id': data.id})}}" onclick="return confirm('¿Esta seguro?')"> {% trans %}Borrar{% endtrans %} </a>
+                  </td>
+              </tr>
+              {% endfor %}
+              
+              <tr><td colspan="2"><a href="{{ path('iw_easy_survey_add_option', {'id': id})}}"> {% trans %}Añadir opción{% endtrans %} </a></td></tr>
+          </table>
       </div>
       
 {% endblock %}

@@ -8,11 +8,13 @@
           <table>
               <tr>
                   <th>Nombre</th>
+                  <th>Tipo</th>
                   <th>Acciones</th>
               </tr>
               {% for data in questions %}
               <tr>
                   <td>{{data.name}}</td>
+                  <td>{{options[data.typeId]}}</td>
                   <td>
                     <a href="{{ path('iw_easy_survey_edit_question', {'id': data.id})}}"> {% trans %}Editar{% endtrans %} </a> |
                     <a href="{{ path('iw_easy_survey_delete_question', {'id': data.id})}}" onclick="return confirm('¿Esta seguro?')"> {% trans %}Borrar{% endtrans %} </a> |
@@ -23,8 +25,6 @@
               </tr>
               {% endfor %}
           </table>
-              
-          
            <a href="{{ path('iw_easy_survey_add_question', {'id': id})}}"> {% trans %}Añadir pregunta{% endtrans %} </a>
       </div>
 {% endblock %}
