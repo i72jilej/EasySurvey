@@ -17,9 +17,11 @@ and open the template in the editor.
     Author     : ahvega
 */
 
-#footer {
+.page-footer {
     text-align: right;
 }
+
+
 /*!
 Video.js Default Styles (http://videojs.com)
 Version 4.4.3

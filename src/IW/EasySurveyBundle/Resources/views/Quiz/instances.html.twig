@@ -23,7 +23,7 @@
                   <td> {{data.timecreated.date|date('d/m/y')}} </td>
                   <td> {{data.timefinish.date|date('d/m/y')}} </td>
                   <td> <a href="{{ path('iw_easy_survey_reply_quiz', {'seeskey': data.seeskey})}}"> URL </a> </td>
-                  <td> <a href="{{ path('iw_easy_survey_delete_instance', {'id': data.instance_id})}}"> Borrar </a> </td>
+                  <td> <a href="{{ path('iw_easy_survey_delete_instance', {'id': data.instance_id})}}" onclick="return confirm('¿Esta seguro?')"> Borrar </a> </td>
               </tr>
               {% endfor %}
           </table>
