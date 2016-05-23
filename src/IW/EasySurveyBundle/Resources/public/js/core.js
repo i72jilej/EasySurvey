@@ -1,4 +1,6 @@
 $(document).ready(function() {
+    
+    //Pulgin que modifica todas las tablas  usando el plugin datatable.jquery
     $('#datetable').DataTable( {
         "language": {
             "sProcessing":     "Procesando...",
@@ -25,4 +27,14 @@ $(document).ready(function() {
             }
         }
     });
+    
+    
+    //plugin que modifica los select tanto simples como múltiples usando el chosen.jquery
+    $("select").chosen({
+        no_results_text: "Sem resultados para",
+        placeholder_text_single: "Selecione una opción",
+        placeholder_text_multiple: "Selecione alguna opción"
+    });
+    
+    
 });
