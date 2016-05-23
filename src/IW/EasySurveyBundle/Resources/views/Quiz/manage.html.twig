@@ -7,11 +7,14 @@
           {% if quiz is empty %}
               {% trans %}No hay datos{% endtrans %}
           {% else %}
-          <table>
+          <table id="datetable">
+              <thead>
               <tr>
                 <th>Nombre</th>
                 <th>Acciones</th>
               </tr>
+              </thead>
+              <tbody>
               {% for data in quiz %}
               <tr>
                   <td> {{data.name}} </td>
@@ -22,6 +25,7 @@
                   </td>
               </tr>
               {% endfor %}
+              </tbody>
           </table>
           {% endif %}
           <br>

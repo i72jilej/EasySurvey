@@ -7,12 +7,15 @@
           {% if quizs is empty %}
               {% trans %}Usted no dispone de ninguna encuesta instanciable{% endtrans %}
           {% else %}
-          <table>
+          <table id="datetable">
+              <thead>
               <tr>
                 <th>Encuesta</th>
                 <th>Proyecto</th>
                 <th>Acción</th>
               </tr>
+              </thead>
+              <tbody>
               {% for data in quizs %}
               <tr>
                   <td> {{data.name}} </td>
@@ -22,6 +25,7 @@
                   </td>
               </tr>
               {% endfor %}
+              </tbody>
           </table>
           {% endif %}
       </div>

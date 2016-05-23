@@ -4,6 +4,10 @@
         <h1>{{name}}</h1>
       </div>  
       <div class="page-content">  
-         {{ form(form)}}
+          {% if close == 1 %}
+             Cuestonario cerrado
+         {% else %}    
+            {{ form(form)}}
+         {% endif %}
       </div>
 {% endblock %}

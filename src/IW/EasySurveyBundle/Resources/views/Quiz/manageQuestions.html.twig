@@ -5,12 +5,15 @@
       </div>  
       <div class="page-content">
           
-          <table>
+          <table id="datetable">
+              <thead>
               <tr>
                   <th>Nombre</th>
                   <th>Tipo</th>
                   <th>Acciones</th>
               </tr>
+              </thead>
+              <tbody>
               {% for data in questions %}
               <tr>
                   <td>{{data.name}}</td>
@@ -24,6 +27,7 @@
                   </td>
               </tr>
               {% endfor %}
+              </tbody>
           </table>
            <a href="{{ path('iw_easy_survey_add_question', {'id': id})}}"> {% trans %}Añadir pregunta{% endtrans %} </a>
       </div>

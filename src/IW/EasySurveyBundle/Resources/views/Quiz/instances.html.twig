@@ -7,26 +7,32 @@
           {% if instances is empty %}
               {% trans %}Usted no dispone de ninguna encuesta instanciada{% endtrans %}
           {% else %}
-          <table>
-              <tr>
-                <th>Encuesta</th>
-                <th>Proyecto</th>
-                <th>Fecha de creación</th>
-                <th>Fecha de finalización</th>
-                <th>URL</th>
-                <th></th>
-              </tr>
-              {% for data in instances %}
-              <tr>
-                  <td> {{data.question}} </td>
-                  <td> {{data.project}} </td>
-                  <td> {{data.timecreated.date|date('d/m/y')}} </td>
-                  <td> {{data.timefinish.date|date('d/m/y')}} </td>
-                  <td> <a href="{{ path('iw_easy_survey_reply_quiz', {'seeskey': data.seeskey})}}"> URL </a> </td>
-                  <td> <a href="{{ path('iw_easy_survey_delete_instance', {'id': data.instance_id})}}" onclick="return confirm('¿Esta seguro?')"> Borrar </a> </td>
-              </tr>
-              {% endfor %}
+          <table id="datetable">
+              <thead>
+                <tr>
+                  <th>Encuesta</th>
+                  <th>Proyecto</th>
+                  <th>Fecha de creación</th>
+                  <th>Fecha de finalización</th>
+                  <th>URL</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for data in instances %}
+                <tr>
+                    <td> {{data.question}} </td>
+                    <td> {{data.project}} </td>
+                    <td> {{data.timecreated.date|date('d/m/y')}} </td>
+                    <td> {{data.timefinish.date|date('d/m/y')}} </td>
+                    <td> <a href="{{ path('iw_easy_survey_reply_quiz', {'seeskey': data.seeskey})}}"> URL </a> </td>
+                    <td> <a href="{{ path('iw_easy_survey_delete_instance', {'id': data.instance_id})}}" onclick="return confirm('¿Esta seguro?')"> Borrar </a> </td>
+                </tr>
+                {% endfor %}
+              </tbody>
           </table>
           {% endif %}
       </div>
 {% endblock %}
+
+

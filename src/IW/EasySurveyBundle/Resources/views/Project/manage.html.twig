@@ -7,11 +7,14 @@
           {% if projects is empty %}
               {% trans %}No hay datos{% endtrans %}
           {% else %}
-          <table>
+          <table id="datetable">
+              <thead>
               <tr>
                 <th>Nombre</th>
                 <th>Acciones</th>
               </tr>
+              </thead>
+              <tbody>
               {% for project in projects %}
               <tr>
                   <td> {{project.name}} </td>
@@ -21,6 +24,7 @@
                   </td>
               </tr>
               {% endfor %}
+              </tbody>
           </table>
           {% endif %}
       </div>

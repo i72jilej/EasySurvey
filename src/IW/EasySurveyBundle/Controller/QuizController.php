@@ -325,7 +325,7 @@ class QuizController extends Controller {
         $em = $this->getDoctrine()->getManager();
         
         $form = $this->createFormBuilder()
-                ->add('finishdate', 'date', array('label' => 'Fecha de finalización de la encuesta: ', 'required' => true))
+                ->add('finishdate', 'date', array('label' => 'Fecha de finalización de la encuesta: ', 'required' => true,'data' => new \DateTime("now"),'years' => range(date ("Y"), 2050)))
                 ->add('add', 'submit', array('label' => 'Enviar'))
                 ->getForm();
         
@@ -402,6 +402,13 @@ class QuizController extends Controller {
         
         $em = $this->getDoctrine()->getManager();
         $instance = $em->getRepository('IWEasySurveyBundle:Instance')->findBy(array('seeskey'=>$seeskey));
+        $actualDate = new \DateTime("now");
+        $finishdate = $instance[0]->getTimefinish();
+        $close = 0;
+        if ($finishdate<$actualDate) {
+            $close = 1;
+        }
+        
         $quiz = $em->getRepository('IWEasySurveyBundle:Quiz')->find($instance[0]->getQuizId());
         $questions = $em->getRepository('IWEasySurveyBundle:Question')->findBy(array('quizId'=>$quiz->getId()));
         foreach ($questions as $data) {
@@ -458,7 +465,7 @@ class QuizController extends Controller {
             }
             return $this->render('IWEasySurveyBundle:Quiz:replySend.html.twig', array());
         }
-        return $this->render('IWEasySurveyBundle:Quiz:reply.html.twig', array('name'=>$quiz->getName(), 'form' => $form->createView()));
+        return $this->render('IWEasySurveyBundle:Quiz:reply.html.twig', array('name'=>$quiz->getName(), 'form' => $form->createView(),'close'=>$close));
     }    
 }
 

@@ -9,6 +9,7 @@
         {% stylesheets '@IWEasySurveyBundle/Resources/public/css/bootstrap/bootstrap.min.css'
                        '@IWEasySurveyBundle/Resources/public/css/core.css'
                        '@IWEasySurveyBundle/Resources/public/css/video-js.css'
+                       '@IWEasySurveyBundle/Resources/public/css/datatables.min.css'
                        '@IWEasySurveyBundle/Resources/public/css/bootstrap/sticky-footer-navbar.css' filter='cssrewrite' %}
             <link rel="stylesheet" href="{{ asset_url }}" />
         {% endstylesheets %}
@@ -23,8 +24,12 @@
         {% javascripts '@IWEasySurveyBundle/Resources/public/js/jquery.min.js'
                        '@IWEasySurveyBundle/Resources/public/js/jquery.dataTables.js'
                        '@IWEasySurveyBundle/Resources/public/js/video.js'
-                       '@IWEasySurveyBundle/Resources/public/js/bootstrap/bootstrap.min.js' %}
+                       '@IWEasySurveyBundle/Resources/public/js/bootstrap/bootstrap.min.js' 
+                       '@IWEasySurveyBundle/Resources/public/js/jquery.dataTables.js'
+                        '@IWEasySurveyBundle/Resources/public/js/core.js'
+        %}
             <script type="text/javascript" src="{{ asset_url }}"></script>
         {% endjavascripts %} 
+        
     </body>
 </html>
