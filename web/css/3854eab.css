@@ -22,7 +22,11 @@ and open the template in the editor.
 }
 
 select {
-    width: 100%
+    width: 50%
+}
+
+#form_finishdate {
+    width: 150px;
 }
 /*!
 Video.js Default Styles (http://videojs.com)

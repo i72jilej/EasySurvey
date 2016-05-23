@@ -325,7 +325,12 @@ class QuizController extends Controller {
         $em = $this->getDoctrine()->getManager();
         
         $form = $this->createFormBuilder()
-                ->add('finishdate', 'date', array('label' => 'Fecha de finalización de la encuesta: ', 'required' => true,'data' => new \DateTime("now"),'years' => range(date ("Y"), 2050)))
+                ->add('finishdate', 'date', array(
+                    'label' => 'Fecha de finalización de la encuesta: ', 
+                    'required' => true,
+                    'pattern' => '{{ day }}-{{ month }}-{{ year }}',
+                    'data' => new \DateTime("now"),
+                    'years' => range(date ("Y"), 2050)))
                 ->add('add', 'submit', array('label' => 'Enviar'))
                 ->getForm();
         
@@ -438,6 +443,12 @@ class QuizController extends Controller {
         $form->handleRequest($request);
         if ($form->isValid()) {
             $dataForm = $form->getData();            
+            
+            echo '<pre>';
+            print_r($dataForm);
+            echo '</pre>';
+            die();
+            
             foreach ($dataForm as $key => $value) {
                 $aux = explode('_',$key);
                 $type = $aux[0];
