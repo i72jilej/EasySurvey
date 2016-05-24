@@ -10,14 +10,13 @@ class QuizController extends Controller {
     private function getProjects() {
 
         $em = $this->getDoctrine()->getManager();
-
         //se obtienen los proyectos de los que el usuario es propietario
         $projects_property = $em->getRepository('IWEasySurveyBundle:Project')->findBy(array('user_id' => $this->get('session')->get('id')));
         $projects_array = array();
         foreach ($projects_property as $data) {
             $projects_array[$data->getId()] = $data->getName();
         }
-        return $projects_array;
+        return $projects_array; 
     }
 
     public function createAction(Request $request) {
@@ -437,17 +436,14 @@ class QuizController extends Controller {
                             break;
             }
         }
+        
+        
         $formBuilderQuestionnaire->add('add', 'submit', array('label' => 'Enviar'));
         $form = $formBuilderQuestionnaire->getForm();
         
         $form->handleRequest($request);
         if ($form->isValid()) {
             $dataForm = $form->getData();            
-            
-            echo '<pre>';
-            print_r($dataForm);
-            echo '</pre>';
-            die();
             
             foreach ($dataForm as $key => $value) {
                 $aux = explode('_',$key);
@@ -478,5 +474,10 @@ class QuizController extends Controller {
         }
         return $this->render('IWEasySurveyBundle:Quiz:reply.html.twig', array('name'=>$quiz->getName(), 'form' => $form->createView(),'close'=>$close));
     }    
+    
+    public function resultInstanceAction($id) 
+    {
+        return $this->render('IWEasySurveyBundle:Quiz:result.html.twig', array('id'=>$id));
+    }
 }
 

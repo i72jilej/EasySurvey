@@ -125,3 +125,7 @@ iw_easy_survey_reply_quiz:
 iw_easy_survey_delete_instance:
     pattern: /EasySurvey/deleteInstance/{id}
     defaults: {_controller: IWEasySurveyBundle:Quiz:deleteInstance }   
+    
+iw_easy_survey_results:
+    pattern: /EasySurvey/resultInstance/{id}
+    defaults: {_controller: IWEasySurveyBundle:Quiz:resultInstance }   

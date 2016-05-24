@@ -14,7 +14,8 @@
                   <th>Proyecto</th>
                   <th>Fecha de creación</th>
                   <th>Fecha de finalización</th>
-                  <th>URL</th>
+                  <th></th>
+                  <th></th>
                   <th></th>
                 </tr>
               </thead>
@@ -27,6 +28,7 @@
                     <td> {{data.timefinish.date|date('d/m/y')}} </td>
                     <td> <a href="{{ path('iw_easy_survey_reply_quiz', {'seeskey': data.seeskey})}}"> URL </a> </td>
                     <td> <a href="{{ path('iw_easy_survey_delete_instance', {'id': data.instance_id})}}" onclick="return confirm('¿Esta seguro?')"> Borrar </a> </td>
+                    <td> <a href="{{ path('iw_easy_survey_results', {'id': data.instance_id})}}"> Mostrar resultados </a> </td>
                 </tr>
                 {% endfor %}
               </tbody>
@@ -34,5 +36,6 @@
           {% endif %}
       </div>
 {% endblock %}
+
 
 

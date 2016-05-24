@@ -1,6 +1,7 @@
 {% extends "IWEasySurveyBundle::layout.html.twig" %}
 {% block content %}
       <div class="page-header">          
+        <script src='https://www.google.com/recaptcha/api.js'></script>
         <h1>{{name}}</h1>
       </div>  
       <div class="page-content">  
@@ -9,5 +10,6 @@
          {% else %}    
             {{ form(form)}}
          {% endif %}         
-      </div>         
+      </div>  
+      <div class="g-recaptcha" data-sitekey="6LeariATAAAAACju7ric7xAzlh_NStHRQQYN4BSH"></div>
 {% endblock %}
