@@ -21,6 +21,7 @@
         "incenteev/composer-parameter-handler": "~2.0",
         "mopa/bootstrap-bundle": "dev-master",
         "twitter/bootstrap":     "dev-master"
+        
     },
     "repositories": [
        {

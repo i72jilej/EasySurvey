@@ -68,3 +68,7 @@ swiftmailer:
     password:  "%mailer_password%"
     spool:     { type: memory }
     
+acrobat_recaptcha:
+    public_key: 6LeIrCATAAAAAChnD32J2_O3igj2UE_C9Y4jeYLn
+    private_key: 6LeIrCATAAAAABhl3elAekdWOcHal-OC81bsVoF5
+    locale: %kernel.default_locale%

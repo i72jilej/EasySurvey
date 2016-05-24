@@ -436,39 +436,42 @@ class QuizController extends Controller {
                             break;
             }
         }
-        
-        
+        $formBuilderQuestionnaire->add('Captcha', 'recaptcha');
         $formBuilderQuestionnaire->add('add', 'submit', array('label' => 'Enviar'));
         $form = $formBuilderQuestionnaire->getForm();
         
         $form->handleRequest($request);
         if ($form->isValid()) {
-            $dataForm = $form->getData();            
+            $dataForm = $form->getData();
             
             foreach ($dataForm as $key => $value) {
-                $aux = explode('_',$key);
-                $type = $aux[0];
-                $quizId = $aux[1];
-                $answer = new \IW\EasySurveyBundle\Entity\Answers;
-                $answer->setIdQuestion($quizId);
-                if ($type == 3) {
-                    $result = '';
-                    foreach ($value as $a) {
-                        $result .= $a.',' ;
+                
+                if ($key!='Captcha') {
+                
+                    $aux = explode('_',$key);
+                    $type = $aux[0];
+                    $quizId = $aux[1];
+                    $answer = new \IW\EasySurveyBundle\Entity\Answers;
+                    $answer->setIdQuestion($quizId);
+                    if ($type == 3) {
+                        $result = '';
+                        foreach ($value as $a) {
+                            $result .= $a.',' ;
+                        }
+                        if ($result!='') {
+                            $result = substr($result, 0, strlen($result)-1);
+                        }
+                    } else {
+                        $result = $value;
                     }
-                    if ($result!='') {
-                        $result = substr($result, 0, strlen($result)-1);
-                    }
-                } else {
-                    $result = $value;
+                    $answer->setBody($result);
+                    $answer->setTimestamp(new \DateTime("now"));
+                    $answer->setIdType($type);
+                    $answer->setIdInstance($instance[0]->getId());
+                    $em = $this->getDoctrine()->getManager();
+                    $em->persist($answer);
+                    $em->flush();
                 }
-                $answer->setBody($result);
-                $answer->setTimestamp(new \DateTime("now"));
-                $answer->setIdType($type);
-                $answer->setIdInstance($instance[0]->getId());
-                $em = $this->getDoctrine()->getManager();
-                $em->persist($answer);
-                $em->flush();
             }
             return $this->render('IWEasySurveyBundle:Quiz:replySend.html.twig', array());
         }

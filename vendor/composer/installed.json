@@ -632,12 +632,12 @@
         "target-dir": "Symfony/Component/Icu",
         "source": {
             "type": "git",
-            "url": "https://github.com/symfony/Icu.git",
+            "url": "https://github.com/symfony/icu.git",
             "reference": "cac3fdfb111adbe590155f491594636d45129783"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/Icu/zipball/cac3fdfb111adbe590155f491594636d45129783",
+            "url": "https://api.github.com/repos/symfony/icu/zipball/cac3fdfb111adbe590155f491594636d45129783",
             "reference": "cac3fdfb111adbe590155f491594636d45129783",
             "shasum": ""
         },
@@ -896,12 +896,12 @@
         "target-dir": "Symfony/Bundle/AsseticBundle",
         "source": {
             "type": "git",
-            "url": "https://github.com/symfony/AsseticBundle.git",
+            "url": "https://github.com/symfony/assetic-bundle.git",
             "reference": "146dd3cb46b302bd471560471c6aaa930483dac1"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/AsseticBundle/zipball/146dd3cb46b302bd471560471c6aaa930483dac1",
+            "url": "https://api.github.com/repos/symfony/assetic-bundle/zipball/146dd3cb46b302bd471560471c6aaa930483dac1",
             "reference": "146dd3cb46b302bd471560471c6aaa930483dac1",
             "shasum": ""
         },
@@ -1095,12 +1095,12 @@
         "version_normalized": "1.0.1.0",
         "source": {
             "type": "git",
-            "url": "https://github.com/fabpot/Twig-extensions.git",
+            "url": "https://github.com/twigphp/Twig-extensions.git",
             "reference": "f91a82ec225e5bb108e01a0f93c9be04f84dcfa0"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/fabpot/Twig-extensions/zipball/f91a82ec225e5bb108e01a0f93c9be04f84dcfa0",
+            "url": "https://api.github.com/repos/twigphp/Twig-extensions/zipball/f91a82ec225e5bb108e01a0f93c9be04f84dcfa0",
             "reference": "f91a82ec225e5bb108e01a0f93c9be04f84dcfa0",
             "shasum": ""
         },
@@ -1196,12 +1196,12 @@
         "target-dir": "Symfony/Bundle/SwiftmailerBundle",
         "source": {
             "type": "git",
-            "url": "https://github.com/symfony/SwiftmailerBundle.git",
+            "url": "https://github.com/symfony/swiftmailer-bundle.git",
             "reference": "fcefa9dbd5a1ed20547b0f8a2afd5ad6837ea321"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/SwiftmailerBundle/zipball/fcefa9dbd5a1ed20547b0f8a2afd5ad6837ea321",
+            "url": "https://api.github.com/repos/symfony/swiftmailer-bundle/zipball/fcefa9dbd5a1ed20547b0f8a2afd5ad6837ea321",
             "reference": "fcefa9dbd5a1ed20547b0f8a2afd5ad6837ea321",
             "shasum": ""
         },
@@ -1475,12 +1475,12 @@
         "version_normalized": "1.15.1.0",
         "source": {
             "type": "git",
-            "url": "https://github.com/fabpot/Twig.git",
+            "url": "https://github.com/twigphp/Twig.git",
             "reference": "1fb5784662f438d7d96a541e305e28b812e2eeed"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/fabpot/Twig/zipball/1fb5784662f438d7d96a541e305e28b812e2eeed",
+            "url": "https://api.github.com/repos/twigphp/Twig/zipball/1fb5784662f438d7d96a541e305e28b812e2eeed",
             "reference": "1fb5784662f438d7d96a541e305e28b812e2eeed",
             "shasum": ""
         },
@@ -1535,12 +1535,12 @@
         "target-dir": "Symfony/Bundle/MonologBundle",
         "source": {
             "type": "git",
-            "url": "https://github.com/symfony/MonologBundle.git",
+            "url": "https://github.com/symfony/monolog-bundle.git",
             "reference": "71ad844ac29401f86619f9d643393265451e858b"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/MonologBundle/zipball/71ad844ac29401f86619f9d643393265451e858b",
+            "url": "https://api.github.com/repos/symfony/monolog-bundle/zipball/71ad844ac29401f86619f9d643393265451e858b",
             "reference": "71ad844ac29401f86619f9d643393265451e858b",
             "shasum": ""
         },
@@ -1725,10 +1725,259 @@
         "dist": {
             "type": "zip",
             "url": "https://github.com/twitter/bootstrap/zipball/master",
-            "reference": null,
+            "reference": "master",
             "shasum": null
         },
         "type": "library",
         "installation-source": "dist"
+    },
+    {
+        "name": "excelwebzone/recaptcha-bundle",
+        "version": "v1.4.1",
+        "version_normalized": "1.4.1.0",
+        "target-dir": "EWZ/Bundle/RecaptchaBundle",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/excelwebzone/EWZRecaptchaBundle.git",
+            "reference": "3ebd8fec320c5346814601086894f79c141dd077"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/excelwebzone/EWZRecaptchaBundle/zipball/3ebd8fec320c5346814601086894f79c141dd077",
+            "reference": "3ebd8fec320c5346814601086894f79c141dd077",
+            "shasum": ""
+        },
+        "require": {
+            "symfony/framework-bundle": "~2.4"
+        },
+        "time": "2015-07-31 23:57:07",
+        "type": "symfony-bundle",
+        "installation-source": "dist",
+        "autoload": {
+            "psr-0": {
+                "EWZ\\Bundle\\RecaptchaBundle\\": ""
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Michael H. Arieli",
+                "email": "excelwebzone@gmail.com",
+                "homepage": "http://excelwebzone.com/"
+            }
+        ],
+        "description": "This bundle provides easy reCAPTCHA form field integration",
+        "homepage": "https://github.com/excelwebzone/EWZRecaptchaBundle",
+        "keywords": [
+            "recaptcha"
+        ]
+    },
+    {
+        "name": "acrobat/recaptcha-bundle",
+        "version": "v2.0.0",
+        "version_normalized": "2.0.0.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/acrobat/RecaptchaBundle.git",
+            "reference": "b7aed86d06ca4d34ce928a4a1d490286f5ce6995"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/acrobat/RecaptchaBundle/zipball/b7aed86d06ca4d34ce928a4a1d490286f5ce6995",
+            "reference": "b7aed86d06ca4d34ce928a4a1d490286f5ce6995",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.3.3",
+            "symfony/config": "~2.3",
+            "symfony/dependency-injection": "~2.3",
+            "symfony/form": "~2.3",
+            "symfony/http-kernel": "~2.3",
+            "symfony/validator": "~2.3"
+        },
+        "require-dev": {
+            "liip/rmt": "~1.0",
+            "phpunit/phpunit": "4.3.*"
+        },
+        "time": "2014-10-19 09:24:20",
+        "type": "symfony-bundle",
+        "extra": {
+            "branch-alias": {
+                "dev-master": "2.0-dev"
+            }
+        },
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "Acrobat\\Bundle\\RecaptchaBundle\\": ""
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Jeroen Thora",
+                "email": "jeroenthora@gmail.com"
+            }
+        ],
+        "description": "This bundle provides easy integration of Recaptcha into symfony2"
+    },
+    {
+        "name": "google/recaptcha",
+        "version": "1.1.2",
+        "version_normalized": "1.1.2.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/google/recaptcha.git",
+            "reference": "2b7e00566afca82a38a1d3adb8e42c118006296e"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/google/recaptcha/zipball/2b7e00566afca82a38a1d3adb8e42c118006296e",
+            "reference": "2b7e00566afca82a38a1d3adb8e42c118006296e",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.3.2"
+        },
+        "require-dev": {
+            "phpunit/phpunit": "4.5.*"
+        },
+        "time": "2015-09-02 17:23:59",
+        "type": "library",
+        "extra": {
+            "branch-alias": {
+                "dev-master": "1.1.x-dev"
+            }
+        },
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "ReCaptcha\\": "src/ReCaptcha"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "BSD-3-Clause"
+        ],
+        "description": "Client library for reCAPTCHA, a free service that protect websites from spam and abuse.",
+        "homepage": "http://www.google.com/recaptcha/",
+        "keywords": [
+            "Abuse",
+            "captcha",
+            "recaptcha",
+            "spam"
+        ]
+    },
+    {
+        "name": "gregwar/captcha",
+        "version": "v1.1.1",
+        "version_normalized": "1.1.1.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/Gregwar/Captcha.git",
+            "reference": "1240ab993ca713680573b2d4166900da5f758623"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/Gregwar/Captcha/zipball/1240ab993ca713680573b2d4166900da5f758623",
+            "reference": "1240ab993ca713680573b2d4166900da5f758623",
+            "shasum": ""
+        },
+        "require": {
+            "ext-gd": "*",
+            "php": ">=5.3.0"
+        },
+        "time": "2015-09-11 15:23:20",
+        "type": "captcha",
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "Gregwar\\Captcha\\": "/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Grégoire Passault",
+                "email": "g.passault@gmail.com",
+                "homepage": "http://www.gregwar.com/"
+            },
+            {
+                "name": "Jeremy Livingston",
+                "email": "jeremy.j.livingston@gmail.com"
+            }
+        ],
+        "description": "Captcha generator",
+        "homepage": "https://github.com/Gregwar/Captcha",
+        "keywords": [
+            "bot",
+            "captcha",
+            "spam"
+        ]
+    },
+    {
+        "name": "gregwar/captcha-bundle",
+        "version": "v2.0.2",
+        "version_normalized": "2.0.2.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/Gregwar/CaptchaBundle.git",
+            "reference": "53c25b2e9aaa7ddbdf7e9a6f69007b91a5f1efa0"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/Gregwar/CaptchaBundle/zipball/53c25b2e9aaa7ddbdf7e9a6f69007b91a5f1efa0",
+            "reference": "53c25b2e9aaa7ddbdf7e9a6f69007b91a5f1efa0",
+            "shasum": ""
+        },
+        "require": {
+            "gregwar/captcha": "~1.1",
+            "php": ">=5.3.9",
+            "symfony/form": "~2.1|~3.0",
+            "symfony/framework-bundle": "~2.1|~3.0"
+        },
+        "time": "2016-02-02 22:40:33",
+        "type": "captcha-bundle",
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "Gregwar\\CaptchaBundle\\": "/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Grégoire Passault",
+                "email": "g.passault@gmail.com",
+                "homepage": "http://www.gregwar.com/"
+            },
+            {
+                "name": "Jeremy Livingston",
+                "email": "jeremy.j.livingston@gmail.com"
+            }
+        ],
+        "description": "Captcha bundle",
+        "homepage": "https://github.com/Gregwar/CaptchaBundle",
+        "keywords": [
+            "Symfony2",
+            "bot",
+            "captcha",
+            "code",
+            "security",
+            "spam",
+            "visual"
+        ]
     }
 ]

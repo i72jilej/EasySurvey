@@ -18,7 +18,7 @@ class AppKernel extends Kernel
             new Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle(),
             new Mopa\Bundle\BootstrapBundle\MopaBootstrapBundle(),
             new IW\EasySurveyBundle\IWEasySurveyBundle(),
-            
+            new Acrobat\Bundle\RecaptchaBundle\AcrobatRecaptchaBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {
