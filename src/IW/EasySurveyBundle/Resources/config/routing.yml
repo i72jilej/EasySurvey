@@ -59,7 +59,7 @@ iw_easy_survey_create_quiz:
     defaults: { _controller: IWEasySurveyBundle:Quiz:create }
 
 iw_easy_survey_manage_quiz:
-    pattern: /EasySurvey/manageQuiz
+    pattern: /EasySurvey/manageQuiz/{id}
     defaults: { _controller: IWEasySurveyBundle:Quiz:manage }
 
 iw_easy_survey_edit_quiz:
@@ -115,7 +115,7 @@ iw_easy_survey_generate_instance:
     defaults: {_controller: IWEasySurveyBundle:Quiz:generateInstance }
     
 iw_easy_survey_instances:
-    pattern: /EasySurvey/instances/
+    pattern: /EasySurvey/instances/{id}
     defaults: {_controller: IWEasySurveyBundle:Quiz:instances }
     
 iw_easy_survey_reply_quiz:
@@ -129,3 +129,11 @@ iw_easy_survey_delete_instance:
 iw_easy_survey_results:
     pattern: /EasySurvey/resultInstance/{id}
     defaults: {_controller: IWEasySurveyBundle:Quiz:resultInstance }   
+    
+iw_easy_survey_collaborator:
+    pattern: /EasySurvey/collaborator/{id}
+    defaults: {_controller: IWEasySurveyBundle:Project:collaborator }   
+    
+iw_easy_survey_close_instance:
+    pattern: /EasySurvey/closeInstance/{id}
+    defaults: {_controller: IWEasySurveyBundle:Quiz:closeInstance }   

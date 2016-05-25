@@ -3,37 +3,46 @@
       <div class="page-header">          
         <h1>{% trans %}Encuestas instanciadas{% endtrans %}</h1>
       </div>  
-      <div class="page-content">  
-          {% if instances is empty %}
-              {% trans %}Usted no dispone de ninguna encuesta instanciada{% endtrans %}
-          {% else %}
-          <table id="datetable">
-              <thead>
-                <tr>
-                  <th>Encuesta</th>
-                  <th>Proyecto</th>
-                  <th>Fecha de creación</th>
-                  <th>Fecha de finalización</th>
-                  <th></th>
-                  <th></th>
-                  <th></th>
-                </tr>
-              </thead>
-              <tbody>
-                {% for data in instances %}
-                <tr>
-                    <td> {{data.question}} </td>
-                    <td> {{data.project}} </td>
-                    <td> {{data.timecreated.date|date('d/m/y')}} </td>
-                    <td> {{data.timefinish.date|date('d/m/y')}} </td>
-                    <td> <a href="{{ path('iw_easy_survey_reply_quiz', {'seeskey': data.seeskey})}}"> URL </a> </td>
-                    <td> <a href="{{ path('iw_easy_survey_delete_instance', {'id': data.instance_id})}}" onclick="return confirm('¿Esta seguro?')"> Borrar </a> </td>
-                    <td> <a href="{{ path('iw_easy_survey_results', {'id': data.instance_id})}}"> Mostrar resultados </a> </td>
-                </tr>
-                {% endfor %}
-              </tbody>
-          </table>
-          {% endif %}
+      <div class="page-content">            
+          
+        <b>{% trans %}Filtro por proyecto{% endtrans %}</b> :
+        <select name="menu" onChange="window.document.location.href=this.options[this.selectedIndex].value;" value="GO">
+            {% for project in projects %}
+                <option value="{{ path('iw_easy_survey_manage_quiz',{'id': project.id})}}" {% if project.id == actual_project %} selected {% endif %}> {{project.name}} </option>
+            {% endfor %}
+        </select>
+        <br>  
+        <br> 
+        
+        <table id="datetable">
+            <thead>
+              <tr>
+                <th>Encuesta</th>
+                <th>Proyecto</th>
+                <th>Fecha de creación</th>
+                <th>Fecha de finalización</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for data in instances %}
+              <tr>
+                  <td> {{data.question}} </td>
+                  <td> {{data.project}} </td>
+                  <td> {{data.timecreated.date|date('d/m/y')}} </td>
+                  <td> {{data.timefinish.date|date('d/m/y')}} </td>
+                  <td> 
+                      <a href="{{ path('iw_easy_survey_reply_quiz', {'seeskey': data.seeskey})}}"> URL </a> | 
+                      <a href="{{ path('iw_easy_survey_delete_instance', {'id': data.instance_id})}}" onclick="return confirm('¿Esta seguro?')"> Borrar </a> |
+                      <a href="{{ path('iw_easy_survey_results', {'id': data.instance_id})}}"> Mostrar resultados </a> |
+                      {% if data.timefinish.date|date('d/m/y') > 'now'|date('d/m/y') %}
+                          <a href="{{ path('iw_easy_survey_close_instance', {'id': data.instance_id})}}" onclick="return confirm('¿Esta seguro? Si cierra la instancia nadie podrá contestar a la encuesta')"> Cerrar instancia </a> 
+                      {% endif %}
+                  </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+        </table>
       </div>
 {% endblock %}
 

@@ -43,20 +43,64 @@ class QuizController extends Controller {
             $project->setName($projectData['name']);
             $project->setDescription($projectData['description']);
             $project->setProjectId($projectData['project']);
-            $project->setUserId($this->get('session')->get('id'));
             $em = $this->getDoctrine()->getManager();
             $em->persist($project);
             $em->flush();
-            return $this->redirect($this->generateUrl('iw_easy_survey_manage_quiz'));
+            return $this->redirect($this->generateUrl('iw_easy_survey_manage_quiz',array('id'=>-1)));
         }
 
         return $this->render('IWEasySurveyBundle:Quiz:form.html.twig', array('form' => $form->createView(), 'error' => $error));
     }
-
-    public function manageAction() {
+    
+    public function manageAction($id) 
+    {        
         $em = $this->getDoctrine()->getManager();
-        $quiz = $em->getRepository('IWEasySurveyBundle:Quiz')->findby(array('userId' => $this->get('session')->get('id')));
-        return $this->render('IWEasySurveyBundle:Quiz:manage.html.twig', array('quiz' => $quiz));
+        //se obtienen los proyectos del usuario en session
+        $projects = $this->getProjects();
+        $results = array ();
+        $project_results = array ();
+        $project_results[] = array ('id'=>-1, 'name'=>'- Todos -');
+        foreach ($projects as $key => $project) {
+            $project_results[] = array ('id'=>$key, 'name'=>$project);
+            
+            //se obtienen los cuestionarios del proyecto en cuestión
+            $quizs = $em->getRepository('IWEasySurveyBundle:Quiz')->findby(array('projectId' => $key));
+            foreach ($quizs as $quiz) {
+                
+                if ($id != -1 ) {
+                    if ($id == $key) {
+                        $results[] = array ('id'=>$quiz->getId(), 'name'=>$quiz->getName(), 'project'=> $project,'edit'=>1);
+                    }
+                } else {
+                    $results[] = array ('id'=>$quiz->getId(), 'name'=>$quiz->getName(), 'project'=> $project,'edit'=>1);
+                }
+                
+            }
+        }
+        
+        //obtenemos los proyectos en las que el usuario es colaborador
+        $helpers  = $em->getRepository('IWEasySurveyBundle:ProjectUser')->findby(array('userId' => $this->get('session')->get('id')));
+        foreach ($helpers as $helper) {
+            $projects = $em->getRepository('IWEasySurveyBundle:Project')->findBy(array('id' => $helper->getProjectId()));
+            foreach ($projects as $project) {
+                $project_results[] = array ('id' => $project->getId(), 'name'=>$project->getName());
+                //se obtienen los cuestionarios del proyecto en cuestión
+                $quizs = $em->getRepository('IWEasySurveyBundle:Quiz')->findby(array('projectId' => $project->getId()));
+                foreach ($quizs as $quiz) {                    
+                    if ($id != -1 ) {
+                        if ($id == $project->getId()) {
+                            $results[] = array ('id'=>$quiz->getId(), 'name'=>$quiz->getName(), 'project'=> $project->getName(),'edit'=>0);
+                        }
+                    } else {
+                        $results[] = array ('id'=>$quiz->getId(), 'name'=>$quiz->getName(), 'project'=> $project->getName(),'edit'=>0);
+                    }
+                    
+                    
+                }
+            }
+        }
+                
+        return $this->render('IWEasySurveyBundle:Quiz:manage.html.twig', array('quiz' => $results, 'projects'=>$project_results, 'actual_project'=>$id));
     }
 
     public function editAction($id, Request $request) {
@@ -81,12 +125,10 @@ class QuizController extends Controller {
             $quiz->setName($dataForm['name']);
             $quiz->setDescription($dataForm['description']);
             $quiz->setProjectId($dataForm['project']);
-            $quiz->setUserId($this->get('session')->get('id'));
             $em->persist($quiz);
             $em->flush();
-            return $this->redirect($this->generateUrl('iw_easy_survey_manage_quiz'));
+            return $this->redirect($this->generateUrl('iw_easy_survey_manage_quiz',array('id'=>-1)));
         }
-
         return $this->render('IWEasySurveyBundle:Quiz:form.html.twig', array('form' => $form->createView(), 'error' => $error));
     }
 
@@ -164,7 +206,7 @@ class QuizController extends Controller {
         }
         $em->remove($quiz);
         $em->flush();
-        return $this->redirect($this->generateUrl('iw_easy_survey_manage_quiz'));
+        return $this->redirect($this->generateUrl('iw_easy_survey_manage_quiz',array('id'=>-1)));
     }
     
     public function editQuestionAction($id, Request $request) {
@@ -303,22 +345,7 @@ class QuizController extends Controller {
         }
         return $projects_array;
     }
-    
-    public function instanceAction () 
-    {
-        $em = $this->getDoctrine()->getManager();
-        //obtenemos los proyectos en los que el usuario es o propietario o colaborador
-        $projects = $this->getProjectsUsers();
-        $quiz_array = array ();
-        foreach ($projects as $project) {
-            $quizs = $em->getRepository('IWEasySurveyBundle:Quiz')->findBy(array('projectId'=>$project['id']));
-            foreach ($quizs as $data) {
-                $quiz_array[]=array ('id'=>$data->getId(),'name'=>$data->getName(),'project'=>$project['name']);
-            }   
-        }
-        return $this->render('IWEasySurveyBundle:Quiz:instance.html.twig', array('quizs'=>$quiz_array));
-    }
-    
+
     public function generateInstanceAction($id, Request $request) 
     {
         $em = $this->getDoctrine()->getManager();
@@ -353,20 +380,37 @@ class QuizController extends Controller {
             $em = $this->getDoctrine()->getManager();
             $em->persist($instance);
             $em->flush();
-            return $this->redirect($this->generateUrl('iw_easy_survey_instances', array()));
+            return $this->redirect($this->generateUrl('iw_easy_survey_instances', array('id'=>-1)));
         }
         
         return $this->render('IWEasySurveyBundle:Quiz:generateinstace.html.twig', array('id' => $id, 'form' => $form->createView()));
     }
     
-    public function instancesAction() 
+    private function existProject ($array, $id) {
+        
+        foreach ($array as $data) {
+            if ($data['id'] == $id) {
+                return 1;
+            }
+        }
+        return 0;
+        
+    }
+    
+    public function instancesAction($id) 
     {
+        $projects_results = array();
+        $projects_results[] = array('id'=>-1,'name'=>'- Todo -');
         $datas = array ();
         $em = $this->getDoctrine()->getManager();
         $instances = $em->getRepository('IWEasySurveyBundle:Instance')->findBy(array('userId'=>$this->get('session')->get('id')));
         foreach ($instances as $data) {
             $question = $em->getRepository('IWEasySurveyBundle:Quiz')->find($data->getQuizId());
             $project = $em->getRepository('IWEasySurveyBundle:Project')->find($question->getProjectId());
+            
+            if (!$this->existProject($projects_results, $project->getId())) {
+                $projects_results[] = array ( 'id'=>$project->getId(), 'name'=>$project->getName() );
+            }
             $datas[]=array(
                         'instance_id'=>$data->getId(),
                         'question'=>$question->getName(),
@@ -376,7 +420,7 @@ class QuizController extends Controller {
                         'seeskey'=>$data->getSeeskey()
                     );   
         }
-        return $this->render('IWEasySurveyBundle:Quiz:instances.html.twig', array('instances'=>$datas));
+        return $this->render('IWEasySurveyBundle:Quiz:instances.html.twig', array('instances'=>$datas,'projects'=>$projects_results,'actual_project'=>$id));
     }
     
     public function deleteInstanceAction($id) 
@@ -385,7 +429,7 @@ class QuizController extends Controller {
         $instance = $em->getRepository('IWEasySurveyBundle:Instance')->find($id);
         $em->remove($instance);
         $em->flush();
-        return $this->redirect($this->generateUrl('iw_easy_survey_instances', array()));
+        return $this->redirect($this->generateUrl('iw_easy_survey_instances', array('id'=>-1)));
     }
     
     private function getOptions($id) 
@@ -400,10 +444,8 @@ class QuizController extends Controller {
     }
 
     public function replyQuizAction($seeskey, Request $request)
-    {
-        
-        $formBuilderQuestionnaire  = $this->createFormBuilder();
-        
+    {   
+        $formBuilderQuestionnaire  = $this->createFormBuilder();   
         $em = $this->getDoctrine()->getManager();
         $instance = $em->getRepository('IWEasySurveyBundle:Instance')->findBy(array('seeskey'=>$seeskey));
         $actualDate = new \DateTime("now");
@@ -477,6 +519,15 @@ class QuizController extends Controller {
         }
         return $this->render('IWEasySurveyBundle:Quiz:reply.html.twig', array('name'=>$quiz->getName(), 'form' => $form->createView(),'close'=>$close));
     }    
+    
+    public function closeInstanceAction($id){
+        $em = $this->getDoctrine()->getManager();
+        $instance = $em->getRepository('IWEasySurveyBundle:Instance')->find($id);
+        $instance->setTimefinish(new \DateTime("now"));
+        $em->persist($instance);
+        $em->flush();
+        return $this->redirect($this->generateUrl('iw_easy_survey_instances', array('id'=>-1)));
+    }
     
     public function resultInstanceAction($id) 
     {

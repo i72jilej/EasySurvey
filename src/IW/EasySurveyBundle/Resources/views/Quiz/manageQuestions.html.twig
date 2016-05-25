@@ -10,7 +10,7 @@
               <tr>
                   <th>Nombre</th>
                   <th>Tipo</th>
-                  <th>Acciones</th>
+                  <th></th>
               </tr>
               </thead>
               <tbody>
@@ -19,16 +19,16 @@
                   <td>{{data.name}}</td>
                   <td>{{options[data.typeId]}}</td>
                   <td>
-                    <a href="{{ path('iw_easy_survey_edit_question', {'id': data.id})}}"> {% trans %}Editar{% endtrans %} </a> |
+                    <a href="{{ path('iw_easy_survey_edit_question', {'id': data.id})}}"> {% trans %}Modificar{% endtrans %} </a> |
                     <a href="{{ path('iw_easy_survey_delete_question', {'id': data.id})}}" onclick="return confirm('¿Esta seguro?')"> {% trans %}Borrar{% endtrans %} </a> |
                     {% if data.typeId > 1 %}
-                        <a href="{{ path('iw_easy_survey_edit_question_option', {'id': data.id})}}"> {% trans %}Editar opciones{% endtrans %} </a>
+                        <a href="{{ path('iw_easy_survey_edit_question_option', {'id': data.id})}}"> {% trans %}Modificar opciones{% endtrans %} </a>
                     {% endif %}
                   </td>
               </tr>
               {% endfor %}
               </tbody>
           </table>
-           <a href="{{ path('iw_easy_survey_add_question', {'id': id})}}"> {% trans %}Añadir pregunta{% endtrans %} </a>
+          <a href="{{ path('iw_easy_survey_add_question', {'id': id})}}"> {% trans %}Añadir pregunta{% endtrans %} </a>
       </div>
 {% endblock %}

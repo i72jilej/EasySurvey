@@ -38,7 +38,54 @@ class ProjectController extends Controller
         return $this->render('IWEasySurveyBundle:Project:manage.html.twig', array('projects'=>$projects));
     }
     
-    public function deleteAction (Request $request) {
+    public function deleteAction ($id) {
+        
+        
+        $em = $this->getDoctrine()->getManager();
+        
+        // Borramos los colaboradores de dicho proyecto
+        $collaborator = $em->getRepository('IWEasySurveyBundle:ProjectUser')->findBy(array('projectId'=>$id));
+        foreach ($collaborator as $data) {
+            $em->remove($data);
+        }
+        
+        // Borramos las encuestas asociadas a dicho projecto
+        $quizs = $em->getRepository('IWEasySurveyBundle:Quiz')->findBy(array('projectId'=>$id));
+        foreach ( $quizs as $quiz ) {
+            
+            //Borramos las preguntas asociadas a la encuesta
+            $questions = $em->getRepository('IWEasySurveyBundle:Question')->findBy(array('quizId'=>$quiz->getId()));
+            foreach ($questions as $question) {
+                //Borramos las posibles opciones (si las hubiese)
+                $textQuestionOptions = $em->getRepository('IWEasySurveyBundle:TextQuestionOption')->findBy(array('questionId'=>$question->getId()));
+                foreach ($textQuestionOptions as $textQuestionOption) {
+                    //eliminamos las opciones
+                    $em->remove($textQuestionOption);
+                }
+                //eliminamos la pregunta
+                $em->remove($question);
+            }
+            
+            //buscamos las instancias de la encuesta
+            $instances = $em->getRepository('IWEasySurveyBundle:Instance')->findBy(array('quizId'=>$quiz->getId()));
+            foreach ($instances as $instance) {
+                //obtenemos la respuesta relacionado con la instancia
+                $answers = $em->getRepository('IWEasySurveyBundle:Answers')->findBy(array('idInstance'=>$instance->getId()));
+                foreach ($answers as $answer) {
+                    //eliminamos la respuesta
+                    $em->remove($answer);
+                }
+                //eliminamos la instancia
+                $em->remove($instance);
+            }
+            //eliminamos el cuestionario
+            $em->remove($quiz);
+        }
+        
+        //por ultimo borramos el proyecto
+        $project = $em->getRepository('IWEasySurveyBundle:Project')->find($id);
+        $em->remove($project);
+        $em->flush();
         return $this->redirect($this->generateUrl('iw_easy_survey_manage_project'));
     }
     
@@ -69,13 +116,32 @@ class ProjectController extends Controller
         
         $em = $this->getDoctrine()->getManager();
         $project = $em->getRepository('IWEasySurveyBundle:Project')->find($id);
+        $form = $this->createFormBuilder()
+            ->add('name', 'text', array('label'=>'Nombre del Proyecto','required'=>true, 'data'=>$project->getName(), 'required'=>true))
+            ->add('description', 'textarea', array('label'=>'Descripción del Proyecto', 'data'=>$project->getDescription(),'required'=>false))
+            ->add('modify', 'submit',array('label'=>'Modificar',))
+            ->getForm();
+        $form->handleRequest($request);
+        if ($form->isValid()) {
+            $projectData = $form->getData();
+            $project->setName($projectData['name']);
+            $project->setDescription($projectData['description']);
+            $em->persist($project);
+            $em->flush();    
+            return $this->redirect($this->generateUrl('iw_easy_survey_manage_project'));
+        }
+        
+        return $this->render('IWEasySurveyBundle:Project:form.html.twig', array('form' => $form->createView(),));
+    }
+    
+    public function collaboratorAction ($id, Request $request) {
+        
+        $em = $this->getDoctrine()->getManager();
         
         $arrayUser = $this->getAllUser();
         $user_selecteds = $this->getUserProjectSelected($id);
         
         $form = $this->createFormBuilder()
-            ->add('name', 'text', array('label'=>'Nombre del Proyecto','required'=>true, 'data'=>$project->getName(), 'required'=>true))
-            ->add('description', 'textarea', array('label'=>'Descripción del Proyecto', 'data'=>$project->getDescription(),'required'=>false))
             ->add('subscriber','choice',array('label'=>'Subscriptores','choices'=>$arrayUser,'data'=>$user_selecteds,'multiple'=>true))
             ->add('modify', 'submit',array('label'=>'Modificar',))
             ->getForm();
@@ -84,7 +150,7 @@ class ProjectController extends Controller
         
         if ($form->isValid()) {
             
-            $projectData = $form->getData();
+            $collaboratortData = $form->getData();
             
             //se eliminan los colaboradores existentes
             $projectUser = $em->getRepository('IWEasySurveyBundle:ProjectUser')->findBy(array('projectId'=>$id));
@@ -94,7 +160,7 @@ class ProjectController extends Controller
             }
             
             //se crean los nuevo colaboradores
-            foreach ($projectData['subscriber'] as $data) {
+            foreach ($collaboratortData['subscriber'] as $data) {
                 $projectUser = new \IW\EasySurveyBundle\Entity\ProjectUser;
                 $projectUser->setProjectId($id);
                 $projectUser->setUserId($data);
@@ -102,12 +168,9 @@ class ProjectController extends Controller
                 $em->flush();   
             }
             
-            $project->setName($projectData['name']);
-            $project->setDescription($projectData['description']);
-            $em->flush();    
             return $this->redirect($this->generateUrl('iw_easy_survey_manage_project'));
         }
         
-        return $this->render('IWEasySurveyBundle:Project:form.html.twig', array('form' => $form->createView(),));
+        return $this->render('IWEasySurveyBundle:Project:collaborator.html.twig', array('form' => $form->createView(),));
     }
 }

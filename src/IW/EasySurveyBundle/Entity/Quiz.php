@@ -30,11 +30,6 @@ class Quiz
     private $projectId;
 
     /**
-     * @var integer
-     */
-    private $userId;
-    
-    /**
      * Get id
      *
      * @return integer 
@@ -111,29 +106,6 @@ class Quiz
     public function getProjectId()
     {
         return $this->projectId;
-    }
-
-    /**
-     * Set userId
-     *
-     * @param integer $userId
-     * @return Quiz
-     */
-    public function setUserId($userId)
-    {
-        $this->userId = $userId;
-    
-        return $this;
-    }
-
-    /**
-     * Get userId
-     *
-     * @return integer 
-     */
-    public function getUserId()
-    {
-        return $this->userId;
     }
    
 }

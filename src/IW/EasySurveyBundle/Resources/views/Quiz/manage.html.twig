@@ -3,32 +3,43 @@
       <div class="page-header">          
         <h1>{% trans %}Gestionar encuestas{% endtrans %}</h1>
       </div>  
-      <div class="page-content">  
-          {% if quiz is empty %}
-              {% trans %}No hay datos{% endtrans %}
-          {% else %}
-          <table id="datetable">
-              <thead>
+      <div class="page-content">            
+        <b>{% trans %}Filtro por proyecto{% endtrans %}</b> :
+        <select name="menu" onChange="window.document.location.href=this.options[this.selectedIndex].value;" value="GO">
+            {% for project in projects %}
+                <option value="{{ path('iw_easy_survey_manage_quiz',{'id': project.id})}}" {% if project.id == actual_project %} selected {% endif %}> {{project.name}} </option>
+            {% endfor %}
+        </select>
+        <br>  
+        <br>  
+        <table id="datetable">
+            <thead>
               <tr>
                 <th>Nombre</th>
-                <th>Acciones</th>
+                <th>¿?</th>
+                <th>Proyecto</th>
+                <th></th>
               </tr>
-              </thead>
-              <tbody>
+            </thead>
+          <tbody>
               {% for data in quiz %}
-              <tr>
-                  <td> {{data.name}} </td>
-                  <td> 
-                      <a href="{{ path('iw_easy_survey_edit_quiz', {'id': data.id})}}"> {% trans %}Editar{% endtrans %} </a> |
-                      <a href="{{ path('iw_easy_survey_delete_quiz', {'id': data.id})}}" onclick="return confirm('¿Esta seguro?')"> {% trans %}Borrar{% endtrans %} </a> |
-                      <a href="{{ path('iw_easy_survey_manage_questions', {'id': data.id})}}"> {% trans %}Gestionar preguntas{% endtrans %} </a>
-                  </td>
-              </tr>
+                  <tr>
+                      <td> {{data.name}} </td>
+                      <td> {% if data.edit %} (Encuesta propia) {% else %} (Colaborador) {% endif %} </td>
+                      <td> {{data.project}} </td>
+                      <td> 
+                          {% if data.edit %}
+                              <a href="{{ path('iw_easy_survey_edit_quiz', {'id': data.id})}}"> {% trans %}Modificar{% endtrans %} </a> |
+                              <a href="{{ path('iw_easy_survey_delete_quiz', {'id': data.id})}}" onclick="return confirm('¿Esta seguro?')"> {% trans %}Borrar{% endtrans %} </a> |
+                              <a href="{{ path('iw_easy_survey_manage_questions', {'id': data.id})}}"> {% trans %}Gestionar preguntas{% endtrans %} </a> |
+                          {% endif %}
+                          <a href="{{ path('iw_easy_survey_generate_instance', {'id': data.id})}}"> {% trans %}Instanciar{% endtrans %} </a>
+                      </td>
+                  </tr>
               {% endfor %}
-              </tbody>
-          </table>
-          {% endif %}
-          <br>
-          <a href="{{ path('iw_easy_survey_create_quiz')}}">Nuevo</a>
+          </tbody>
+        </table>
+        <br>
+        <a href="{{ path('iw_easy_survey_create_quiz')}}">Nuevo</a>
       </div>
 {% endblock %}
