@@ -14,8 +14,9 @@
               <tbody>
               {% for project in projects %}
               <tr>
-                  <td> {{project.name}} </td>
+                  <td><a href="{{ path('iw_easy_survey_manage_quiz', {'id': project.id})}}"> {{project.name}} </a> </td>
                   <td>
+                     
                       <a href="{{ path('iw_easy_survey_edit_project', {'id': project.id})}}"> Modificar </a> |
                       <a href="{{ path('iw_easy_survey_delete_project', {'id': project.id})}}" onclick="return confirm('¿Esta seguro? Si borra el proyecto perderá todos los cuestionarios y datos asociados a ellos')"> Borrar </a> |
                       <a href="{{ path('iw_easy_survey_collaborator', {'id': project.id})}}"> Colaboradores </a>
