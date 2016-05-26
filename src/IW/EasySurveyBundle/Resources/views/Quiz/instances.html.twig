@@ -17,6 +17,7 @@
         <table id="datetable">
             <thead>
               <tr>
+                <th>Nombre</th>
                 <th>Encuesta</th>
                 <th>Proyecto</th>
                 <th>Fecha de creación</th>
@@ -27,6 +28,7 @@
             <tbody>
               {% for data in instances %}
               <tr>
+                  <td> {{data.name}} </td>
                   <td> {{data.question}} </td>
                   <td> {{data.project}} </td>
                   <td> {{data.timecreated.date|date('d/m/y')}} </td>

@@ -15,6 +15,9 @@ IW\EasySurveyBundle\Entity\Instance:
         userId:
             type: integer
             column: user_id
+        name:
+            type: string
+            length: 255
         timecreated:
             type: datetime
         timefinish:

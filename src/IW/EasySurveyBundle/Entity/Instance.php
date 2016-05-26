@@ -39,6 +39,10 @@ class Instance
      */
     private $seeskey;
     
+    /**
+     * @var string
+     */
+    private $name;
     
     /**
      * Get id
@@ -142,6 +146,8 @@ class Instance
         return $this->timefinish;
     }
 
+    
+    
     /**
      * Set seeskey
      *
@@ -165,7 +171,28 @@ class Instance
         return $this->seeskey;
     }
     
+    /**
+     * Set seeskey
+     *
+     * @param string $name
+     * @return Instance
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
     
+        return $this;
+    }
+
+    /**
+     * Get name
+     *
+     * @return string 
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
     
     
 }
