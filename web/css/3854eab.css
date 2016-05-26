@@ -28,6 +28,29 @@ select {
 #form_finishdate {
     width: 150px;
 }
+
+div[id*="form_"] > label {
+    /* Enunciados de respuestas */
+    /* background: red; */
+    display: inline !important;
+}
+
+div > label[class*="required"]:first-child {
+    /* Enunciados de preguntas */
+    font-size: 150%;
+    margin-top: 1em;
+}
+
+div > label[class*="required"] {
+    /* Enunciados de preguntas */
+    display: block;
+} 
+
+div > input[type*="radio"] {
+    display: block;
+    margin-top: 0.5em;
+}
+
 /*!
 Video.js Default Styles (http://videojs.com)
 Version 4.4.3
