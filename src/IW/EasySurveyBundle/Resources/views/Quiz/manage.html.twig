@@ -25,7 +25,7 @@
               {% for data in quiz %}
                   <tr>
                       <td> {{data.name}} </td>
-                      <td> {% if data.edit %} <b> {% endif %}  {{ data.username }} {% if data.edit %} </b> {% endif %} </td>
+                      <td> {% if app.session.get('username')==data.username %} <b> {% endif %}  {{ data.username }} {% if app.session.get('username')==data.username %} </b> {% endif %} </td>
                       <td> {{data.project}} </td>
                       <td> 
                           {% if data.edit %}

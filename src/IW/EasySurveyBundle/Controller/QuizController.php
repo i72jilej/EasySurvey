@@ -59,6 +59,18 @@ class QuizController extends Controller {
         return $user;
     }
     
+    private function quizIsInstance ( $quizId ) {
+        
+        $em = $this->getDoctrine()->getManager();
+        $quizs = $em->getRepository('IWEasySurveyBundle:Instance')->findby(array('quizId' => $quizId));
+        if (count($quizs)>0) {
+            return 1;
+        } else {
+            return 0;
+        }
+        
+    }
+    
     public function manageAction($id) 
     {        
         
@@ -70,20 +82,26 @@ class QuizController extends Controller {
         $project_results[] = array ('id'=>-1, 'name'=>'- Todos -');
         
         foreach ($projects as $key => $project) {
-            
             $project_results[] = array ('id'=>$key, 'name'=>$project);
             $user = $this->getUserProject($key);
-            
             //se obtienen los cuestionarios del proyecto en cuestión
             $quizs = $em->getRepository('IWEasySurveyBundle:Quiz')->findby(array('projectId' => $key));
             foreach ($quizs as $quiz) {
-                
+                $isInstance = $this->quizIsInstance($quiz->getId());
                 if ($id != -1 ) {
                     if ($id == $key) {
-                        $results[] = array ('id'=>$quiz->getId(), 'name'=>$quiz->getName(), 'project'=> $project,'edit'=>1,'username'=>$user->getUsername());
+                        if ($isInstance) {
+                            $results[] = array ('id'=>$quiz->getId(), 'name'=>$quiz->getName(), 'project'=> $project,'edit'=>0,'username'=>$user->getUsername());
+                        } else {
+                            $results[] = array ('id'=>$quiz->getId(), 'name'=>$quiz->getName(), 'project'=> $project,'edit'=>1,'username'=>$user->getUsername());
+                        }
                     }
                 } else {
-                    $results[] = array ('id'=>$quiz->getId(), 'name'=>$quiz->getName(), 'project'=> $project,'edit'=>1,'username'=>$user->getUsername());
+                    if ($isInstance) {
+                        $results[] = array ('id'=>$quiz->getId(), 'name'=>$quiz->getName(), 'project'=> $project,'edit'=>0,'username'=>$user->getUsername());
+                    } else {
+                        $results[] = array ('id'=>$quiz->getId(), 'name'=>$quiz->getName(), 'project'=> $project,'edit'=>1,'username'=>$user->getUsername());
+                    }
                 }
                 
             }
@@ -388,7 +406,6 @@ class QuizController extends Controller {
             $instance->setTimefinish($dataForm['finishdate']);
             $instance->setName($dataForm['name']);
             $instance->setUserId($this->get('session')->get('id'));
-            
             //se comprueba que el seeskey no existe ya en el sistema (improbable pero posible)
             do {
                 $seeskey = substr(md5(rand()),0,10);
@@ -399,68 +416,93 @@ class QuizController extends Controller {
             $em = $this->getDoctrine()->getManager();
             $em->persist($instance);
             $em->flush();
-            return $this->redirect($this->generateUrl('iw_easy_survey_instances', array('id'=>-1)));
+            return $this->redirect($this->generateUrl('iw_easy_survey_instances', array('idProject'=>-1,'idQuiz'=>-1)));
         }
-        
         return $this->render('IWEasySurveyBundle:Quiz:generateinstace.html.twig', array('id' => $id, 'form' => $form->createView()));
     }
     
-    private function existProject ($array, $id) {
-        
+    private function existDataInArray ($array, $id) {
         foreach ($array as $data) {
             if ($data['id'] == $id) {
                 return 1;
             }
         }
         return 0;
-        
     }
     
-    public function instancesAction($id) 
+    public function instancesAction($idProject, $idQuiz) 
     {
         $projects_results = array();
         $projects_results[] = array('id'=>-1,'name'=>'- Todo -');
+        $quiz_results = array();
+        $quiz_results[] = array('id'=>-1,'name'=>'- Todo -');
         $datas = array ();
         $em = $this->getDoctrine()->getManager();
         $instances = $em->getRepository('IWEasySurveyBundle:Instance')->findBy(array('userId'=>$this->get('session')->get('id')));
         foreach ($instances as $data) {
-            $question = $em->getRepository('IWEasySurveyBundle:Quiz')->find($data->getQuizId());
-            $project = $em->getRepository('IWEasySurveyBundle:Project')->find($question->getProjectId());
-            if (!$this->existProject($projects_results, $project->getId())) {
+            $quiz = $em->getRepository('IWEasySurveyBundle:Quiz')->find($data->getQuizId());
+            if (!$this->existDataInArray($quiz_results, $quiz->getId())) {
+                $quiz_results[] = array ('id'=>$quiz->getId(),'name'=>$quiz->getName());
+            }
+            $project = $em->getRepository('IWEasySurveyBundle:Project')->find($quiz->getProjectId());
+            if (!$this->existDataInArray($projects_results, $project->getId())) {
                 $projects_results[] = array ( 'id'=>$project->getId(), 'name'=>$project->getName() );
             }
-            
-            if ( $id == -1 ) {
-                
-                $datas[]=array(
+            if ( $idProject == -1 ) {
+                if ($idQuiz == -1 ) {
+                    $datas[]=array(
                             'instance_id'=>$data->getId(),
-                            'question'=>$question->getName(),
+                            'question'=>$quiz->getName(),
                             'project' =>$project->getName(),
                             'timecreated'=>$data->getTimecreated(),
                             'timefinish'=>$data->getTimefinish(),
                             'seeskey'=>$data->getSeeskey(),
                             'name' => $data->getName()
-                        );   
-                
+                    );   
+                } else {
+                    if ($idQuiz == $quiz->getId()) {
+                        $idProject = $quiz->getProjectId();
+                        $datas[]=array(
+                                'instance_id'=>$data->getId(),
+                                'question'=>$quiz->getName(),
+                                'project' =>$project->getName(),
+                                'timecreated'=>$data->getTimecreated(),
+                                'timefinish'=>$data->getTimefinish(),
+                                'seeskey'=>$data->getSeeskey(),
+                                'name' => $data->getName()
+                        );  
+                    }
+                }
             } else {
-                
-                if ( $id == $project->getId()) {                    
-                    
+                if ( $idProject == $project->getId()) {                    
+                    if ($idQuiz == -1 ) {
                      $datas[]=array(
                             'instance_id'=>$data->getId(),
-                            'question'=>$question->getName(),
+                            'question'=>$quiz->getName(),
                             'project' =>$project->getName(),
                             'timecreated'=>$data->getTimecreated(),
                             'timefinish'=>$data->getTimefinish(),
                             'seeskey'=>$data->getSeeskey(),
                             'name' => $data->getName()
                         );   
-                     
+                    } else {
+                        $idProject = $quiz->getProjectId();
+                        if ($idQuiz == $quiz->getId()) {
+                            $datas[]=array(
+                            'instance_id'=>$data->getId(),
+                            'question'=>$quiz->getName(),
+                            'project' =>$project->getName(),
+                            'timecreated'=>$data->getTimecreated(),
+                            'timefinish'=>$data->getTimefinish(),
+                            'seeskey'=>$data->getSeeskey(),
+                            'name' => $data->getName()
+                        );  
+                        }
+                    }    
                 }
-                
             }
         }
-        return $this->render('IWEasySurveyBundle:Quiz:instances.html.twig', array('instances'=>$datas,'projects'=>$projects_results,'actual_project'=>$id));
+        return $this->render('IWEasySurveyBundle:Quiz:instances.html.twig', array('instances'=>$datas,'projects'=>$projects_results,'quizs'=>$quiz_results,'actual_project'=>$idProject,'actual_quiz'=>$idQuiz));
     }
     
     public function deleteInstanceAction($id) 
@@ -469,7 +511,7 @@ class QuizController extends Controller {
         $instance = $em->getRepository('IWEasySurveyBundle:Instance')->find($id);
         $em->remove($instance);
         $em->flush();
-        return $this->redirect($this->generateUrl('iw_easy_survey_instances', array('id'=>-1)));
+        return $this->redirect($this->generateUrl('iw_easy_survey_instances', array('id'=>-1,'idQuiz'=>-1)));
     }
     
     private function getOptions($id) 
@@ -515,7 +557,7 @@ class QuizController extends Controller {
                 //selección simple
                 case 2:     $options_array = $this-> getOptions($data->getId());
                             $formBuilderQuestionnaire->add($data->getTypeId().'_'.$data->getId(), 'choice',  
-                                    array('required' => true,'label' => $data->getName(),'choices' => $options_array,'expanded' => true));
+                                    array('required' => true,'label' => $data->getName(),'choices' => $options_array));
                             break;
                 //selección multiple
                 case 3:     $options_array = $this-> getOptions($data->getId());
@@ -571,12 +613,8 @@ class QuizController extends Controller {
         $instance->setTimefinish(new \DateTime("now"));
         $em->persist($instance);
         $em->flush();
-        return $this->redirect($this->generateUrl('iw_easy_survey_instances', array('id'=>-1)));
+        return $this->redirect($this->generateUrl('iw_easy_survey_instances', array('id'=>-1,'idQuiz'=>-1)));
     }
     
-    public function resultInstanceAction($id) 
-    {
-        return $this->render('IWEasySurveyBundle:Quiz:result.html.twig', array('id'=>$id));
-    }
 }
 

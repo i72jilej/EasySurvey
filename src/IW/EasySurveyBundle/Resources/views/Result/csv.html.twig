@@ -1,0 +1,5 @@
+﻿id; Pregunta; Tipo; Respuesta
+{% for row in values %}
+{{ row.id }};{{ row.question }};{{ row.type }};{% if row.idType < 2 %} {{row.body}} {% else %} {% for aux in row.body %}{{aux.text}},{% endfor %}{% endif %}
+
+{% endfor %}

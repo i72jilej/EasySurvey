@@ -8,7 +8,17 @@
         <b>{% trans %}Filtro por proyecto{% endtrans %}</b> :
         <select name="menu" onChange="window.document.location.href=this.options[this.selectedIndex].value;" value="GO">
             {% for project in projects %}
-                <option value="{{ path('iw_easy_survey_instances',{'id': project.id})}}" {% if project.id == actual_project %} selected {% endif %}> {{project.name}} </option>
+                <option value="{{ path('iw_easy_survey_instances',{'idProject': project.id,'idQuiz': -1})}}" {% if project.id == actual_project %} selected {% endif %}> {{project.name}} </option>
+            {% endfor %}
+        </select>
+        
+        <br>  
+        <br> 
+        
+        <b>{% trans %}Filtro por encuestas{% endtrans %}</b> :
+        <select name="menu" onChange="window.document.location.href=this.options[this.selectedIndex].value;" value="GO">
+            {% for quiz in quizs %}
+                <option value="{{ path('iw_easy_survey_instances',{'idProject': -1,'idQuiz': quiz.id})}}" {% if quiz.id == actual_quiz %} selected {% endif %}> {{quiz.name}} </option>
             {% endfor %}
         </select>
         <br>  

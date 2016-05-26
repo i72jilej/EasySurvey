@@ -1,0 +1,38 @@
+{% extends "IWEasySurveyBundle::layout.html.twig" %}
+{% block content %}
+      <div class="page-header">          
+          <h1>Respuesta de la instancia</h1>
+      </div>  
+      <div class="page-content">  
+          <h4><b>Instancia:</b> {{ instanceName }}</h4>
+          <h4><b>Cuestionario:</b> {{ quizName }}</h4>
+          <table id="datetable">
+            <thead>
+              <tr>
+                <th>Id</th>
+                <th>Pregunta</th>
+                <th>Tipo</th>
+                <th>Respuestas</th>
+              </tr>
+            </thead>
+          <tbody>
+              {% for data in values %}
+                  <tr>
+                      <td> {{data.id}} </td>
+                      <td> {{data.question}} </td>
+                      <td> {{data.type}} </td>
+                      <td> 
+                          {% if data.idType < 2 %}
+                            {{data.body}} 
+                          {% else %}
+                                {% for aux in data.body %}
+                                    {{aux.text}} <br>
+                                {% endfor %}                            
+                          {% endif %}
+                      </td>
+                  </tr>
+              {% endfor %}
+          </tbody>
+        </table>                  
+      </div>  
+{% endblock %}

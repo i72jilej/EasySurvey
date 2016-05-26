@@ -40,7 +40,6 @@ class ProjectController extends Controller
     
     public function deleteAction ($id) {
         
-        
         $em = $this->getDoctrine()->getManager();
         
         // Borramos los colaboradores de dicho proyecto

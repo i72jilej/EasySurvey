@@ -1,0 +1,12 @@
+{% extends "IWEasySurveyBundle::layout.html.twig" %}
+{% block content %}
+      <div class="page-header">          
+          <h1>Respuesta de la encuesta</h1>
+      </div>  
+      <div class="page-content">  
+          <h4><b>Instancia:</b> {{ instanceName }}</h4>
+          <h4><b>Cuestionario:</b> {{ quizName }}</h4>
+          <p><a href="{{ path('iw_easy_survey_show_data', {'id': id})}}"> {% trans %}Mostrar respuestas{% endtrans %} </a></p>
+          <p><a href="{{ path('iw_easy_survey_generater_csv', {'id': id})}}"> {% trans %}Exportar respuestas{% endtrans %} </a></p>
+      </div>  
+{% endblock %}

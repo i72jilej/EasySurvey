@@ -115,7 +115,7 @@ iw_easy_survey_generate_instance:
     defaults: {_controller: IWEasySurveyBundle:Quiz:generateInstance }
     
 iw_easy_survey_instances:
-    pattern: /EasySurvey/instances/{id}
+    pattern: /EasySurvey/instances/{idProject}/{idQuiz}
     defaults: {_controller: IWEasySurveyBundle:Quiz:instances }
     
 iw_easy_survey_reply_quiz:
@@ -126,10 +126,6 @@ iw_easy_survey_delete_instance:
     pattern: /EasySurvey/deleteInstance/{id}
     defaults: {_controller: IWEasySurveyBundle:Quiz:deleteInstance }   
     
-iw_easy_survey_results:
-    pattern: /EasySurvey/resultInstance/{id}
-    defaults: {_controller: IWEasySurveyBundle:Quiz:resultInstance }   
-    
 iw_easy_survey_collaborator:
     pattern: /EasySurvey/collaborator/{id}
     defaults: {_controller: IWEasySurveyBundle:Project:collaborator }   
@@ -137,3 +133,16 @@ iw_easy_survey_collaborator:
 iw_easy_survey_close_instance:
     pattern: /EasySurvey/closeInstance/{id}
     defaults: {_controller: IWEasySurveyBundle:Quiz:closeInstance }   
+    
+iw_easy_survey_results:
+    pattern: /EasySurvey/resultInstance/{id}
+    defaults: {_controller: IWEasySurveyBundle:Result:index }   
+    
+iw_easy_survey_generater_csv:
+    pattern: /EasySurvey/generaterCsvInstance/{id}
+    defaults: {_controller: IWEasySurveyBundle:Result:generateCsv }   
+
+iw_easy_survey_show_data:
+    pattern: /EasySurvey/showData/{id}
+    defaults: {_controller: IWEasySurveyBundle:Result:showData }   
+    
