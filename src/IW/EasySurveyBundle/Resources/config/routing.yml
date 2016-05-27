@@ -146,3 +146,7 @@ iw_easy_survey_show_data:
     pattern: /EasySurvey/showData/{id}
     defaults: {_controller: IWEasySurveyBundle:Result:showData }   
     
+iw_easy_survey_show_statistic:
+    pattern: /EasySurvey/showStatistic/{id}
+    defaults: {_controller: IWEasySurveyBundle:Result:showStatistic }   
+    

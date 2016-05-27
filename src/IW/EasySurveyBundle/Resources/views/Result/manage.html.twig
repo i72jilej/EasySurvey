@@ -8,5 +8,6 @@
           <h4><b>Cuestionario:</b> {{ quizName }}</h4>
           <p><a href="{{ path('iw_easy_survey_show_data', {'id': id})}}"> {% trans %}Mostrar respuestas{% endtrans %} </a></p>
           <p><a href="{{ path('iw_easy_survey_generater_csv', {'id': id})}}"> {% trans %}Exportar respuestas{% endtrans %} </a></p>
+          <p><a href="{{ path('iw_easy_survey_show_statistic', {'id': id})}}"> {% trans %}Mostrar estadísticas{% endtrans %} </a></p>
       </div>  
 {% endblock %}

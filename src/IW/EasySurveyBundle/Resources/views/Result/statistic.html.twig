@@ -1,0 +1,53 @@
+{% extends "IWEasySurveyBundle::layout.html.twig" %}
+{% block content %}
+      <div class="page-header">          
+          <h1>Estadísticas de la encuesta</h1>
+      </div>  
+      
+       
+      <div class="page-content">  
+          <h4><b>Instancia:</b> {{ name }}</h4>
+          {% if results_numeric|length > 0   %}
+            {% for value in results_numeric %}
+                <p><b> {{ value.questionName }} </b></p>
+                <p>Media: {{ value.average }} </p>
+                <p>Mediana: {{ value.median }} </p>
+                <p>Moda: {{ value.mode }} </p>
+                <p>Porcentaje: </P>                 
+                    {% for key,porcentage in value.porcentages %}
+                        <p> {{key}} : {{porcentage}}  </p> 
+                    {% endfor %} 
+            {% endfor %}
+          {% endif %}
+          
+          {% if results_text|length > 0   %}
+            {% for value in results_text %}
+                <p><b> {{ value.questionName }} </b></p>
+                {% for response in value.responses %}
+                    <p> {{response}} </p>
+                {% endfor %}
+            {% endfor %}
+          {% endif %}
+          
+          {% if results_simple|length > 0   %}
+            {% for value in results_simple %}
+                <p><b> {{ value.questionName }} </b></p>
+                <p>Porcentaje: </p>                   
+                    {% for key,porcentage in value.porcentages %}
+                        <p> {{key}} : {{porcentage}}  </p> 
+                    {% endfor %} 
+            {% endfor %}        
+          {% endif %}
+          
+          {% if results_multiple|length > 0   %}
+            {% for value in results_multiple %}
+                <p><b> {{ value.questionName }} </b></p>
+                <p>Porcentaje: </p>                   
+                    {% for key,porcentage in value.porcentages %}
+                        <p> {{key}} : {{porcentage}}  </p> 
+                    {% endfor %} 
+            {% endfor %}         
+          {% endif %}
+          
+      </div>  
+{% endblock %}
