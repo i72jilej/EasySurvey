@@ -24,7 +24,12 @@
               </tr>
               {% endfor %}
               </tbody>
-              <tr><td colspan="2"><a href="{{ path('iw_easy_survey_add_option', {'id': id})}}"> {% trans %}Añadir opción{% endtrans %} </a></td></tr>
+              <tr>
+                  <td colspan="2">
+                      <a href="{{ path('iw_easy_survey_add_option', {'id': id})}}"> {% trans %}Añadir opción{% endtrans %} </a> | 
+                      <a href="{{ path('iw_easy_survey_manage_questions',{'id': quiz_id })}}"> {% trans %}Volver a Gestionar Preguntas{% endtrans %} </a>
+                  </td>
+              </tr>
           </table>
       </div>
       

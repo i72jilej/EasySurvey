@@ -301,7 +301,8 @@ class QuizController extends Controller {
         $em = $this->getDoctrine()->getManager();
         $question = $em->getRepository('IWEasySurveyBundle:Question')->find($id);
         $options = $em->getRepository('IWEasySurveyBundle:TextQuestionOption')->findBy(array('questionId' => $id ));
-        return $this->render('IWEasySurveyBundle:Quiz:editQuestionOption.html.twig', array('id' => $id, 'options' => $options,'question'=>$question));
+        
+        return $this->render('IWEasySurveyBundle:Quiz:editQuestionOption.html.twig', array('id' => $id, 'options' => $options,'question'=>$question, 'quiz_id'=>$question->getQuizID()));
     }
     
     public function addOptionAction($id, Request $request) {
