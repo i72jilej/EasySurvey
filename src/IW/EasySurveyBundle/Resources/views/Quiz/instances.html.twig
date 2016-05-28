@@ -43,8 +43,10 @@
                   <td> {{data.project}} </td>
                   <td> {{data.timecreated.date|date('d/m/y')}} </td>
                   <td> {{data.timefinish.date|date('d/m/y')}} </td>
-                  <td> 
-                      <a href="{{ path('iw_easy_survey_reply_quiz', {'seeskey': data.seeskey})}}" onclick="prompt('La URL generada para esta instancia es:', '{{ url('iw_easy_survey_reply_quiz', {'seeskey': data.seeskey})}}'); return false;"> URL </a> | 
+                  <td>
+                      {% if data.timefinish.date|date('d/m/y') > 'now'|date('d/m/y') %}
+                        <a href="{{ path('iw_easy_survey_reply_quiz', {'seeskey': data.seeskey})}}" onclick="prompt('La URL generada para esta instancia es:', '{{ url('iw_easy_survey_reply_quiz', {'seeskey': data.seeskey})}}'); return false;"> URL </a> | 
+                      {% endif %}
                       <a href="{{ path('iw_easy_survey_delete_instance', {'id': data.instance_id})}}" onclick="return confirm('¿Esta seguro?')"> Borrar </a> |
                       <a href="{{ path('iw_easy_survey_results', {'id': data.instance_id})}}"> Mostrar resultados </a> |
                       {% if data.timefinish.date|date('d/m/y') > 'now'|date('d/m/y') %}

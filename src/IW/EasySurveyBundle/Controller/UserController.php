@@ -158,11 +158,65 @@ class UserController extends Controller
         }
         
         $em = $this->getDoctrine()->getManager();
+        
+        //obtenemos los proyectos del usuario
+        $projects = $em->getRepository('IWEasySurveyBundle:Project')->findBy(array ('user_id'=>$this->get('session')->get('id')));
+        
+        foreach ($projects as $project) {
+            
+            // Borramos los colaboradores de dicho proyecto
+            $collaborator = $em->getRepository('IWEasySurveyBundle:ProjectUser')->findBy(array('projectId'=>$project->getId()));
+            foreach ($collaborator as $data) {
+                $em->remove($data);
+            }
+
+            // Borramos las encuestas asociadas a dicho projecto
+            $quizs = $em->getRepository('IWEasySurveyBundle:Quiz')->findBy(array('projectId'=>$project->getId()));
+            foreach ( $quizs as $quiz ) {
+
+                //Borramos las preguntas asociadas a la encuesta
+                $questions = $em->getRepository('IWEasySurveyBundle:Question')->findBy(array('quizId'=>$quiz->getId()));
+                foreach ($questions as $question) {
+                    //Borramos las posibles opciones (si las hubiese)
+                    $textQuestionOptions = $em->getRepository('IWEasySurveyBundle:TextQuestionOption')->findBy(array('questionId'=>$question->getId()));
+                    foreach ($textQuestionOptions as $textQuestionOption) {
+                        //eliminamos las opciones
+                        $em->remove($textQuestionOption);
+                    }
+                    //eliminamos la pregunta
+                    $em->remove($question);
+                }
+
+                //buscamos las instancias de la encuesta
+                $instances = $em->getRepository('IWEasySurveyBundle:Instance')->findBy(array('quizId'=>$quiz->getId()));
+                foreach ($instances as $instance) {
+                    //obtenemos la respuesta relacionado con la instancia
+                    $answers = $em->getRepository('IWEasySurveyBundle:Answers')->findBy(array('idInstance'=>$instance->getId()));
+                    foreach ($answers as $answer) {
+                        //eliminamos la respuesta
+                        $em->remove($answer);
+                    }
+                    //eliminamos la instancia
+                    $em->remove($instance);
+                }
+                //eliminamos el cuestionario
+                $em->remove($quiz);
+            }
+        }
+        //eliminamos las instancias que el usuario tuviese en otros proyectos
+        $instances = $em->getRepository('IWEasySurveyBundle:Instance')->findBy(array('userId'=>$this->get('session')->get('id')));
+        foreach ($instances as $instance) {
+            $em->remove($instance);
+        }
+        
+        //finalmente borramos el usuario de la bbdd
         $user = $em->getRepository('IWEasySurveyBundle:User')->find(array('id'=>$this->get('session')->get('id')));
         $em->remove($user);
         $em->flush();
+        
         $session = $request->getSession();
         $session->clear();
+        
         return $this->redirect($this->generateUrl('iw_easy_survey_homepage'));
     }
 

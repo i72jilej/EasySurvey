@@ -64,6 +64,11 @@ class ProjectController extends Controller
         
         $em = $this->getDoctrine()->getManager();
         
+        $project = $em->getRepository('IWEasySurveyBundle:Project')->find($id);
+        if ($project->getUserId()!=$this->get('session')->get('id')) {
+            return $this->redirect($this->generateUrl('iw_easy_survey_error_access',array()));
+        }
+        
         // Borramos los colaboradores de dicho proyecto
         $collaborator = $em->getRepository('IWEasySurveyBundle:ProjectUser')->findBy(array('projectId'=>$id));
         foreach ($collaborator as $data) {
@@ -104,7 +109,6 @@ class ProjectController extends Controller
         }
         
         //por ultimo borramos el proyecto
-        $project = $em->getRepository('IWEasySurveyBundle:Project')->find($id);
         $em->remove($project);
         $em->flush();
         return $this->redirect($this->generateUrl('iw_easy_survey_manage_project'));
@@ -138,9 +142,12 @@ class ProjectController extends Controller
         if (!$this->isLogin()) {            
             return $this->redirect($this->generateUrl('iw_easy_survey_error_login',array()));            
         }
-        
         $em = $this->getDoctrine()->getManager();
         $project = $em->getRepository('IWEasySurveyBundle:Project')->find($id);
+        if ($project->getUserId()!=$this->get('session')->get('id')) {
+            return $this->redirect($this->generateUrl('iw_easy_survey_error_access',array()));
+        }
+        
         $form = $this->createFormBuilder()
             ->add('name', 'text', array('label'=>'Nombre del Proyecto','required'=>true, 'data'=>$project->getName(), 'required'=>true))
             ->add('description', 'textarea', array('label'=>'Descripción del Proyecto', 'data'=>$project->getDescription(),'required'=>false))
@@ -164,8 +171,11 @@ class ProjectController extends Controller
         if (!$this->isLogin()) {            
             return $this->redirect($this->generateUrl('iw_easy_survey_error_login',array()));            
         }
-        
         $em = $this->getDoctrine()->getManager();
+        $project = $em->getRepository('IWEasySurveyBundle:Project')->find($id);
+        if ($project->getUserId()!=$this->get('session')->get('id')) {
+            return $this->redirect($this->generateUrl('iw_easy_survey_error_access',array()));
+        }
         
         $arrayUser = $this->getAllUser();
         $user_selecteds = $this->getUserProjectSelected($id);

@@ -32,17 +32,15 @@ class ResultController extends Controller
     
     private function getResults ($id) 
     {
-        
         $em = $this->getDoctrine()->getManager();
-        
         //se obtienen las respuestas a dicha instancia
         $answers = $em->getRepository('IWEasySurveyBundle:Answers')->findBy(array('idInstance'=>$id));
-        
         $values = array ();
         foreach ($answers as $data) {
             $question = $em->getRepository('IWEasySurveyBundle:Question')->find($data->getIdQuestion());
             $body = '';
-            if ($data->getIdType()<2) { //pregunta numérica y de texto
+            
+            if ($question->getTypeId()<2) { //pregunta numérica y de texto
                 $body = $data->getBody();
             } else {
                 $options = explode(',',$data->getBody());
@@ -54,32 +52,26 @@ class ResultController extends Controller
                     }
                 }
             }
-            $values[] = array ('id'=>$data->getId(),'question'=>$question->getName(),'body'=>$body,'idType'=>$data->getIdType(),'type'=>$this->getTypeString($data->getIdType()));
+            $values[] = array ('id'=>$data->getId(),'question'=>$question->getName(),'body'=>$body,'idType'=>$question->getTypeId(),'type'=>$this->getTypeString($question->getTypeId()));
         }
         return $values;
     }
     
     public function indexAction ($id) 
     {
-        
         if (!$this->isLogin()) {            
             return $this->redirect($this->generateUrl('iw_easy_survey_error_login',array()));            
-        }
-        
+        }        
         $em = $this->getDoctrine()->getManager();
         $instance = $em->getRepository('IWEasySurveyBundle:Instance')->find($id);
-        
         if ($instance->getUserId()!=$this->get('session')->get('id')) {
             return $this->redirect($this->generateUrl('iw_easy_survey_error_access',array()));
         }
-        
         $quiz = $em->getRepository('IWEasySurveyBundle:Quiz')->find($instance->getQuizId());
-        $questions = $this->getIdQuestions($id);
-        
         return $this->render('IWEasySurveyBundle:Result:manage.html.twig', array('id'=>$id,'instanceName'=>$instance->getName(),'quizName'=>$quiz->getName()));        
     }
     
-    private function print_chart ($porcentages, $title, $id) {
+    private function print_chart($porcentages, $title, $id) {
         $ob = new Highchart();
         $ob->chart->renderTo('piechart_'.$id);
         $ob->title->text($title);
@@ -89,16 +81,13 @@ class ResultController extends Controller
             'dataLabels'    => array('enabled' => false),
             'showInLegend'  => true
         ));
-        
         $datas = array ();
         foreach ($porcentages as $key=>$data) {
             $datas[] = array($key,$data['porcentage']);
         }
         
         $ob->series(array(array('type' => 'pie','name' => 'Porcentaje', 'data' => $datas)));
-
         return $ob;
-        
     }
     
     public function showStatisticAction ($id) 
@@ -112,40 +101,44 @@ class ResultController extends Controller
         $em = $this->getDoctrine()->getManager();
         $instance = $em->getRepository('IWEasySurveyBundle:Instance')->find($id);
         
+        if ($instance->getUserId()!=$this->get('session')->get('id')) {
+            return $this->redirect($this->generateUrl('iw_easy_survey_error_access',array()));
+        }
+        
         $result_text = array();
         $result_numeric = array();
         $result_simple = array();
         $result_multiple = array();
         foreach ($questions as $data) {
             
-                $answers = $em->getRepository('IWEasySurveyBundle:Answers')->findBy(array('idInstance'=>$id,'idQuestion'=>$data));
-                $question = $em->getRepository('IWEasySurveyBundle:Question')->find($data);
-                
-                switch($question->getTypeId()) {
-                    
-                    // Respuestas numericas
-                    case 0: $result_numeric[] = array ('questionName'=>$question->getName(),'average'=>$this->getAverage($answers), 'median'=>$this->getMedian($answers),
-                                'mode'=>$this->getMode($answers), 'porcentages'=>$this->getPortentages($answers),'total_answers'=>count($answers));
-                        
-                            break;
-                        
-                    // Respuestas de texto
-                    case 1: $result_text[] = array ('questionName'=>$question->getName(),'responses'=>$this->getTextResponses($answers),'total_answers'=>count($answers));
-                            break;
-                        
-                    // Respuestas de eleccion unica
-                    case 2: $porcentages = $this->getPortentagesSimpleSelect($answers,$data);
-                            $chart = $this->print_chart($porcentages,$question->getName(),$data);
-                            $result_simple[] = array ('questionName'=>$question->getName(), 'porcentages'=>$porcentages,'chart'=>$chart,'idQuestion'=>$data,'total_answers'=>count($answers));
-                            break;
-                        
-                    // Respuestas de eleccion multiple
-                    case 3: $porcentages = $this->getPortentagesMultipleSelect($answers,$data);
-                            $chart = $this->print_chart($porcentages,$question->getName(),$data);
-                            $result_multiple[] = array ('questionName'=>$question->getName(), 'porcentages'=>$porcentages,'chart'=>$chart,'idQuestion'=>$data,'total_answers'=>count($answers));
-                            break;
-                        
-                }
+            $answers = $em->getRepository('IWEasySurveyBundle:Answers')->findBy(array('idInstance'=>$id,'idQuestion'=>$data));
+            $question = $em->getRepository('IWEasySurveyBundle:Question')->find($data);
+
+            switch($question->getTypeId()) {
+
+                // Respuestas numericas
+                case 0: $result_numeric[] = array ('questionName'=>$question->getName(),'average'=>$this->getAverage($answers), 'median'=>$this->getMedian($answers),
+                            'mode'=>$this->getMode($answers), 'porcentages'=>$this->getPortentages($answers),'total_answers'=>count($answers));
+
+                        break;
+
+                // Respuestas de texto
+                case 1: $result_text[] = array ('questionName'=>$question->getName(),'responses'=>$this->getTextResponses($answers),'total_answers'=>count($answers));
+                        break;
+
+                // Respuestas de eleccion unica
+                case 2: $porcentages = $this->getPortentagesSimpleSelect($answers,$data);
+                        $chart = $this->print_chart($porcentages,$question->getName(),$data);
+                        $result_simple[] = array ('questionName'=>$question->getName(), 'porcentages'=>$porcentages,'chart'=>$chart,'idQuestion'=>$data,'total_answers'=>count($answers));
+                        break;
+
+                // Respuestas de eleccion multiple
+                case 3: $porcentages = $this->getPortentagesMultipleSelect($answers,$data);
+                        $chart = $this->print_chart($porcentages,$question->getName(),$data);
+                        $result_multiple[] = array ('questionName'=>$question->getName(), 'porcentages'=>$porcentages,'chart'=>$chart,'idQuestion'=>$data,'total_answers'=>count($answers));
+                        break;
+
+            }
                 
         }
         
@@ -161,12 +154,17 @@ class ResultController extends Controller
     {
        
        if (!$this->isLogin()) {            
-            return $this->redirect($this->generateUrl('iw_easy_survey_error_login',array()));            
-        }
-       
+           return $this->redirect($this->generateUrl('iw_easy_survey_error_login',array()));            
+       }
+        
        $em = $this->getDoctrine()->getManager();
        $values = $this->getResults($id);
        $instance = $em->getRepository('IWEasySurveyBundle:Instance')->find($id);
+       
+       if ($instance->getUserId()!=$this->get('session')->get('id')) {
+           return $this->redirect($this->generateUrl('iw_easy_survey_error_access',array()));
+       }
+       
        $quiz = $em->getRepository('IWEasySurveyBundle:Quiz')->find($instance->getQuizId());
        return $this->render('IWEasySurveyBundle:Result:result.html.twig', array('id'=>$id,'values'=>$values,'instanceName'=>$instance->getName(),'quizName'=>$quiz->getName()));        
     }
@@ -178,7 +176,13 @@ class ResultController extends Controller
        if (!$this->isLogin()) {            
             return $this->redirect($this->generateUrl('iw_easy_survey_error_login',array()));            
         }
-       
+        
+        $em = $this->getDoctrine()->getManager();
+        $instance = $em->getRepository('IWEasySurveyBundle:Instance')->find($id);
+        if ($instance->getUserId()!=$this->get('session')->get('id')) {
+           return $this->redirect($this->generateUrl('iw_easy_survey_error_access',array()));
+        }
+        
         $values = $this->getResults($id);
         $filename = "export_".$id."_".date("Y_m_d_His").".csv";
         $response = $this->render('IWEasySurveyBundle:Result:csv.html.twig', array('id'=>$id,'values' => $values));         
