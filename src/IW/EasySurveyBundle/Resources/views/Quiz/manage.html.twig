@@ -29,11 +29,13 @@
                       <td> {{data.project}} </td>
                       <td> 
                           {% if data.edit %}
-                              <a href="{{ path('iw_easy_survey_edit_quiz', {'id': data.id})}}"> {% trans %}Modificar{% endtrans %} </a> |
-                              <a href="{{ path('iw_easy_survey_delete_quiz', {'id': data.id})}}" onclick="return confirm('¿Esta seguro?')"> {% trans %}Borrar{% endtrans %} </a> |
-                              <a href="{{ path('iw_easy_survey_manage_questions', {'id': data.id})}}"> {% trans %}Gestionar preguntas{% endtrans %} </a> |
+                                <a href="{{ path('iw_easy_survey_edit_quiz', {'id': data.id})}}"> {% trans %}Modificar{% endtrans %} </a> |
+                                <a href="{{ path('iw_easy_survey_delete_quiz', {'id': data.id})}}" onclick="return confirm('¿Esta seguro?')"> {% trans %}Borrar{% endtrans %} </a> |
+                                <a href="{{ path('iw_easy_survey_manage_questions', {'id': data.id})}}"> {% trans %}Gestionar preguntas{% endtrans %} </a> |
                           {% endif %}
-                          <a href="{{ path('iw_easy_survey_generate_instance', {'id': data.id})}}"> {% trans %}Instanciar{% endtrans %} </a>
+                          {% if data.instanciable %}
+                                <a href="{{ path('iw_easy_survey_generate_instance', {'id': data.id})}}"> {% trans %}Instanciar{% endtrans %} </a>
+                          {% endif %}
                       </td>
                   </tr>
               {% endfor %}

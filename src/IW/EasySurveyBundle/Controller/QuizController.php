@@ -83,6 +83,20 @@ class QuizController extends Controller {
         
     }
     
+    private function quizHaveQuestions ( $quizId ) {
+        
+        $em = $this->getDoctrine()->getManager();
+        $answers = $em->getRepository('IWEasySurveyBundle:Question')->findby(array('quizId' => $quizId));
+        if (count($answers)>0) {
+            return 1;
+        } else {
+            return 0;
+        }
+        
+    }
+    
+    
+    
     public function manageAction($id) 
     {        
         if (!$this->isLogin()) {            
@@ -103,19 +117,20 @@ class QuizController extends Controller {
             $quizs = $em->getRepository('IWEasySurveyBundle:Quiz')->findBy(array('projectId' => $key));
             foreach ($quizs as $quiz) {
                 $isInstance = $this->quizIsInstance($quiz->getId());
+                $hasQuestion = $this->quizHaveQuestions($quiz->getId());
                 if ($id != -1 ) {
                     if ($id == $key) {
                         if ($isInstance) {
-                            $results[] = array ('id'=>$quiz->getId(), 'name'=>$quiz->getName(), 'project'=> $project,'edit'=>0,'username'=>$user->getUsername());
+                            $results[] = array ('id'=>$quiz->getId(), 'name'=>$quiz->getName(), 'project'=> $project,'edit'=>0,'username'=>$user->getUsername(),'instanciable'=>$hasQuestion);
                         } else {
-                            $results[] = array ('id'=>$quiz->getId(), 'name'=>$quiz->getName(), 'project'=> $project,'edit'=>1,'username'=>$user->getUsername());
+                            $results[] = array ('id'=>$quiz->getId(), 'name'=>$quiz->getName(), 'project'=> $project,'edit'=>1,'username'=>$user->getUsername(),'instanciable'=>$hasQuestion);
                         }
                     }
                 } else {
                     if ($isInstance) {
-                        $results[] = array ('id'=>$quiz->getId(), 'name'=>$quiz->getName(), 'project'=> $project,'edit'=>0,'username'=>$user->getUsername());
+                        $results[] = array ('id'=>$quiz->getId(), 'name'=>$quiz->getName(), 'project'=> $project,'edit'=>0,'username'=>$user->getUsername(),'instanciable'=>$hasQuestion);
                     } else {
-                        $results[] = array ('id'=>$quiz->getId(), 'name'=>$quiz->getName(), 'project'=> $project,'edit'=>1,'username'=>$user->getUsername());
+                        $results[] = array ('id'=>$quiz->getId(), 'name'=>$quiz->getName(), 'project'=> $project,'edit'=>1,'username'=>$user->getUsername(),'instanciable'=>$hasQuestion);
                     }
                 }
                 
@@ -132,12 +147,13 @@ class QuizController extends Controller {
                 //se obtienen los cuestionarios del proyecto en cuestión
                 $quizs = $em->getRepository('IWEasySurveyBundle:Quiz')->findby(array('projectId' => $project->getId()));
                 foreach ($quizs as $quiz) {                    
+                    $hasQuestion = $this->quizHaveQuestions($quiz->getId());
                     if ($id != -1 ) {
                         if ($id == $project->getId()) {
-                            $results[] = array ('id'=>$quiz->getId(), 'name'=>$quiz->getName(), 'project'=> $project->getName(),'edit'=>0,'username'=>$user->getUsername());
+                            $results[] = array ('id'=>$quiz->getId(), 'name'=>$quiz->getName(), 'project'=> $project->getName(),'edit'=>0,'username'=>$user->getUsername(),'instanciable'=>$hasQuestion);
                         }
                     } else {
-                        $results[] = array ('id'=>$quiz->getId(), 'name'=>$quiz->getName(), 'project'=> $project->getName(),'edit'=>0,'username'=>$user->getUsername());
+                        $results[] = array ('id'=>$quiz->getId(), 'name'=>$quiz->getName(), 'project'=> $project->getName(),'edit'=>0,'username'=>$user->getUsername(),'instanciable'=>$hasQuestion);
                     }
                     
                     
@@ -471,7 +487,7 @@ class QuizController extends Controller {
         $project = $em->getRepository('IWEasySurveyBundle:Project')->find($quiz->getProjectId());
         if ($project->getUserId()==$this->get('session')->get('id')) { //comprobamos si es el propietario del proyecto de la encuesta
             $access = 1;
-        } else {//comprobamos si colaborador
+        } else {//comprobamos si es colaborador
             $projectUsers = $em->getRepository('IWEasySurveyBundle:ProjectUser')->findBy(array('projectId'=>$project->getId()));
             foreach ($projectUsers as $projectUser) {
                 if ( $projectUser->getUserId() == $this->get('session')->get('id') ) {
