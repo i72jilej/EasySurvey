@@ -68,6 +68,11 @@ class ResultController extends Controller
         
         $em = $this->getDoctrine()->getManager();
         $instance = $em->getRepository('IWEasySurveyBundle:Instance')->find($id);
+        
+        if ($instance->getUserId()!=$this->get('session')->get('id')) {
+            return $this->redirect($this->generateUrl('iw_easy_survey_error_access',array()));
+        }
+        
         $quiz = $em->getRepository('IWEasySurveyBundle:Quiz')->find($instance->getQuizId());
         $questions = $this->getIdQuestions($id);
         
