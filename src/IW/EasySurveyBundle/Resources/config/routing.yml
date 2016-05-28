@@ -150,3 +150,6 @@ iw_easy_survey_show_statistic:
     pattern: /EasySurvey/showStatistic/{id}
     defaults: {_controller: IWEasySurveyBundle:Result:showStatistic }   
     
+iw_easy_survey_error_login:
+    pattern: /EasySurvey/errorLogin/
+    defaults: {_controller: IWEasySurveyBundle:Quiz:errorLogin }   

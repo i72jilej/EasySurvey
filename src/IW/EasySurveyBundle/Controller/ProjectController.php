@@ -6,8 +6,21 @@ use Symfony\Component\HttpFoundation\Request;
 
 class ProjectController extends Controller
 {
+    
+    private function isLogin () {
+        if (empty($this->get('session')->get('id'))) {
+            return false;
+        } 
+        return true;
+    }
+    
     public function createAction(Request $request)
     {
+        
+        if (!$this->isLogin()) {            
+            return $this->redirect($this->generateUrl('iw_easy_survey_error_login',array()));            
+        }
+        
         $form = $this->createFormBuilder()
             ->add('name', 'text', array('label'=>'Nombre del nuevo Proyecto','required'=>true))
             ->add('description', 'textarea', array('label'=>'Descripción del Proyecto','required'=>false))
@@ -33,12 +46,21 @@ class ProjectController extends Controller
     }
     
     public function manageAction() {
+        
+        if (!$this->isLogin()) {            
+            return $this->redirect($this->generateUrl('iw_easy_survey_error_login',array()));            
+        }
+        
         $em = $this->getDoctrine()->getManager();
         $projects = $em->getRepository('IWEasySurveyBundle:Project')->findby(array('user_id'=>$this->get('session')->get('id')));
         return $this->render('IWEasySurveyBundle:Project:manage.html.twig', array('projects'=>$projects));
     }
     
     public function deleteAction ($id) {
+        
+        if (!$this->isLogin()) {            
+            return $this->redirect($this->generateUrl('iw_easy_survey_error_login',array()));            
+        }
         
         $em = $this->getDoctrine()->getManager();
         
@@ -113,6 +135,10 @@ class ProjectController extends Controller
 
     public function editAction ($id, Request $request) {
         
+        if (!$this->isLogin()) {            
+            return $this->redirect($this->generateUrl('iw_easy_survey_error_login',array()));            
+        }
+        
         $em = $this->getDoctrine()->getManager();
         $project = $em->getRepository('IWEasySurveyBundle:Project')->find($id);
         $form = $this->createFormBuilder()
@@ -134,6 +160,10 @@ class ProjectController extends Controller
     }
     
     public function collaboratorAction ($id, Request $request) {
+        
+        if (!$this->isLogin()) {            
+            return $this->redirect($this->generateUrl('iw_easy_survey_error_login',array()));            
+        }
         
         $em = $this->getDoctrine()->getManager();
         

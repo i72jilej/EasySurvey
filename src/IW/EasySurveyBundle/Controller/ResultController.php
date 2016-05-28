@@ -7,6 +7,14 @@ use Ob\HighchartsBundle\Highcharts\Highchart;
 
 class ResultController extends Controller
 {
+    
+    private function isLogin () {
+        if (empty($this->get('session')->get('id'))) {
+            return false;
+        } 
+        return true;
+    }
+    
      private function getTypeString($idType) 
     {
         switch($idType) {
@@ -53,6 +61,11 @@ class ResultController extends Controller
     
     public function indexAction ($id) 
     {
+        
+        if (!$this->isLogin()) {            
+            return $this->redirect($this->generateUrl('iw_easy_survey_error_login',array()));            
+        }
+        
         $em = $this->getDoctrine()->getManager();
         $instance = $em->getRepository('IWEasySurveyBundle:Instance')->find($id);
         $quiz = $em->getRepository('IWEasySurveyBundle:Quiz')->find($instance->getQuizId());
@@ -77,7 +90,7 @@ class ResultController extends Controller
             $datas[] = array($key,$data['porcentage']);
         }
         
-        $ob->series(array(array('type' => 'pie','name' => 'Browser share', 'data' => $datas)));
+        $ob->series(array(array('type' => 'pie','name' => 'Porcentaje', 'data' => $datas)));
 
         return $ob;
         
@@ -85,6 +98,11 @@ class ResultController extends Controller
     
     public function showStatisticAction ($id) 
     {
+        
+        if (!$this->isLogin()) {            
+            return $this->redirect($this->generateUrl('iw_easy_survey_error_login',array()));            
+        }
+        
         $questions = $this->getIdQuestions($id);        
         $em = $this->getDoctrine()->getManager();
         $instance = $em->getRepository('IWEasySurveyBundle:Instance')->find($id);
@@ -140,6 +158,11 @@ class ResultController extends Controller
     
    public function showDataAction($id) 
     {
+       
+       if (!$this->isLogin()) {            
+            return $this->redirect($this->generateUrl('iw_easy_survey_error_login',array()));            
+        }
+       
        $em = $this->getDoctrine()->getManager();
        $values = $this->getResults($id);
        $instance = $em->getRepository('IWEasySurveyBundle:Instance')->find($id);
@@ -150,6 +173,11 @@ class ResultController extends Controller
 
    public function generateCsvAction($id)
     {
+       
+       if (!$this->isLogin()) {            
+            return $this->redirect($this->generateUrl('iw_easy_survey_error_login',array()));            
+        }
+       
         $values = $this->getResults($id);
         $filename = "export_".$id."_".date("Y_m_d_His").".csv";
         $response = $this->render('IWEasySurveyBundle:Result:csv.html.twig', array('id'=>$id,'values' => $values));         
@@ -159,7 +187,8 @@ class ResultController extends Controller
     }
     
     private function getIdQuestions ($idInstance) 
-    {        
+    {   
+        
         $em = $this->getDoctrine()->getManager();
         $query = $em->createQuery(
             "SELECT DISTINCT(a.idQuestion)

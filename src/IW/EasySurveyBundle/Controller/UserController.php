@@ -8,6 +8,13 @@ use Symfony\Component\HttpFoundation\Request;
 class UserController extends Controller
 {
     
+    private function isLogin () {
+        if (empty($this->get('session')->get('id'))) {
+            return false;
+        } 
+        return true;
+    }
+    
     private function existUser ($username, $email) {
         $em = $this->getDoctrine()->getManager();
         $user = $em->getRepository('IWEasySurveyBundle:User')->findby(array('username'=>$username,'email'=>$email));
@@ -94,6 +101,11 @@ class UserController extends Controller
     
     public function modifyUserAction(Request $request)
     {
+        
+        if (!$this->isLogin()) {            
+            return $this->redirect($this->generateUrl('iw_easy_survey_error_login',array()));            
+        }
+        
         $em = $this->getDoctrine()->getManager();
         $user = $em->getRepository('IWEasySurveyBundle:User')->find(array('id'=>$this->get('session')->get('id')));
         $error='';
@@ -140,6 +152,11 @@ class UserController extends Controller
 
     public function deleteUserAction(Request $request)
     {
+        
+        if (!$this->isLogin()) {            
+            return $this->redirect($this->generateUrl('iw_easy_survey_error_login',array()));            
+        }
+        
         $em = $this->getDoctrine()->getManager();
         $user = $em->getRepository('IWEasySurveyBundle:User')->find(array('id'=>$this->get('session')->get('id')));
         $em->remove($user);
@@ -187,6 +204,11 @@ class UserController extends Controller
 
     public function logoutAction(Request $request)
     {
+        
+        if (!$this->isLogin()) {            
+            return $this->redirect($this->generateUrl('iw_easy_survey_error_login',array()));            
+        }
+        
         $session = $request->getSession();
         $session->clear();
         return $this->render('IWEasySurveyBundle:User:logout.html.twig', array());

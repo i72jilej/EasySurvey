@@ -7,6 +7,14 @@ use Symfony\Component\HttpFoundation\Request;
 
 class QuizController extends Controller {
 
+    
+    private function isLogin () {
+        if (empty($this->get('session')->get('id'))) {
+            return false;
+        } 
+        return true;
+    }
+    
     private function getProjects() {
 
         $em = $this->getDoctrine()->getManager();
@@ -19,8 +27,17 @@ class QuizController extends Controller {
         return $projects_array; 
     }
 
+    public function errorLoginAction () {
+        
+        return $this->render('IWEasySurveyBundle:Default:errorlogin.html.twig', array());
+    }
+    
     public function createAction(Request $request) {
-
+        
+        if (!$this->isLogin()) {            
+            return $this->redirect($this->generateUrl('iw_easy_survey_error_login',array()));            
+        }
+        
         $arrayProjects = $this->getProjects();
         $error = '';
 
@@ -73,6 +90,9 @@ class QuizController extends Controller {
     
     public function manageAction($id) 
     {        
+        if (!$this->isLogin()) {            
+            return $this->redirect($this->generateUrl('iw_easy_survey_error_login',array()));            
+        }
         
         $em = $this->getDoctrine()->getManager();
         //se obtienen los proyectos del usuario en session
@@ -134,7 +154,11 @@ class QuizController extends Controller {
     }
 
     public function editAction($id, Request $request) {
-
+        
+        if (!$this->isLogin()) {            
+            return $this->redirect($this->generateUrl('iw_easy_survey_error_login',array()));            
+        }
+        
         $em = $this->getDoctrine()->getManager();
         $quiz = $em->getRepository('IWEasySurveyBundle:Quiz')->find($id);
         $error = '';
@@ -165,6 +189,11 @@ class QuizController extends Controller {
     
 
     public function manageQuestionsAction($id) {
+        
+        if (!$this->isLogin()) {            
+            return $this->redirect($this->generateUrl('iw_easy_survey_error_login',array()));            
+        }
+        
         $em = $this->getDoctrine()->getManager();
         $questions = $em->getRepository('IWEasySurveyBundle:Question')->findBy(array('quizId' => $id));
         $options = $this->getTypeQuestions();
@@ -190,7 +219,11 @@ class QuizController extends Controller {
     }
     
     public function addQuestionAction($id, Request $request) {
-
+        
+        if (!$this->isLogin()) {            
+            return $this->redirect($this->generateUrl('iw_easy_survey_error_login',array()));            
+        }
+        
         $questions = $this->getTypeQuestions();
         $form = $this->createFormBuilder()
                 ->add('name', 'text', array('label' => 'Enunciado de la Pregunta'))
@@ -219,6 +252,11 @@ class QuizController extends Controller {
     }
     
     public function deleteAction($id) {
+        
+        if (!$this->isLogin()) {            
+            return $this->redirect($this->generateUrl('iw_easy_survey_error_login',array()));            
+        }
+        
         $em = $this->getDoctrine()->getManager();
         $quiz = $em->getRepository('IWEasySurveyBundle:Quiz')->find($id);
         //al eliminar el cuestionario hay que eliminar las preguntas de dicho cuestionario y todas las opciones si estas existen
@@ -241,6 +279,10 @@ class QuizController extends Controller {
     
     public function editQuestionAction($id, Request $request) {
 
+        if (!$this->isLogin()) {            
+            return $this->redirect($this->generateUrl('iw_easy_survey_error_login',array()));            
+        }
+        
         $questions = $this->getTypeQuestions();
         $em = $this->getDoctrine()->getManager();
         $question = $em->getRepository('IWEasySurveyBundle:Question')->find($id);
@@ -283,6 +325,11 @@ class QuizController extends Controller {
     }
 
     public function deleteQuestionAction($id) {
+        
+        if (!$this->isLogin()) {            
+            return $this->redirect($this->generateUrl('iw_easy_survey_error_login',array()));            
+        }
+        
         $em = $this->getDoctrine()->getManager();
         $question = $em->getRepository('IWEasySurveyBundle:Question')->find($id);
         //si el tipo es de opcion simple o multiple hay que eliminar también las posibles opciones (tanto simples como multiples)
@@ -298,6 +345,11 @@ class QuizController extends Controller {
     }
     
     public function manageQuestionOptionAction($id, Request $request){
+        
+        if (!$this->isLogin()) {            
+            return $this->redirect($this->generateUrl('iw_easy_survey_error_login',array()));            
+        }
+        
         $em = $this->getDoctrine()->getManager();
         $question = $em->getRepository('IWEasySurveyBundle:Question')->find($id);
         $options = $em->getRepository('IWEasySurveyBundle:TextQuestionOption')->findBy(array('questionId' => $id ));
@@ -306,6 +358,11 @@ class QuizController extends Controller {
     }
     
     public function addOptionAction($id, Request $request) {
+        
+        if (!$this->isLogin()) {            
+            return $this->redirect($this->generateUrl('iw_easy_survey_error_login',array()));            
+        }
+        
         $em = $this->getDoctrine()->getManager();
         $question = $em->getRepository('IWEasySurveyBundle:Question')->find($id);
         $form = $this->createFormBuilder()
@@ -331,6 +388,10 @@ class QuizController extends Controller {
     
     public function editOptionAction ($id, Request $request) {
         
+        if (!$this->isLogin()) {            
+            return $this->redirect($this->generateUrl('iw_easy_survey_error_login',array()));            
+        }
+        
         $em = $this->getDoctrine()->getManager();
         $option = $em->getRepository('IWEasySurveyBundle:TextQuestionOption')->find($id);
         $question = $em->getRepository('IWEasySurveyBundle:Question')->find($option->getQuestionId());
@@ -352,6 +413,11 @@ class QuizController extends Controller {
     }
     
     public function deleteOptionAction ($id) {
+        
+        if (!$this->isLogin()) {            
+            return $this->redirect($this->generateUrl('iw_easy_survey_error_login',array()));            
+        }
+        
         $em = $this->getDoctrine()->getManager();
         $option = $em->getRepository('IWEasySurveyBundle:TextQuestionOption')->find($id);
         $em->remove($option);
@@ -379,6 +445,11 @@ class QuizController extends Controller {
 
     public function generateInstanceAction($id, Request $request) 
     {
+        
+        if (!$this->isLogin()) {            
+            return $this->redirect($this->generateUrl('iw_easy_survey_error_login',array()));            
+        }
+        
         $em = $this->getDoctrine()->getManager();
         
         $form = $this->createFormBuilder()
@@ -433,6 +504,11 @@ class QuizController extends Controller {
     
     public function instancesAction($idProject, $idQuiz) 
     {
+        
+        if (!$this->isLogin()) {            
+            return $this->redirect($this->generateUrl('iw_easy_survey_error_login',array()));            
+        }
+        
         $projects_results = array();
         $projects_results[] = array('id'=>-1,'name'=>'- Todo -');
         $quiz_results = array();
@@ -508,6 +584,11 @@ class QuizController extends Controller {
     
     public function deleteInstanceAction($id) 
     {
+        
+        if (!$this->isLogin()) {            
+            return $this->redirect($this->generateUrl('iw_easy_survey_error_login',array()));            
+        }
+        
         $em = $this->getDoctrine()->getManager();
         $instance = $em->getRepository('IWEasySurveyBundle:Instance')->find($id);
         $em->remove($instance);
@@ -602,6 +683,11 @@ class QuizController extends Controller {
     }    
     
     public function closeInstanceAction($id){
+        
+        if (!$this->isLogin()) {            
+            return $this->redirect($this->generateUrl('iw_easy_survey_error_login',array()));            
+        }
+        
         $em = $this->getDoctrine()->getManager();
         $instance = $em->getRepository('IWEasySurveyBundle:Instance')->find($id);
         $instance->setTimefinish(new \DateTime("now"));
