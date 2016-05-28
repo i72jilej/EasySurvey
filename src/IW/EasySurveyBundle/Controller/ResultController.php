@@ -124,21 +124,17 @@ class ResultController extends Controller
                 switch($question->getTypeId()) {
                     
                     // Respuestas numericas
-                    case 0: 
-                            $result_numeric[] = array ('questionName'=>$question->getName(),'average'=>$this->getAverage($answers), 'median'=>$this->getMedian($answers),
+                    case 0: $result_numeric[] = array ('questionName'=>$question->getName(),'average'=>$this->getAverage($answers), 'median'=>$this->getMedian($answers),
                                 'mode'=>$this->getMode($answers), 'porcentages'=>$this->getPortentages($answers),'total_answers'=>count($answers));
                         
                             break;
                         
-                        
                     // Respuestas de texto
-                    case 1: 
-                            $result_text[] = array ('questionName'=>$question->getName(),'responses'=>$this->getTextResponses($answers),'total_answers'=>count($answers));
+                    case 1: $result_text[] = array ('questionName'=>$question->getName(),'responses'=>$this->getTextResponses($answers),'total_answers'=>count($answers));
                             break;
                         
                     // Respuestas de eleccion unica
-                    case 2:
-                            $porcentages = $this->getPortentagesSimpleSelect($answers,$data);
+                    case 2: $porcentages = $this->getPortentagesSimpleSelect($answers,$data);
                             $chart = $this->print_chart($porcentages,$question->getName(),$data);
                             $result_simple[] = array ('questionName'=>$question->getName(), 'porcentages'=>$porcentages,'chart'=>$chart,'idQuestion'=>$data,'total_answers'=>count($answers));
                             break;
