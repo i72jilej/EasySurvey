@@ -27,10 +27,9 @@ class QuizController extends Controller {
         return $projects_array; 
     }
 
-    public function errorLoginAction () {
-        
-        return $this->render('IWEasySurveyBundle:Default:errorlogin.html.twig', array());
-    }
+    
+    
+    
     
     public function createAction(Request $request) {
         

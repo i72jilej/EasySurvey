@@ -15,4 +15,12 @@ class DefaultController extends Controller
     {
         return $this->render('IWEasySurveyBundle:Default:contact.html.twig', array());
     }
+    
+    public function errorLoginAction () {
+        return $this->render('IWEasySurveyBundle:Default:errorlogin.html.twig', array());
+    }
+    
+    public function errorAction () {
+        return $this->render('IWEasySurveyBundle:Default:error.html.twig', array());
+    }
 }

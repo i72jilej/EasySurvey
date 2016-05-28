@@ -152,4 +152,8 @@ iw_easy_survey_show_statistic:
     
 iw_easy_survey_error_login:
     pattern: /EasySurvey/errorLogin/
-    defaults: {_controller: IWEasySurveyBundle:Quiz:errorLogin }   
+    defaults: {_controller: IWEasySurveyBundle:Default:errorLogin }   
+    
+iw_easy_survey_error_access:
+    pattern: /EasySurvey/error/
+    defaults: {_controller: IWEasySurveyBundle:Default:error }   
