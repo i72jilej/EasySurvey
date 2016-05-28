@@ -95,8 +95,6 @@ class QuizController extends Controller {
         
     }
     
-    
-    
     public function manageAction($id) 
     {        
         if (!$this->isLogin()) {            
@@ -148,6 +146,7 @@ class QuizController extends Controller {
                 $quizs = $em->getRepository('IWEasySurveyBundle:Quiz')->findby(array('projectId' => $project->getId()));
                 foreach ($quizs as $quiz) {                    
                     $hasQuestion = $this->quizHaveQuestions($quiz->getId());
+                    
                     if ($id != -1 ) {
                         if ($id == $project->getId()) {
                             $results[] = array ('id'=>$quiz->getId(), 'name'=>$quiz->getName(), 'project'=> $project->getName(),'edit'=>0,'username'=>$user->getUsername(),'instanciable'=>$hasQuestion);
@@ -155,8 +154,6 @@ class QuizController extends Controller {
                     } else {
                         $results[] = array ('id'=>$quiz->getId(), 'name'=>$quiz->getName(), 'project'=> $project->getName(),'edit'=>0,'username'=>$user->getUsername(),'instanciable'=>$hasQuestion);
                     }
-                    
-                    
                 }
             }
         }
@@ -550,6 +547,19 @@ class QuizController extends Controller {
         return 0;
     }
     
+    private function hasAnswers ($idInstance) {
+        
+        $em = $this->getDoctrine()->getManager();
+        $answers = $em->getRepository('IWEasySurveyBundle:Answers')->findby(array('idInstance' => $idInstance));
+        if ( count($answers)>0 ) {
+            return 1;
+        } else {
+            return 0;
+        }
+        
+    }
+
+
     public function instancesAction($idProject, $idQuiz) 
     {        
         if (!$this->isLogin()) {            
@@ -563,6 +573,7 @@ class QuizController extends Controller {
         $em = $this->getDoctrine()->getManager();
         $instances = $em->getRepository('IWEasySurveyBundle:Instance')->findBy(array('userId'=>$this->get('session')->get('id')));
         foreach ($instances as $data) {
+            $hasAnswers = $this->hasAnswers($data->getId());
             $quiz = $em->getRepository('IWEasySurveyBundle:Quiz')->find($data->getQuizId());
             if (!$this->existDataInArray($quiz_results, $quiz->getId())) {
                 $quiz_results[] = array ('id'=>$quiz->getId(),'name'=>$quiz->getName());
@@ -575,6 +586,7 @@ class QuizController extends Controller {
                 if ($idQuiz == -1 ) {
                     $datas[]=array(
                             'instance_id'=>$data->getId(),
+                            'hasAnswers'=>$hasAnswers,
                             'question'=>$quiz->getName(),
                             'project' =>$project->getName(),
                             'timecreated'=>$data->getTimecreated(),
@@ -587,6 +599,7 @@ class QuizController extends Controller {
                         $idProject = $quiz->getProjectId();
                         $datas[]=array(
                                 'instance_id'=>$data->getId(),
+                                'hasAnswers'=>$hasAnswers,
                                 'question'=>$quiz->getName(),
                                 'project' =>$project->getName(),
                                 'timecreated'=>$data->getTimecreated(),
@@ -601,6 +614,7 @@ class QuizController extends Controller {
                     if ($idQuiz == -1 ) {
                      $datas[]=array(
                             'instance_id'=>$data->getId(),
+                            'hasAnswers'=>$hasAnswers,
                             'question'=>$quiz->getName(),
                             'project' =>$project->getName(),
                             'timecreated'=>$data->getTimecreated(),
@@ -613,6 +627,7 @@ class QuizController extends Controller {
                         if ($idQuiz == $quiz->getId()) {
                             $datas[]=array(
                             'instance_id'=>$data->getId(),
+                            'hasAnswers'=>$hasAnswers,
                             'question'=>$quiz->getName(),
                             'project' =>$project->getName(),
                             'timecreated'=>$data->getTimecreated(),

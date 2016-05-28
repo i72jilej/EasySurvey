@@ -48,7 +48,11 @@
                         <a href="{{ path('iw_easy_survey_reply_quiz', {'seeskey': data.seeskey})}}" onclick="prompt('La URL generada para esta instancia es:', '{{ url('iw_easy_survey_reply_quiz', {'seeskey': data.seeskey})}}'); return false;"> URL </a> | 
                       {% endif %}
                       <a href="{{ path('iw_easy_survey_delete_instance', {'id': data.instance_id})}}" onclick="return confirm('¿Esta seguro?')"> Borrar </a> |
-                      <a href="{{ path('iw_easy_survey_results', {'id': data.instance_id})}}"> Mostrar resultados </a> |
+                      {% if data.hasAnswers %}
+                            <a href="{{ path('iw_easy_survey_results', {'id': data.instance_id})}}"> Mostrar resultados </a> |
+                      {% else %}  
+                          Instancia sin datos |
+                      {% endif %}
                       {% if data.timefinish.date|date('d/m/y') > 'now'|date('d/m/y') %}
                           <a href="{{ path('iw_easy_survey_close_instance', {'id': data.instance_id})}}" onclick="return confirm('¿Esta seguro? Si cierra la instancia nadie podrá contestar a la encuesta')"> Cerrar instancia </a> 
                       {% endif %}
