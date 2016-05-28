@@ -6,7 +6,7 @@
       </div>  
       <div class="page-content">  
           {% if close == 1 %}
-             Cuestonario cerrado
+             {% trans %}Cuestonario cerrado{% endtrans %}
          {% else %}    
             {{ form(form)}}
          {% endif %}         

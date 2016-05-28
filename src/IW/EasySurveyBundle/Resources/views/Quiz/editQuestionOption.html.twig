@@ -9,7 +9,7 @@
           <table id="datetable">
               <thead>
               <tr>
-                  <th>Opcion</th>
+                  <th>{%trans%}Opcion{%endtrans%}</th>
                   <th></th>
               </tr>
               </thead>
@@ -19,7 +19,7 @@
                   <td>{{data.text}}</td>
                   <td>
                     <a href="{{ path('iw_easy_survey_edit_option', {'id': data.id})}}"> {% trans %}Modificar{% endtrans %} </a> |
-                    <a href="{{ path('iw_easy_survey_delete_option', {'id': data.id})}}" onclick="return confirm('¿Esta seguro?')"> {% trans %}Borrar{% endtrans %} </a>
+                    <a href="{{ path('iw_easy_survey_delete_option', {'id': data.id})}}" onclick="return confirm('{% trans %}¿Esta seguro?{% endtrans %}')"> {% trans %}Borrar{% endtrans %} </a>
                   </td>
               </tr>
               {% endfor %}

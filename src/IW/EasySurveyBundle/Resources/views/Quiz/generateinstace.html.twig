@@ -4,10 +4,10 @@
         <h1>{% trans %}Generar instancia{% endtrans %}</h1>
       </div>  
       <div class="page-content">  
-          Se va a crear una instancia de la encuesta:
+          {% trans %}Se va a crear una instancia de la encuesta:{% endtrans %}
           <br><br>
           {{form(form)}}
           <br><br>
-          *Una vez cree la instancia no va a poder modificar la encuesta
+          {% trans %}*Una vez cree la instancia no va a poder modificar la encuesta{% endtrans %}
       </div>
 {% endblock %}

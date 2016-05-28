@@ -221,7 +221,6 @@ class QuizController extends Controller {
         return $questions;
     }
     
-    
     public function addQuestionAction($id, Request $request) {
         
         if (!$this->isLogin()) {            

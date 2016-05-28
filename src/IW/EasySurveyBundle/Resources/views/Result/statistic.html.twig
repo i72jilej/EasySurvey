@@ -9,19 +9,19 @@
       </div>  
       
       <div class="page-content">  
-          <h4><b>Instancia:</b> {{ name }}</h4>
+          <h4><b>{% trans %}Instancia{% endtrans %}:</b> {{ name }}</h4>
           <br>
           {% if results_numeric|length > 0   %}
             {% for value in results_numeric %}
-                <p><b> {{ value.questionName }} </b> (Numérica)</p>
-                <p><b>Media</b>: {{ value.average|number_format(2, '.', ',') }} </p>
-                <p><b>Mediana</b>: {{ value.median|number_format(2, '.', ',') }} </p>
-                <p><b>Moda</b>: {{ value.mode|number_format(2, '.', ',') }} </p>
-                <p><b>Porcentajes</b>: </P>                 
+                <p><b> {{ value.questionName }} </b> ({% trans %}Numérica){% endtrans %}</p>
+                <p><b>{% trans %}Media{% endtrans %}</b>: {{ value.average|number_format(2, '.', ',') }} </p>
+                <p><b>{% trans %}Mediana{% endtrans %}</b>: {{ value.median|number_format(2, '.', ',') }} </p>
+                <p><b>{% trans %}Moda{% endtrans %}</b>: {{ value.mode|number_format(2, '.', ',') }} </p>
+                <p><b>{% trans %}Porcentajes{% endtrans %}</b>: </P>                 
                     {% for key,porcentage in value.porcentages %}
                     <p> <b>Valor {{key}}</b> : {{porcentage|number_format(2, '.', ',')}}%  </p> 
                     {% endfor %} 
-                <p><b>Total respuestas:</b> {{ value.total_answers }}</p>
+                <p><b>{% trans %}Total respuestas{% endtrans %}:</b> {{ value.total_answers }}</p>
             {% endfor %}
             
             <br>
@@ -31,25 +31,25 @@
           {% if results_text|length > 0   %}
             {% for value in results_text %}
                 <p><b> {{ value.questionName }} </b> (Texto)</p>
-                <b>Las respuestas han sido: </b>
+                <b>{% trans %}Las respuestas han sido{% endtrans %}: </b>
                 <ul>
                 {% for response in value.responses %}
                     <li> {{response}} </li>
                 {% endfor %}
                 </ul>
-                <p><b>Total respuestas:</b> {{ value.total_answers }}</p>
+                <p><b>{% trans %}Total respuestas{% endtrans %}:</b> {{ value.total_answers }}</p>
             {% endfor %}
             <br>
           {% endif %}
           <hr>
           {% if results_simple|length > 0   %}
             {% for value in results_simple %}                
-                <p><b> {{ value.questionName }}</b> (Selección Simple)</p>
-                <p><b>Porcentajes:</b> </p>
+                <p><b> {{ value.questionName }}</b> ({% trans %}Selección Simple{% endtrans %})</p>
+                <p><b>{% trans %}Porcentajes{% endtrans %}:</b> </p>
                     {% for key,porcentage in value.porcentages %}
-                        <p> <b>{{key}}</b> : {{porcentage.porcentage|number_format(2, '.', ',')}}% (Respuestas: {{porcentage.total}})  </p>
+                        <p> <b>{{key}}</b> : {{porcentage.porcentage|number_format(2, '.', ',')}}% ({% trans %}Respuestas{% endtrans %}: {{porcentage.total}})  </p>
                     {% endfor %} 
-                <p><b>Total respuestas:</b> {{ value.total_answers }}</p>
+                <p><b>{% trans %}Total respuestas{% endtrans %}:</b> {{ value.total_answers }}</p>
                     <script type="text/javascript">
                         {{ chart(value.chart) }}
                     </script>
@@ -60,12 +60,12 @@
           <hr>
           {% if results_multiple|length > 0   %}
             {% for value in results_multiple %}                
-                <p><b> {{ value.questionName }} </b> (Selección Multiple)</p>
-                <p><b>Porcentajes:</b> </p>                   
+                <p><b> {{ value.questionName }} </b> ({% trans %}Selección Multiple{% endtrans %})</p>
+                <p><b>{% trans %}Porcentajes{% endtrans %}:</b> </p>                   
                 {% for key,porcentage in value.porcentages %}
-                    <p> <b>{{key}}</b> : {{porcentage.porcentage|number_format(2, '.', ',')}}% (Respuestas: {{porcentage.total}})  </p>
+                    <p> <b>{{key}}</b> : {{porcentage.porcentage|number_format(2, '.', ',')}}% ({% trans %}Respuestas{% endtrans %}: {{porcentage.total}})  </p>
                 {% endfor %} 
-                <p><b>Total respuestas:</b> {{ value.total_answers }}</p>
+                <p><b>{% trans %}Total respuestas{% endtrans %}:</b> {{ value.total_answers }}</p>
                 <script type="text/javascript">
                     {{ chart(value.chart) }}
                 </script>
