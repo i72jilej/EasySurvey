@@ -29,10 +29,6 @@ class Answers
      */
     private $timestamp;
     
-    /**
-     * @var integer
-     */
-    private $idType;
     
     /**
      * @var integer
@@ -117,29 +113,6 @@ class Answers
     public function getTimestamp()
     {
         return $this->timestamp;
-    }
-    
-    /**
-     * Set idType
-     *
-     * @param integer
-     * @return idType
-     */
-    public function setIdType($idType)
-    {
-        $this->idType = $idType;
-    
-        return $this;
-    }
-
-    /**
-     * Get timestamp
-     *
-     * @return \DateTime 
-     */
-    public function getIdType()
-    {
-        return $this->idType;
     }
     
     /**

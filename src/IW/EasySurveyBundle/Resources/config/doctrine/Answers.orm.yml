@@ -15,9 +15,6 @@ IW\EasySurveyBundle\Entity\Answers:
         idInstance:
             type: integer
             column: id_instance
-        idType:
-            type: integer
-            column: id_type
         body:
             type: string
             length: '255'

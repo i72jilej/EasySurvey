@@ -3,8 +3,7 @@
 namespace IW\EasySurveyBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-
-//use Symfony\Component\HttpFoundation\StreamedResponse;
+use Ob\HighchartsBundle\Highcharts\Highchart;
 
 class ResultController extends Controller
 {
@@ -62,6 +61,28 @@ class ResultController extends Controller
         return $this->render('IWEasySurveyBundle:Result:manage.html.twig', array('id'=>$id,'instanceName'=>$instance->getName(),'quizName'=>$quiz->getName()));        
     }
     
+    private function print_chart ($porcentages, $title, $id) {
+        $ob = new Highchart();
+        $ob->chart->renderTo('piechart_'.$id);
+        $ob->title->text($title);
+        $ob->plotOptions->pie(array(
+            'allowPointSelect'  => true,
+            'cursor'    => 'pointer',
+            'dataLabels'    => array('enabled' => false),
+            'showInLegend'  => true
+        ));
+        
+        $datas = array ();
+        foreach ($porcentages as $key=>$data) {
+            $datas[] = array($key,$data['porcentage']);
+        }
+        
+        $ob->series(array(array('type' => 'pie','name' => 'Browser share', 'data' => $datas)));
+
+        return $ob;
+        
+    }
+    
     public function showStatisticAction ($id) 
     {
         $questions = $this->getIdQuestions($id);        
@@ -73,31 +94,40 @@ class ResultController extends Controller
         $result_simple = array();
         $result_multiple = array();
         foreach ($questions as $data) {
+            
                 $answers = $em->getRepository('IWEasySurveyBundle:Answers')->findBy(array('idInstance'=>$id,'idQuestion'=>$data));
                 $question = $em->getRepository('IWEasySurveyBundle:Question')->find($data);
                 
                 switch($question->getTypeId()) {
-                            // Respuestas numericas
+                    
+                    // Respuestas numericas
                     case 0: 
                             $result_numeric[] = array ('questionName'=>$question->getName(),'average'=>$this->getAverage($answers), 'median'=>$this->getMedian($answers),
-                                'mode'=>$this->getMode($answers), 'porcentages'=>$this->getPortentages($answers));
+                                'mode'=>$this->getMode($answers), 'porcentages'=>$this->getPortentages($answers),'total_answers'=>count($answers));
+                        
                             break;
-                            // Respuestas de texto
+                        
+                        
+                    // Respuestas de texto
                     case 1: 
-                            $result_text[] = array ('questionName'=>$question->getName(),'responses'=>$this->getTextResponses($answers));
+                            $result_text[] = array ('questionName'=>$question->getName(),'responses'=>$this->getTextResponses($answers),'total_answers'=>count($answers));
                             break;
+                        
                     // Respuestas de eleccion unica
                     case 2:
-                            $result_simple[] = array ('questionName'=>$question->getName(), 'porcentages'=>$this->getPortentages($answers));
+                            $porcentages = $this->getPortentagesSimpleSelect($answers,$data);
+                            $chart = $this->print_chart($porcentages,$question->getName(),$data);
+                            $result_simple[] = array ('questionName'=>$question->getName(), 'porcentages'=>$porcentages,'chart'=>$chart,'idQuestion'=>$data,'total_answers'=>count($answers));
                             break;
+                        
                     // Respuestas de eleccion multiple
-                    case 3: 
-                            $result_multiple[] = array ('questionName'=>$question->getName(), 'porcentages'=>$this->getPortentages($answers));
+                    case 3: $porcentages = $this->getPortentagesMultipleSelect($answers,$data);
+                            $chart = $this->print_chart($porcentages,$question->getName(),$data);
+                            $result_multiple[] = array ('questionName'=>$question->getName(), 'porcentages'=>$porcentages,'chart'=>$chart,'idQuestion'=>$data,'total_answers'=>count($answers));
                             break;
+                        
                 }
                 
-            
-            
         }
         
         return $this->render('IWEasySurveyBundle:Result:statistic.html.twig', 
@@ -146,20 +176,20 @@ class ResultController extends Controller
         return $results;
     }
     
-    private function getAverage($id)
+    private function getAverage($array)
     {
         $Average = 0;
-        foreach ($id as $data) {
+        foreach ($array as $data) {
             $Average += $data->getBody();
         }
-        $Average /= count($id);
+        $Average /= count($array);
         
         return $Average;
     }    
     
-    private function getMedian($id)
+    private function getMedian($array)
     {
-        foreach ($id as $data){
+        foreach ($array as $data){
             $valuesArray[] = $data->getBody();
         }
         sort($valuesArray);
@@ -175,9 +205,9 @@ class ResultController extends Controller
         return $median;
     }
     
-    private function getMode($id)
+    private function getMode($array)
     {
-        foreach ($id as $data){
+        foreach ($array as $data){
             $valueArray[] = $data->getBody();
         }
         $values = array_count_values($valueArray); 
@@ -185,9 +215,9 @@ class ResultController extends Controller
         return $mode;
     }
     
-    private function getPortentages($id) //FALTA POR ACABAR
+    private function getPortentages($array)
     {
-        foreach ($id as $data){
+        foreach ($array as $data){
             $valueArray[] = $data->getBody();
         }
         $count = array_count_values($valueArray); 
@@ -197,13 +227,80 @@ class ResultController extends Controller
         {
             $data /= $total;
         }
+        
+        $result = array();
+        foreach ($count as $key=>$value) {
+            $result[$key]=$value * 100;
+        }
 
-        return $count;
+        return $result;
     }
     
-    private function getTextResponses($id)
+    private function getPortentagesSimpleSelect($array, $idQuestion)
     {
-        foreach ($id as $data){
+        $em = $this->getDoctrine()->getManager();   
+        
+        $valueArray = array ();
+        //primero creamos un array con las posibles opciones a la pregunta incializandolo a 0
+        //poniendo como id del array el id de la opción
+        $textQuestionOptions = $em->getRepository('IWEasySurveyBundle:TextQuestionOption')->findBy(array('questionId'=>$idQuestion));
+        foreach ($textQuestionOptions as $value) {    
+            $valueArray[$value->getId()] = 0;
+        }
+        //incrementamos un valor cuando se encuentra dicha opción
+        $total = 0;
+        foreach ($array as $key=>$data){
+            $valueArray[$data->getBody()] ++;
+            $total++;
+        }
+        
+        $result = array();
+        //recorremos dicho array con los valores totales
+        foreach ($valueArray as $key=>$value) {
+            $option = $em->getRepository('IWEasySurveyBundle:TextQuestionOption')->find($key);
+            $porcentage = ($value / $total) * 100;
+            $result[$option->getText()] = array('total'=>$value,'porcentage'=>$porcentage);
+        }
+         return $result;
+         
+    }
+    
+    private function getPortentagesMultipleSelect($array, $idQuestion)
+    {
+        $em = $this->getDoctrine()->getManager();   
+        
+        $valueArray = array ();
+        //primero creamos un array con las posibles opciones a la pregunta incializandolo a 0
+        //poniendo como id del array el id de la opción
+        $textQuestionOptions = $em->getRepository('IWEasySurveyBundle:TextQuestionOption')->findBy(array('questionId'=>$idQuestion));
+        foreach ($textQuestionOptions as $value) {    
+            $valueArray[$value->getId()] = 0;
+        }
+        
+        //incrementamos un valor cuando se encuentra dicha opción
+        $total = 0;
+        foreach ($array as $data){
+            //convertirmos el body de la respuesta en un array (ya que son las opciones separadas por ,
+            $array_data =  explode(',',$data->getBody());
+            foreach ($array_data as $key=>$data2) {
+                $valueArray[$data2] ++;
+                $total++;
+            }
+        }        
+        $result = array();
+        //recorremos dicho array con los valores totales
+        foreach ($valueArray as $key=>$value) {
+            $option = $em->getRepository('IWEasySurveyBundle:TextQuestionOption')->find($key);
+            $porcentage = ($value / $total) * 100;
+            $result[$option->getText()] = array('total'=>$value,'porcentage'=>$porcentage);
+        }
+        
+        return $result;
+    }
+    
+    private function getTextResponses($array)
+    {
+        foreach ($array as $data){
             $text[] = $data->getBody();
         }
         return $text;

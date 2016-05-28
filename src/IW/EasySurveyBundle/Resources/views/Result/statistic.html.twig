@@ -1,53 +1,77 @@
 {% extends "IWEasySurveyBundle::layout.html.twig" %}
 {% block content %}
+        <!-- Load jQuery from Google's CDN if needed -->
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+        <script src="//code.highcharts.com/4.1.8/highcharts.js"></script>
+        <script src="//code.highcharts.com/4.1.8/modules/exporting.js"></script>
       <div class="page-header">          
           <h1>Estadísticas de la encuesta</h1>
       </div>  
       
-       
       <div class="page-content">  
           <h4><b>Instancia:</b> {{ name }}</h4>
+          <br>
           {% if results_numeric|length > 0   %}
             {% for value in results_numeric %}
-                <p><b> {{ value.questionName }} </b></p>
-                <p>Media: {{ value.average }} </p>
-                <p>Mediana: {{ value.median }} </p>
-                <p>Moda: {{ value.mode }} </p>
-                <p>Porcentaje: </P>                 
+                <p><b> {{ value.questionName }} </b> (Numérica)</p>
+                <p><b>Media</b>: {{ value.average|number_format(2, '.', ',') }} </p>
+                <p><b>Mediana</b>: {{ value.median|number_format(2, '.', ',') }} </p>
+                <p><b>Moda</b>: {{ value.mode|number_format(2, '.', ',') }} </p>
+                <p><b>Porcentajes</b>: </P>                 
                     {% for key,porcentage in value.porcentages %}
-                        <p> {{key}} : {{porcentage}}  </p> 
+                    <p> <b>Valor {{key}}</b> : {{porcentage|number_format(2, '.', ',')}}%  </p> 
                     {% endfor %} 
+                <p><b>Total respuestas:</b> {{ value.total_answers }}</p>
             {% endfor %}
+            
+            <br>
+            
           {% endif %}
-          
+          <hr>
           {% if results_text|length > 0   %}
             {% for value in results_text %}
-                <p><b> {{ value.questionName }} </b></p>
+                <p><b> {{ value.questionName }} </b> (Texto)</p>
+                <b>Las respuestas han sido: </b>
+                <ul>
                 {% for response in value.responses %}
-                    <p> {{response}} </p>
+                    <li> {{response}} </li>
                 {% endfor %}
+                </ul>
+                <p><b>Total respuestas:</b> {{ value.total_answers }}</p>
             {% endfor %}
+            <br>
           {% endif %}
-          
+          <hr>
           {% if results_simple|length > 0   %}
-            {% for value in results_simple %}
-                <p><b> {{ value.questionName }} </b></p>
-                <p>Porcentaje: </p>                   
+            {% for value in results_simple %}                
+                <p><b> {{ value.questionName }}</b> (Selección Simple)</p>
+                <p><b>Porcentajes:</b> </p>
                     {% for key,porcentage in value.porcentages %}
-                        <p> {{key}} : {{porcentage}}  </p> 
+                        <p> <b>{{key}}</b> : {{porcentage.porcentage|number_format(2, '.', ',')}}% (Respuestas: {{porcentage.total}})  </p>
                     {% endfor %} 
-            {% endfor %}        
+                <p><b>Total respuestas:</b> {{ value.total_answers }}</p>
+                    <script type="text/javascript">
+                        {{ chart(value.chart) }}
+                    </script>
+                    <div id="piechart_{{ value.idQuestion }}"></div>                    
+            {% endfor %}  
+            <br>
           {% endif %}
-          
+          <hr>
           {% if results_multiple|length > 0   %}
-            {% for value in results_multiple %}
-                <p><b> {{ value.questionName }} </b></p>
-                <p>Porcentaje: </p>                   
-                    {% for key,porcentage in value.porcentages %}
-                        <p> {{key}} : {{porcentage}}  </p> 
-                    {% endfor %} 
+            {% for value in results_multiple %}                
+                <p><b> {{ value.questionName }} </b> (Selección Multiple)</p>
+                <p><b>Porcentajes:</b> </p>                   
+                {% for key,porcentage in value.porcentages %}
+                    <p> <b>{{key}}</b> : {{porcentage.porcentage|number_format(2, '.', ',')}}% (Respuestas: {{porcentage.total}})  </p>
+                {% endfor %} 
+                <p><b>Total respuestas:</b> {{ value.total_answers }}</p>
+                <script type="text/javascript">
+                    {{ chart(value.chart) }}
+                </script>
+                <div id="piechart_{{ value.idQuestion }}"></div>                    
             {% endfor %}         
           {% endif %}
-          
+          <hr>
       </div>  
 {% endblock %}

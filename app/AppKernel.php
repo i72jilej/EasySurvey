@@ -19,6 +19,7 @@ class AppKernel extends Kernel
             new Mopa\Bundle\BootstrapBundle\MopaBootstrapBundle(),
             new IW\EasySurveyBundle\IWEasySurveyBundle(),
             new Acrobat\Bundle\RecaptchaBundle\AcrobatRecaptchaBundle(),
+            new Ob\HighchartsBundle\ObHighchartsBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {

@@ -41,3 +41,8 @@ div > input[type*="radio"] {
     display: block;
     margin-top: 0.5em;
 }
+
+div > label[for*="form_description"] {
+    font-size: 150%;
+    display: block;
+}

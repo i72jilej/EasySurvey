@@ -543,11 +543,7 @@ class QuizController extends Controller {
         foreach ($questions as $data) {
             switch ( $data->getTypeId() ) {
                 //numerica
-                case 0:     /*$formBuilderQuestionnaire->add($data->getTypeId().'_'.$data->getId(), 
-                                    'choice', array('required' => true,'label' => $data->getName(),'expanded' => true,
-                                    'choices' => array(1 => 1, 2 => 2,3 => 3,4 => 4,5 => 5)));
-                    //'choices' => array(1 => 1, 2 => 2,3 => 3,4 => 4,5 => 5*/
-                            $formBuilderQuestionnaire->add($data->getTypeId().'_'.$data->getId(), 
+                case 0:     $formBuilderQuestionnaire->add($data->getTypeId().'_'.$data->getId(), 
                                     'number',  array('required' => true,'label' => $data->getName()));
                             break;
                 
@@ -574,10 +570,8 @@ class QuizController extends Controller {
         if ($form->isValid()) {
             $dataForm = $form->getData();
             
-            foreach ($dataForm as $key => $value) {
-                
+            foreach ($dataForm as $key => $value) {                
                 if ($key!='Captcha') {
-                
                     $aux = explode('_',$key);
                     $type = $aux[0];
                     $quizId = $aux[1];
@@ -596,7 +590,6 @@ class QuizController extends Controller {
                     }
                     $answer->setBody($result);
                     $answer->setTimestamp(new \DateTime("now"));
-                    $answer->setIdType($type);
                     $answer->setIdInstance($instance[0]->getId());
                     $em = $this->getDoctrine()->getManager();
                     $em->persist($answer);

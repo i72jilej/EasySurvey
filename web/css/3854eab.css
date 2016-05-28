@@ -51,6 +51,11 @@ div > input[type*="radio"] {
     margin-top: 0.5em;
 }
 
+div > label[for*="form_description"] {
+    font-size: 150%;
+    display: block;
+}
+
 /*!
 Video.js Default Styles (http://videojs.com)
 Version 4.4.3
