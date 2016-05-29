@@ -559,7 +559,7 @@ class QuizController extends Controller {
             $actual_date = new \DateTime("now");
             
             if ($actual_date>=$dataForm['finishdate']) {
-                $error = 'Fecha de finalización menor que la fecha actual, instroduzca una fecha válida';
+                $error = 'Fecha de finalización menor que la fecha actual, introduzca una fecha válida';
             } else {
                 $instance = new \IW\EasySurveyBundle\Entity\Instance;
                 $instance->setQuizId($id);
