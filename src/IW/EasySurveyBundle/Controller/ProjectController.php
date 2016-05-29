@@ -14,9 +14,33 @@ class ProjectController extends Controller
         return true;
     }
     
+    private function existProjectName ($name, $id) {
+        $em = $this->getDoctrine()->getManager();
+        $projects_aux = $em->getRepository('IWEasySurveyBundle:Project')->findBy(array('name'=>$name));
+        
+        if ($id==-1) { //si es -1 es un insert por tanto buscamos en la bbdd cualquiera
+            
+            if (count($projects_aux)>0){
+                return 1;
+            } else {
+                return 0;
+            }
+        } else { //al tener id es un update por lo tanto por tanto lo descartamos a el mismo
+            $return = 0;
+            foreach ($projects_aux as $data) {
+                if ($data->getId()!=$id) { //no es el mismo
+                    $return = 1;
+                }
+            }
+            return $return;
+        }
+        
+    }
+    
     public function createAction(Request $request)
     {
         
+        $error = '';
         if (!$this->isLogin()) {            
             return $this->redirect($this->generateUrl('iw_easy_survey_error_login',array()));            
         }
@@ -32,17 +56,21 @@ class ProjectController extends Controller
         if ($form->isValid()) {
             $user_id = $this->get('session')->get('id');
             $projectData = $form->getData();
-            $project = new \IW\EasySurveyBundle\Entity\Project;
-            $project->setName($projectData['name']);
-            $project->setDescription($projectData['description']);
-            $project->setUserId($user_id);
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($project);
-            $em->flush();    
-            return $this->redirect($this->generateUrl('iw_easy_survey_manage_project'));
+            if ($this->existProjectName($projectData['name'],-1)){
+                $error = 'Ya existe un proyecto en el sistema con ese nombre';
+            } else {    
+                $project = new \IW\EasySurveyBundle\Entity\Project;
+                $project->setName($projectData['name']);
+                $project->setDescription($projectData['description']);
+                $project->setUserId($user_id);
+                $em = $this->getDoctrine()->getManager();
+                $em->persist($project);
+                $em->flush();    
+                return $this->redirect($this->generateUrl('iw_easy_survey_manage_project'));
+            }
         }
         
-        return $this->render('IWEasySurveyBundle:Project:form.html.twig', array('form' => $form->createView(),));
+        return $this->render('IWEasySurveyBundle:Project:form.html.twig', array('form' => $form->createView(),'error'=>$error));
     }
     
     public function manageAction() {
@@ -147,6 +175,7 @@ class ProjectController extends Controller
         if ($project->getUserId()!=$this->get('session')->get('id')) {
             return $this->redirect($this->generateUrl('iw_easy_survey_error_access',array()));
         }
+        $error = '';
         
         $form = $this->createFormBuilder()
             ->add('name', 'text', array('label'=>'Nombre del Proyecto','required'=>true, 'data'=>$project->getName(), 'required'=>true))
@@ -156,14 +185,18 @@ class ProjectController extends Controller
         $form->handleRequest($request);
         if ($form->isValid()) {
             $projectData = $form->getData();
-            $project->setName($projectData['name']);
-            $project->setDescription($projectData['description']);
-            $em->persist($project);
-            $em->flush();    
-            return $this->redirect($this->generateUrl('iw_easy_survey_manage_project'));
+            if ($this->existProjectName($projectData['name'],$project->getId())) {
+                $error = 'Ya existe un proyecto en el sistema con ese nombre';
+            } else {
+                $project->setName($projectData['name']);
+                $project->setDescription($projectData['description']);
+                $em->persist($project);
+                $em->flush();    
+                return $this->redirect($this->generateUrl('iw_easy_survey_manage_project'));
+            }
         }
         
-        return $this->render('IWEasySurveyBundle:Project:form.html.twig', array('form' => $form->createView(),));
+        return $this->render('IWEasySurveyBundle:Project:form.html.twig', array('form' => $form->createView(),'error'=>$error));
     }
     
     public function collaboratorAction ($id, Request $request) {

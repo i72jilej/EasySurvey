@@ -27,6 +27,30 @@ class QuizController extends Controller {
         return $projects_array; 
     }
     
+    private function existQuiz ($name, $id, $projectId) 
+    {
+        $em = $this->getDoctrine()->getManager();
+        $quizs = $em->getRepository('IWEasySurveyBundle:Quiz')->findBy(array('name'=>$name,'projectId'=>$projectId));
+        
+        if ($id == -1) {
+            if (count($quizs)>0) {
+                return 1;
+            } else {
+                return 0;
+            }
+        } else {
+            $return = 0;
+            foreach ($quizs as $quiz) {
+                if ($quiz->getId() != $id) {
+                    $return = 1;
+                }
+            }
+            return $return;
+        }
+        
+    }
+
+
     public function createAction(Request $request) {
         
         if (!$this->isLogin()) {            
@@ -34,6 +58,7 @@ class QuizController extends Controller {
         }
         
         $arrayProjects = $this->getProjects();
+        $error2 = '';
         $error = '';
 
         if (empty($arrayProjects)) {
@@ -51,17 +76,22 @@ class QuizController extends Controller {
 
         if ($form->isValid()) {
             $projectData = $form->getData();
-            $project = new \IW\EasySurveyBundle\Entity\Quiz;
-            $project->setName($projectData['name']);
-            $project->setDescription($projectData['description']);
-            $project->setProjectId($projectData['project']);
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($project);
-            $em->flush();
-            return $this->redirect($this->generateUrl('iw_easy_survey_manage_quiz',array('id'=>-1)));
+            
+            if ($this->existQuiz($projectData['name'], -1, $projectData['project'])) {
+                $error2 = 'Ya existe una encuesta con ese nombre en el proyecto seleccionado';
+            } else {
+                $project = new \IW\EasySurveyBundle\Entity\Quiz;
+                $project->setName($projectData['name']);
+                $project->setDescription($projectData['description']);
+                $project->setProjectId($projectData['project']);
+                $em = $this->getDoctrine()->getManager();
+                $em->persist($project);
+                $em->flush();
+                return $this->redirect($this->generateUrl('iw_easy_survey_manage_quiz',array('id'=>-1)));
+            }
         }
 
-        return $this->render('IWEasySurveyBundle:Quiz:form.html.twig', array('form' => $form->createView(), 'error' => $error));
+        return $this->render('IWEasySurveyBundle:Quiz:form.html.twig', array('form' => $form->createView(), 'error' => $error, 'error2' => $error2));
     }
     
     private function getUserProject ($projectId) {
@@ -176,6 +206,7 @@ class QuizController extends Controller {
         }        
         
         $error = '';
+        $error2 = '';
         $arrayProjects = $this->getProjects();
 
         $form = $this->createFormBuilder()
@@ -190,14 +221,19 @@ class QuizController extends Controller {
         //se envia el formulario
         if ($form->isValid()) {
             $dataForm = $form->getData();
-            $quiz->setName($dataForm['name']);
-            $quiz->setDescription($dataForm['description']);
-            $quiz->setProjectId($dataForm['project']);
-            $em->persist($quiz);
-            $em->flush();
-            return $this->redirect($this->generateUrl('iw_easy_survey_manage_quiz',array('id'=>-1)));
+            
+            if ($this->existQuiz($dataForm['name'], $quiz->getId(), $dataForm['project'])) {
+                $error2 = 'Ya existe una encuesta con ese nombre en el proyecto seleccionado';
+            } else {
+                $quiz->setName($dataForm['name']);
+                $quiz->setDescription($dataForm['description']);
+                $quiz->setProjectId($dataForm['project']);
+                $em->persist($quiz);
+                $em->flush();
+                return $this->redirect($this->generateUrl('iw_easy_survey_manage_quiz',array('id'=>-1)));
+            }
         }
-        return $this->render('IWEasySurveyBundle:Quiz:form.html.twig', array('form' => $form->createView(), 'error' => $error));
+        return $this->render('IWEasySurveyBundle:Quiz:form.html.twig', array('form' => $form->createView(), 'error' => $error, 'error2' => $error2));
     }
 
     public function manageQuestionsAction($id) {
@@ -495,6 +531,9 @@ class QuizController extends Controller {
         if ($access==0) {
             return $this->redirect($this->generateUrl('iw_easy_survey_error_access',array()));
         }
+        $error= '';
+        $date = new \DateTime("now");
+        $date->modify('+1 day');
         
         $form = $this->createFormBuilder()
                 ->add('name', 'text', array(
@@ -506,7 +545,7 @@ class QuizController extends Controller {
                     'label' => 'Fecha de finalización de la encuesta: ', 
                     'required' => true,
                     'pattern' => '{{ day }}-{{ month }}-{{ year }}',
-                    'data' => new \DateTime("now"),
+                    'data' => $date,
                     'years' => range(date ("Y"), 2050)))
                 
                 ->add('add', 'submit', array('label' => 'Enviar'))
@@ -516,25 +555,32 @@ class QuizController extends Controller {
         
         if ($form->isValid()) {
             $dataForm = $form->getData();    
-            $instance = new \IW\EasySurveyBundle\Entity\Instance;
-            $instance->setQuizId($id);
-            $instance->setTimecreated(new \DateTime("now"));
-            $instance->setTimefinish($dataForm['finishdate']);
-            $instance->setName($dataForm['name']);
-            $instance->setUserId($this->get('session')->get('id'));
-            //se comprueba que el seeskey no existe ya en el sistema (improbable pero posible)
-            do {
-                $seeskey = substr(md5(rand()),0,10);
-                $instances = $em->getRepository('IWEasySurveyBundle:Instance')->findBy(array('seeskey'=>$seeskey));
-            } while( !empty($instances) );
             
-            $instance->setSeeskey($seeskey);
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($instance);
-            $em->flush();
-            return $this->redirect($this->generateUrl('iw_easy_survey_instances', array('idProject'=>-1,'idQuiz'=>-1)));
+            $actual_date = new \DateTime("now");
+            
+            if ($actual_date>=$dataForm['finishdate']) {
+                $error = 'Fecha de finalización menor que la fecha actual, instroduzca una fecha válida';
+            } else {
+                $instance = new \IW\EasySurveyBundle\Entity\Instance;
+                $instance->setQuizId($id);
+                $instance->setTimecreated($actual_date);
+                $instance->setTimefinish($dataForm['finishdate']);
+                $instance->setName($dataForm['name']);
+                $instance->setUserId($this->get('session')->get('id'));
+                //se comprueba que el seeskey no existe ya en el sistema (improbable pero posible)
+                do {
+                    $seeskey = substr(md5(rand()),0,10);
+                    $instances = $em->getRepository('IWEasySurveyBundle:Instance')->findBy(array('seeskey'=>$seeskey));
+                } while( !empty($instances) );
+
+                $instance->setSeeskey($seeskey);
+                $em = $this->getDoctrine()->getManager();
+                $em->persist($instance);
+                $em->flush();
+                return $this->redirect($this->generateUrl('iw_easy_survey_instances', array('idProject'=>-1,'idQuiz'=>-1)));
+            }
         }
-        return $this->render('IWEasySurveyBundle:Quiz:generateinstace.html.twig', array('id' => $id, 'form' => $form->createView()));
+        return $this->render('IWEasySurveyBundle:Quiz:generateinstace.html.twig', array('id' => $id, 'form' => $form->createView(),'error'=>$error));
     }
     
     private function existDataInArray ($array, $id) {

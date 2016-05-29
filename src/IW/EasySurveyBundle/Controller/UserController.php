@@ -28,6 +28,7 @@ class UserController extends Controller
     public function createUserAction(Request $request)
     {
         $error = '';
+        
         $form = $this->createFormBuilder()
             ->add('user', 'text', array('label'=>'Usuario','required'=>true))
             ->add('password', 'password', array('label'=>'Contraseña','required'=>true))
@@ -90,6 +91,16 @@ class UserController extends Controller
             $user[0]->setConfirm(1);
             $em->persist($user[0]);
             $em->flush();
+            
+            $message = \Swift_Message::newInstance()
+                ->setSubject('[EasySurvey] Cuenta confirmada')
+                ->setFrom('info@easysurvey.com')
+                ->setTo($user[0]->getEmail())
+                ->setBody($this->renderView('IWEasySurveyBundle:User:registration_confirm.html.twig',array('user' => $user [0])),'text/html');
+            $this->get('mailer')->send($message);
+            
+            
+            
             return $this->render('IWEasySurveyBundle:User:confirmEmail.html.twig', array('message'=>'Usuario confirmado correctamente'));
         }
     }

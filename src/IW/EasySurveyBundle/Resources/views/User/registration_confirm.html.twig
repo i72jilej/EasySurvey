@@ -1,0 +1,9 @@
+{% block content %}
+        <div class="page-header">
+            <h1>{% trans %}Alta de nuevo usuario{% endtrans %}</h1>
+        </div>
+        <p>Se ha confirmado la creación de la cuenta correctamente con los siguientes datos:</p>
+        <p>{% trans %}Nombre de usuario{% endtrans %}: {{user.username}}</p>
+        <p>{% trans %}Email{% endtrans %}: {{user.email}}</p>
+        <p>{% trans %}Nombre{% endtrans %}: {{user.firstname}} {{user.lastname}}</p>
+{% endblock %}

@@ -56,6 +56,10 @@ div > label[for*="form_description"] {
     display: block;
 }
 
+.error {
+    color: red;
+    font-weight: bold;
+}
 /*!
 Video.js Default Styles (http://videojs.com)
 Version 4.4.3

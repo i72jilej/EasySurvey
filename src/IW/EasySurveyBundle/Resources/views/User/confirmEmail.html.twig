@@ -6,7 +6,7 @@
       </div>  
       <div class="page-content">  
           {{message}}
-          <br><br><br>
-          Pulse <a href="{{ path('iw_easy_survey_login')}}"> aquí </a> para acceder
+          <br><br>
+          <p>{% trans %}Pulse{% endtrans %} <a href="{{ path('iw_easy_survey_login')}}"> {% trans %}aquí{% endtrans %} </a> {% trans %}para acceder{% endtrans %}</p>
       </div>
 {% endblock %}

@@ -46,3 +46,8 @@ div > label[for*="form_description"] {
     font-size: 150%;
     display: block;
 }
+
+.error {
+    color: red;
+    font-weight: bold;
+}
