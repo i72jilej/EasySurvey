@@ -73,6 +73,20 @@ class ProjectController extends Controller
         return $this->render('IWEasySurveyBundle:Project:form.html.twig', array('form' => $form->createView(),'error'=>$error));
     }
     
+    private function getCollaborateProject() 
+    {
+        $em = $this->getDoctrine()->getManager();
+        $projectsUsers = $em->getRepository('IWEasySurveyBundle:ProjectUser')->findby(array('userId'=>$this->get('session')->get('id')));
+        $projects = array ();
+        
+        foreach ($projectsUsers as $data) {
+            $projects[] = $em->getRepository('IWEasySurveyBundle:Project')->find($data->getProjectId());
+        }
+         
+        return $projects;
+    }
+
+
     public function manageAction() {
         
         if (!$this->isLogin()) {            
@@ -81,7 +95,8 @@ class ProjectController extends Controller
         
         $em = $this->getDoctrine()->getManager();
         $projects = $em->getRepository('IWEasySurveyBundle:Project')->findby(array('user_id'=>$this->get('session')->get('id')));
-        return $this->render('IWEasySurveyBundle:Project:manage.html.twig', array('projects'=>$projects));
+        $collaborateProject = $this->getCollaborateProject();
+        return $this->render('IWEasySurveyBundle:Project:manage.html.twig', array('ownerProjects'=>$projects,'collaborateProjects'=>$collaborateProject));
     }
     
     public function deleteAction ($id) {

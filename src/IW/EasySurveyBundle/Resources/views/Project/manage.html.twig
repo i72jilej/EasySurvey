@@ -7,12 +7,12 @@
           <table id="datetable">
               <thead>
               <tr>
-                <th>{%trans%}Nombre{%endtrans%}</th>                
+                  <th>{%trans%}Nombre{%endtrans%}</th>
                 <th></th>
               </tr>
               </thead>
               <tbody>
-              {% for project in projects %}
+              {% for project in ownerProjects %}
               <tr>
                   <td> {{project.name}} </td>
                   <td>
@@ -22,6 +22,16 @@
                   </td>
               </tr>
               {% endfor %}
+              
+              {% for project in collaborateProjects %}
+              <tr>
+                  <td> {{project.name}} </td>
+                  <td>
+                      {%trans%}Colaborador{%endtrans%}
+                  </td>
+              </tr>
+              {% endfor %}
+              
               </tbody>
           </table>
           <a href="{{ path('iw_easy_survey_create_project' )}}"> {% trans %}Nuevo{% endtrans %} </a>
