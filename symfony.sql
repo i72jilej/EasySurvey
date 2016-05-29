@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Servidor: localhost
--- Tiempo de generación: 29-05-2016 a las 22:32:08
+-- Tiempo de generación: 29-05-2016 a las 23:50:46
 -- Versión del servidor: 5.5.47-0+deb8u1
 -- Versión de PHP: 5.6.19-0+deb8u1
 
@@ -149,7 +149,8 @@ INSERT INTO `Project` (`id`, `user_id`, `name`, `description`) VALUES
 (5, 1, 'Prueba', 'Proyecto de prueba'),
 (6, 11, 'Proyecto de prueba de Ralkai', 'Probando'),
 (8, 12, 'Prueba2', 'prueba2'),
-(9, 10, 'Prueba 123', 'prueba');
+(9, 10, 'Prueba 123', 'prueba'),
+(10, 17, 'Cuestionarios para medir el nivel de satisfacción a nivel de toda la prueba', 'Para conocer el nivel de satisfacción cada participante debe rellenar un cuestionario al final cada una de las sesiones de pruebas. De esta forma se puede medir su impresión sobre la usabilidad de todo el sistema que está siendo probado.');
 
 -- --------------------------------------------------------
 
@@ -216,7 +217,27 @@ INSERT INTO `Question` (`id`, `name`, `type_id`, `quiz_id`) VALUES
 (32, 'Numérica', 0, 12),
 (33, 'Texto', 1, 12),
 (34, 'Simple', 2, 12),
-(35, 'Múltiple', 3, 12);
+(35, 'Múltiple', 3, 12),
+(36, '01: Creo que usaré este sistema con frecuencia', 2, 13),
+(37, '02: Encontré el sistema innecesariamente complejo', 2, 13),
+(38, '03: Creo que el sistema ha sido fácil de usar', 2, 13),
+(39, '04: Creo que necesitaré aydua de un técnico para utilizar éste sistema', 2, 13),
+(40, '05: Encuentro las diferentes funciones del sistema bien integradas', 2, 13),
+(41, '06: Creo que había muchas inconsistencias en el sistema', 2, 13),
+(42, '07: Creo que la mayoría de la gente aprendería a utilizar este sistema rápidamente', 2, 13),
+(43, '08: Encontré el sistema muy incómodo de usar', 2, 13),
+(44, '09: Me sentí muy seguro de mí mismo utilizando el sistema', 2, 13),
+(45, '10: Necesité aprender muchas cosas antes de poder utilizar el sistema', 2, 13),
+(46, 'Usabilidad: El sitio web fue fácil de utilizar', 2, 14),
+(47, 'Usabilidad: Es fácil navegar por el sitio web', 2, 14),
+(48, 'Credibilidad: La información en el sitio web es creíble', 2, 14),
+(49, 'Credibilidad: La información en el sitio web es digna de confianza', 2, 14),
+(50, 'Credibilidad: Me siento cómodo/a comprando de este sitio web', 2, 14),
+(51, 'Credibilidad: Me siento seguro llevando a cabo negocios con este sitio web', 2, 14),
+(52, 'Lealtad: ¿Con qué probabilidad recomendaría el sitio web a un amigo?', 2, 14),
+(53, 'Lealtad: Probablemente vuelva a visitar el sitio web en el futuro', 2, 14),
+(54, 'Apariencia: Encontré atractivo el sitio web', 2, 14),
+(55, 'Apariencia: El sitio web tiene una apariencia limpia y sencilla', 2, 14);
 
 -- --------------------------------------------------------
 
@@ -240,7 +261,9 @@ INSERT INTO `Quiz` (`id`, `name`, `description`, `project_id`) VALUES
 (2, 'cuestionario', NULL, 2),
 (3, 'Pruieba', 'Encuesta de prueba', 3),
 (7, 'Encuesta de pruebas de estilo', 'Encuesta para probar estilos en el servidor', 6),
-(12, 'Cuestionario 2 de calidad', 'calidad2', 1);
+(12, 'Cuestionario 2 de calidad', 'calidad2', 1),
+(13, 'SUS: System Usability Scale', '(10 Preguntas)', 10),
+(14, 'SUPR-Q: Standardized User Experience Percentile Rank Questionnaire', NULL, 10);
 
 -- --------------------------------------------------------
 
@@ -283,7 +306,113 @@ INSERT INTO `TextQuestionOption` (`id`, `question_id`, `text`) VALUES
 (41, 34, 'Opción c'),
 (42, 35, 'Opción a'),
 (43, 35, 'Opción b'),
-(44, 35, 'Opción c');
+(44, 35, 'Opción c'),
+(45, 36, '1: En total desacuerdo'),
+(46, 36, '2: Parcialmente en desacuerdo'),
+(47, 36, '3: Ni de acuerdo ni en desacuerdo'),
+(48, 36, '4: Parcialmente de acuerdo'),
+(49, 36, '5: Totalmente de acuerdo'),
+(50, 37, '1: En total desacuerdo'),
+(51, 37, '2: Parcialmente en desacuerdo'),
+(52, 37, '3: Ni de acuerdo ni en desacuerdo'),
+(53, 37, '4: Parcialmente de acuerdo'),
+(54, 37, '5: Totalmente de acuerdo'),
+(55, 38, '1: En total desacuerdo'),
+(56, 38, '2: Parcialmente en desacuerdo'),
+(57, 38, '3: Ni de acuerdo ni en desacuerdo'),
+(58, 38, '4: Parcialmente de acuerdo'),
+(59, 38, '5: Totalmente de acuerdo'),
+(60, 39, '1: En total desacuerdo'),
+(61, 39, '2: Parcialmente en desacuerdo'),
+(62, 39, '3: Ni de acuerdo ni en desacuerdo'),
+(63, 39, '4: Parcialmente de acuerdo'),
+(64, 39, '5: Totalmente de acuerdo'),
+(65, 40, '1: En total desacuerdo'),
+(66, 40, '2: Parcialmente en desacuerdo'),
+(67, 40, '3: Ni de acuerdo ni en desacuerdo'),
+(68, 40, '4: Parcialmente de acuerdo'),
+(69, 40, '5: Totalmente de acuerdo'),
+(70, 41, '1: En total desacuerdo'),
+(71, 41, '2: Parcialmente en desacuerdo'),
+(72, 41, '3: Ni de acuerdo ni en desacuerdo'),
+(73, 41, '4: Parcialmente de acuerdo'),
+(74, 41, '5: Totalmente de acuerdo'),
+(75, 42, '1: En total desacuerdo'),
+(76, 42, '2: Parcialmente en desacuerdo'),
+(77, 42, '3: Ni de acuerdo ni en desacuerdo'),
+(78, 42, '4: Parcialmente de acuerdo'),
+(79, 42, '5: Totalmente de acuerdo'),
+(80, 43, '1: En total desacuerdo'),
+(81, 43, '2: Parcialmente en desacuerdo'),
+(82, 43, '3: Ni de acuerdo ni en desacuerdo'),
+(83, 43, '4: Parcialmente de acuerdo'),
+(84, 43, '5: Totalmente de acuerdo'),
+(85, 44, '1: En total desacuerdo'),
+(86, 44, '2: Parcialmente en desacuerdo'),
+(87, 44, '3: Ni de acuerdo ni en desacuerdo'),
+(88, 44, '4: Parcialmente de acuerdo'),
+(89, 44, '5: Totalmente de acuerdo'),
+(90, 45, '1: En total desacuerdo'),
+(91, 45, '2: Parcialmente en desacuerdo'),
+(92, 45, '3: Ni de acuerdo ni en desacuerdo'),
+(93, 45, '4: Parcialmente de acuerdo'),
+(94, 45, '5: Totalmente de acuerdo'),
+(95, 46, '1: En total desacuerdo'),
+(96, 46, '2: Parcialmente en desacuerdo'),
+(97, 46, '3: Ni de acuerdo ni en desacuerdo'),
+(98, 46, '4: Parcialmente de acuerdo'),
+(99, 46, '5: Totalmente de acuerdo'),
+(100, 47, '1: En total desacuerdo'),
+(101, 47, '2: Parcialmente en desacuerdo'),
+(102, 47, '3: Ni de acuerdo ni en desacuerdo'),
+(103, 47, '4: Parcialmente de acuerdo'),
+(104, 47, '5: Totalmente de acuerdo'),
+(105, 48, '1: En total desacuerdo'),
+(106, 48, '2: Parcialmente en desacuerdo'),
+(107, 48, '3: Ni de acuerdo ni en desacuerdo'),
+(108, 48, '4: Parcialmente de acuerdo'),
+(109, 48, '5: Totalmente de acuerdo'),
+(110, 49, '1: En total desacuerdo'),
+(111, 49, '2: Parcialmente en desacuerdo'),
+(112, 49, '3: Ni de acuerdo ni en desacuerdo'),
+(113, 49, '4: Parcialmente de acuerdo'),
+(114, 49, '5: Totalmente de acuerdo'),
+(115, 50, '1: En total desacuerdo'),
+(116, 50, '2: Parcialmente en desacuerdo'),
+(117, 50, '3: Ni de acuerdo ni en desacuerdo'),
+(118, 50, '4: Parcialmente de acuerdo'),
+(119, 50, '5: Totalmente de acuerdo'),
+(120, 51, '1: En total desacuerdo'),
+(121, 51, '2: Parcialmente en desacuerdo'),
+(122, 51, '3: Ni de acuerdo ni en desacuerdo'),
+(123, 51, '4: Parcialmente de acuerdo'),
+(124, 51, '5: Totalmente de acuerdo'),
+(125, 52, '00: Ninguna en absoluto'),
+(126, 52, '01'),
+(127, 52, '02'),
+(128, 52, '03'),
+(129, 52, '04'),
+(130, 52, '05: Neutral'),
+(131, 52, '06'),
+(132, 52, '07'),
+(133, 52, '08'),
+(134, 52, '09'),
+(135, 52, '10: Con toda seguridad'),
+(136, 53, '1: En total desacuerdo'),
+(137, 53, '2: Parcialmente en desacuerdo'),
+(138, 53, '3: Ni de acuerdo ni en desacuerdo'),
+(139, 53, '4: Parcialmente de acuerdo'),
+(140, 53, '5: Totalmente de acuerdo'),
+(141, 54, '1: En total desacuerdo'),
+(142, 54, '2: Parcialmente en desacuerdo'),
+(143, 54, '3: Ni de acuerdo ni en desacuerdo'),
+(144, 54, '4: Parcialmente de acuerdo'),
+(145, 54, '5: Totalmente de acuerdo'),
+(146, 55, '1: En total desacuerdo'),
+(147, 55, '2: Parcialmente en desacuerdo'),
+(148, 55, '3: Ni de acuerdo ni en desacuerdo'),
+(150, 55, '4: Parcialmente de acuerdo'),
+(151, 55, '5: Totalmente de acuerdo');
 
 -- --------------------------------------------------------
 
@@ -313,7 +442,8 @@ INSERT INTO `User` (`id`, `username`, `password`, `firstname`, `lastname`, `emai
 (5, 'i32chhid', '4213b716e4ef5b190b350993414049f9', 'David', 'Checa Hidalgo', 'i32chhid@uco.es', 1, 'dc743'),
 (10, 'i22hevea', 'b57d840ce6f2221072f00d6310f65d83', 'i22hevea', 'i22hevea', 'i22hevea@uco.es', 1, '93724'),
 (11, 'Ralkai', '5f4dcc3b5aa765d61d8327deb882cf99', 'Julio', 'Jiméenz', 'ralkaishagtten@gmail.com', 1, 'cf459'),
-(15, 'herrerii', 'dcd6a9b9ade60a3dd7d3a60df66929f7', 'herrerii', 'herrerii', 'herrerii@gmail.com', 1, 'b56fe');
+(15, 'herrerii', 'dcd6a9b9ade60a3dd7d3a60df66929f7', 'herrerii', 'herrerii', 'herrerii@gmail.com', 1, 'b56fe'),
+(17, 'Usabilidad', 'efedd1b436607dd61eeb392cda477480', 'Encuestas', 'de Usabilidad', 'dummy@email.com', 1, '5f357');
 
 --
 -- Índices para tablas volcadas
@@ -385,7 +515,7 @@ ALTER TABLE `Instance`
 -- AUTO_INCREMENT de la tabla `Project`
 --
 ALTER TABLE `Project`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 --
 -- AUTO_INCREMENT de la tabla `ProjectUser`
 --
@@ -395,22 +525,22 @@ ALTER TABLE `ProjectUser`
 -- AUTO_INCREMENT de la tabla `Question`
 --
 ALTER TABLE `Question`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=56;
 --
 -- AUTO_INCREMENT de la tabla `Quiz`
 --
 ALTER TABLE `Quiz`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 --
 -- AUTO_INCREMENT de la tabla `TextQuestionOption`
 --
 ALTER TABLE `TextQuestionOption`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=45;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=152;
 --
 -- AUTO_INCREMENT de la tabla `User`
 --
 ALTER TABLE `User`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
